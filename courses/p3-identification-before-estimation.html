@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Practitioner session 3 of 10. The back-door criterion stated properly: no node in the set is a descendant of the treatment, and the set blocks every path carrying an arrow into it. Checkable on paper in ten minutes, and on Kestrelmark it confirms season and tenure, which land at 6.56 against a truth of 6.23 and leave a residual that changes sign from seed to seed.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="Identification before estimation - learn causal inference with phoebe">
+<meta property="og:description" content="Practitioner session 3 of 10. Two conditions, checked on the graph, before any model is fitted.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/courses/p3-identification-before-estimation.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Identification before estimation - learn causal inference with phoebe">
+<meta name="twitter:description" content="Whether the effect can be computed at all is a question about the graph, not about the sample size.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Practitioner session 3 · Identification before estimation - learn causal inference with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-causal-inference-with-phoebe</a> / Practitioner session 3 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Causal Inference with Phoebe · Practitioner session 3 of 10</div>
+    <h1>Identification <span class="accent">before estimation</span></h1>
+    <p class="sub">Session 2 classified variables one at a time. That is necessary and it is not sufficient, because the question a real analysis asks is about a whole set at once: is there a group of columns that, held fixed together, leaves only the effect behind, and do those columns exist in the warehouse. There is a formal answer, it is two conditions long, and it is checkable on paper before a single row is read. When the answer is no, no sample size and no estimator fixes it, and finding that out in ten minutes rather than after a month of modelling is the single highest-value habit on this track.</p>
+    <div class="chip-row">
+      <span class="chip level">🔴 Hardest</span>
+      <span class="chip audience">Data scientists and analysts</span>
+      <span class="chip audience">Whoever decides what gets instrumented</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:5">3-22 · The back-door criterion, stated properly</span>
+      <span class="a3" style="flex:4">22-40 · Build-along: check one graph</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Two different questions that get answered in the wrong order</h2>
+    </div>
+    <p class="lede">Identification asks whether the quantity you want can be written as a function of things you can observe, given the graph. Estimation asks how accurately you can compute that function from a finite sample. The first is a question about assumptions and has a yes or a no. The second is a question about data and has an error bar. Running them in the wrong order produces a well-tuned answer to something that was never answerable.</p>
+
+    <div class="legend">
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">🔍 Every diagram zooms</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> The back-door criterion in its exact form, and a check you can run on a whiteboard against any graph you have drawn. A working script that enumerates every path between two nodes, marks the back-door ones, and tests a candidate set against both conditions. And the response set for the case that nobody wants: what to do when the honest answer is that this data cannot support the claim.</p>
+    </div>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Why identification comes first<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>An identification failure and an estimation failure look nothing alike from the inside. A small sample announces itself: wide intervals, unstable coefficients, results that move when you refit. An unidentified estimand announces nothing at all. The model converges, the fit is respectable, the number is stable across bootstrap replicates, and it is measuring the wrong thing with great precision.</p>
+        <p>That asymmetry is why the order matters. Estimation quality is visible in the output; identification is only visible in the graph. Ten minutes with a pen answers a question that no amount of diagnostics on the fitted model will ever raise.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Kestrelmark's first attempt at the campaign question spent three weeks on feature engineering and cross-validation before anybody drew the graph. The features were good, the validation was honest, and the estimand was the total effect while the covariate list contained the mediator. Three weeks of careful work on a quantity nobody had asked for.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The vocabulary this session runs on<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Estimand</strong> - the quantity you want. Here, the total effect of the email on spend.</li>
+          <li><strong>Identified</strong> - the estimand can be written in terms of observable distributions, given the graph. A property of the graph plus the column list, not of the sample.</li>
+          <li><strong>Adjustment set Z</strong> - the variables held fixed. The criterion tests a whole set, not its members individually.</li>
+          <li><strong>Descendant of X</strong> - any node reachable from X by following arrows forwards. Includes X's children, their children, and so on.</li>
+          <li><strong>Blocked path</strong> - a path along which no association can flow, given what has been conditioned on. One blocked node is enough to block the whole path.</li>
+          <li><strong>Back-door path</strong> - a path from X to Y whose first arrow points into X. These are the ones that need blocking.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers the criterion, its two conditions, and the blocking rules</span>
+      <h2>The back-door criterion</h2>
+      <span class="tag concept">11 min live</span>
+    </div>
+    <p class="lede">Stated formally: a set Z satisfies the back-door criterion relative to an ordered pair (X, Y) in a causal diagram if (i) no node in Z is a descendant of X, and (ii) Z blocks every path between X and Y that contains an arrow into X. Two conditions, both mechanical, both answerable from the picture alone.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A candidate adjustment set passing through two gates. The first gate asks whether any node in the set is a descendant of the treatment; sets containing opened or ticket fail there. The second gate asks whether the set blocks every path carrying an arrow into the treatment; the empty set and season alone fail there. Season and tenure together pass both gates and leave a residual of plus 0.33.">
+        <style>
+          .p3aT { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .p3aS { font: 700 11px Inter, sans-serif; fill: #fff; }
+          .p3aB { font: 400 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p3aF { font: 800 11px Inter, sans-serif; fill: #991B1B; }
+          .p3aN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+        <defs>
+          <marker id="p3aAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0F6F66"></path></marker>
+          <marker id="p3aRd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#991B1B"></path></marker>
+        </defs>
+
+        <rect x="14" y="150" width="150" height="44" rx="9" fill="#134E4A"></rect>
+        <text class="p3aT" x="89" y="177" text-anchor="middle">Candidate set Z</text>
+        <line x1="166" y1="172" x2="204" y2="172" stroke="#0F6F66" stroke-width="2" marker-end="url(#p3aAr)"></line>
+
+        <rect x="210" y="140" width="200" height="64" rx="9" fill="#0F6F66"></rect>
+        <text class="p3aT" x="226" y="164">Condition (i)</text>
+        <text class="p3aS" x="226" y="182">no node in Z is a</text>
+        <text class="p3aS" x="226" y="198">descendant of X</text>
+        <line x1="310" y1="206" x2="310" y2="250" stroke="#991B1B" stroke-width="2" marker-end="url(#p3aRd)"></line>
+        <rect x="200" y="256" width="220" height="72" rx="9" fill="#F0FDFA" stroke="#991B1B"></rect>
+        <text class="p3aF" x="216" y="278">FAILS (i)</text>
+        <text class="p3aB" x="216" y="296">opened, ticket: both are</text>
+        <text class="p3aB" x="216" y="314">descendants of email</text>
+
+        <line x1="414" y1="172" x2="452" y2="172" stroke="#0F6F66" stroke-width="2" marker-end="url(#p3aAr)"></line>
+        <rect x="458" y="140" width="210" height="64" rx="9" fill="#0F6F66"></rect>
+        <text class="p3aT" x="474" y="164">Condition (ii)</text>
+        <text class="p3aS" x="474" y="182">Z blocks every path</text>
+        <text class="p3aS" x="474" y="198">with an arrow into X</text>
+        <line x1="563" y1="206" x2="563" y2="250" stroke="#991B1B" stroke-width="2" marker-end="url(#p3aRd)"></line>
+        <rect x="455" y="256" width="220" height="72" rx="9" fill="#F0FDFA" stroke="#991B1B"></rect>
+        <text class="p3aF" x="471" y="278">FAILS (ii)</text>
+        <text class="p3aB" x="471" y="296">{season} alone leaves a</text>
+        <text class="p3aB" x="471" y="314">back door open at tenure</text>
+
+        <line x1="672" y1="172" x2="710" y2="172" stroke="#0F6F66" stroke-width="2" marker-end="url(#p3aAr)"></line>
+        <rect x="716" y="140" width="150" height="64" rx="9" fill="#134E4A"></rect>
+        <text class="p3aT" x="730" y="164">PASSES BOTH</text>
+        <text class="p3aS" x="730" y="182">{season, tenure}</text>
+        <text class="p3aS" x="730" y="198">residual +0.33</text>
+
+        <rect x="14" y="338" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="p3aN" x="38" y="350">Both gates are checked on the graph alone. No data is read and no model is fitted.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - two gates, two ways to fail, and one set that gets through.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Condition (i): no node in Z is a descendant of X<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The first condition is a single sweep forwards from the treatment. Follow the arrows out of X, then out of everything you reach, and collect the lot. Nothing in that collection may appear in Z.</p>
+        <p>What makes this worth stating separately is how much it disposes of at once. Session 2 argued mediators out on one set of grounds and post-treatment colliders out on another; condition (i) removes both in one stroke, along with every proxy, every engineered feature built from a descendant, and every variable somebody added because it correlated beautifully with the outcome for reasons downstream of the treatment.</p>
+        <ul>
+          <li><strong>At Kestrelmark the descendants of email are opened and ticket.</strong> Neither may enter Z, and neither may any feature computed from them.</li>
+          <li><strong>It is a purely structural test.</strong> No judgement about whether the variable is "important" or "predictive" enters into it.</li>
+          <li><strong>The graph does the work, so lineage matters.</strong> A feature whose definition touches a descendant is a descendant, whatever the column is called.</li>
+        </ul>
+        <div class="callout tip">
+          <p><strong>Run condition (i) first, always.</strong> It is a reachability query, it takes seconds, and it usually shrinks the candidate list enough that condition (ii) becomes easy. It also fails loudly, which the second condition does not.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Condition (ii): Z blocks every path with an arrow into X<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The second condition is the one that decides what Z has to contain rather than what it must not. List every path between X and Y, ignoring arrow directions while you walk. Keep the ones whose first arrow points into X: those are the back-door paths, and they are the routes along which association arrives without the treatment having caused anything. Every one of them must be blocked by Z.</p>
+        <p>Together the two conditions pin Z down from both sides. Condition (i) says Z may not contain consequences of X. Condition (ii) says Z must contain enough to shut every back door. What survives is the confounding structure and nothing else, which is why the criterion is a definition of "the right set" rather than a heuristic for building one.</p>
+        <ul>
+          <li><strong>Paths, not variables.</strong> A single variable can appear on several paths and block some while leaving others open. The unit of the test is the path.</li>
+          <li><strong>Blocking is per path, not per node.</strong> One blocked node anywhere along a path blocks the whole path.</li>
+          <li><strong>Front-door paths are left alone.</strong> A path whose first arrow points out of X carries the effect you are measuring. Blocking one is the mediator mistake from session 2.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The blocking rules, in the order you apply them<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Walk a path node by node, looking at each intermediate node's two adjacent arrows. There are only three arrangements, and the third behaves backwards from the other two.</p>
+        <ul>
+          <li><strong>Chain</strong>, <code class="mono">i -&gt; m -&gt; j</code>. Open by default. Blocked by conditioning on m.</li>
+          <li><strong>Fork</strong>, <code class="mono">i &lt;- m -&gt; j</code>. Open by default. Blocked by conditioning on m.</li>
+          <li><strong>Collider</strong>, <code class="mono">i -&gt; m &lt;- j</code>. <em>Blocked by default.</em> <em>Opened</em> by conditioning on m, or on any descendant of m.</li>
+        </ul>
+        <p>Read the third line twice. Every intuition that says "conditioning tidies things up" is built on the first two arrangements, and the collider inverts it: doing nothing is what keeps the path shut, and touching it is what breaks the analysis. This is the same rule session 2 measured at -0.97 on the loyalty score, which precedes the email, and at -3.64 on the ticket flag, which the email helps cause: the downstream collider is by far the more expensive of the two.</p>
+        <div class="callout tip">
+          <p><strong>The descendant clause is where real graphs bite.</strong> A collider does not have to be in Z to be conditioned on. If Z contains anything caused by the collider, the path opens anyway, which is why the check has to run on the graph rather than on the covariate list.</p>
+        </div>
+      </div>
+    </details>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 290" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Four path arrangements and their blocking status. A chain and a fork are both open by default and blocked by conditioning on the middle node. A collider is blocked by default and opened by conditioning on the middle node. A collider descendant is also blocked by default and opened by conditioning on the child of the collider.">
+        <style>
+          .p3bT { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .p3bI { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .p3bH { font: 800 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p3bB { font: 400 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p3bM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .p3bR { font: 800 11px Inter, sans-serif; fill: #9A3412; }
+          .p3bN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+        <defs>
+          <marker id="p3bAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5A6B68"></path></marker>
+        </defs>
+
+        <rect x="14" y="22" width="198" height="30" rx="8" fill="#0F6F66"></rect>
+        <text class="p3bT" x="30" y="42">Chain</text>
+        <rect x="22" y="76" width="48" height="26" rx="7" fill="#99F6E4"></rect>
+        <text class="p3bI" x="46" y="94" text-anchor="middle">i</text>
+        <rect x="89" y="76" width="48" height="26" rx="7" fill="#5EEAD4"></rect>
+        <text class="p3bI" x="113" y="94" text-anchor="middle">m</text>
+        <rect x="156" y="76" width="48" height="26" rx="7" fill="#99F6E4"></rect>
+        <text class="p3bI" x="180" y="94" text-anchor="middle">j</text>
+        <line x1="72" y1="89" x2="85" y2="89" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p3bAr)"></line>
+        <line x1="139" y1="89" x2="152" y2="89" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p3bAr)"></line>
+        <rect x="14" y="150" width="198" height="76" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p3bH" x="26" y="170">Open by default</text>
+        <text class="p3bB" x="26" y="186">Blocked by conditioning</text>
+        <text class="p3bB" x="26" y="202">on m</text>
+        <text class="p3bM" x="26" y="218">email opened spend</text>
+
+        <rect x="232" y="22" width="198" height="30" rx="8" fill="#0F6F66"></rect>
+        <text class="p3bT" x="248" y="42">Fork</text>
+        <rect x="240" y="76" width="48" height="26" rx="7" fill="#99F6E4"></rect>
+        <text class="p3bI" x="264" y="94" text-anchor="middle">i</text>
+        <rect x="307" y="76" width="48" height="26" rx="7" fill="#5EEAD4"></rect>
+        <text class="p3bI" x="331" y="94" text-anchor="middle">m</text>
+        <rect x="374" y="76" width="48" height="26" rx="7" fill="#99F6E4"></rect>
+        <text class="p3bI" x="398" y="94" text-anchor="middle">j</text>
+        <line x1="303" y1="89" x2="290" y2="89" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p3bAr)"></line>
+        <line x1="357" y1="89" x2="370" y2="89" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p3bAr)"></line>
+        <rect x="232" y="150" width="198" height="76" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p3bH" x="244" y="170">Open by default</text>
+        <text class="p3bB" x="244" y="186">Blocked by conditioning</text>
+        <text class="p3bB" x="244" y="202">on m</text>
+        <text class="p3bM" x="244" y="218">season: email, spend</text>
+
+        <rect x="450" y="22" width="198" height="30" rx="8" fill="#134E4A"></rect>
+        <text class="p3bT" x="466" y="42">Collider</text>
+        <rect x="458" y="76" width="48" height="26" rx="7" fill="#99F6E4"></rect>
+        <text class="p3bI" x="482" y="94" text-anchor="middle">i</text>
+        <rect x="525" y="76" width="48" height="26" rx="7" fill="#5EEAD4"></rect>
+        <text class="p3bI" x="549" y="94" text-anchor="middle">m</text>
+        <rect x="592" y="76" width="48" height="26" rx="7" fill="#99F6E4"></rect>
+        <text class="p3bI" x="616" y="94" text-anchor="middle">j</text>
+        <line x1="508" y1="89" x2="521" y2="89" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p3bAr)"></line>
+        <line x1="590" y1="89" x2="577" y2="89" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p3bAr)"></line>
+        <rect x="450" y="150" width="198" height="76" rx="8" fill="#F0FDFA" stroke="#9A3412"></rect>
+        <text class="p3bR" x="462" y="170">BLOCKED by default</text>
+        <text class="p3bB" x="462" y="186">OPENED by conditioning</text>
+        <text class="p3bB" x="462" y="202">on m</text>
+        <text class="p3bM" x="462" y="218">ticket: email, spend</text>
+
+        <rect x="668" y="22" width="198" height="30" rx="8" fill="#134E4A"></rect>
+        <text class="p3bT" x="684" y="42">Collider child</text>
+        <rect x="676" y="64" width="48" height="26" rx="7" fill="#99F6E4"></rect>
+        <text class="p3bI" x="700" y="82" text-anchor="middle">i</text>
+        <rect x="743" y="64" width="48" height="26" rx="7" fill="#5EEAD4"></rect>
+        <text class="p3bI" x="767" y="82" text-anchor="middle">m</text>
+        <rect x="810" y="64" width="48" height="26" rx="7" fill="#99F6E4"></rect>
+        <text class="p3bI" x="834" y="82" text-anchor="middle">j</text>
+        <line x1="726" y1="77" x2="739" y2="77" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p3bAr)"></line>
+        <line x1="808" y1="77" x2="795" y2="77" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p3bAr)"></line>
+        <rect x="743" y="110" width="48" height="26" rx="7" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p3bI" x="767" y="128" text-anchor="middle">d</text>
+        <line x1="767" y1="92" x2="767" y2="106" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p3bAr)"></line>
+        <rect x="668" y="150" width="198" height="76" rx="8" fill="#F0FDFA" stroke="#9A3412"></rect>
+        <text class="p3bR" x="680" y="170">BLOCKED by default</text>
+        <text class="p3bB" x="680" y="186">OPENED by conditioning</text>
+        <text class="p3bB" x="680" y="202">on d, the descendant</text>
+        <text class="p3bM" x="680" y="218">any proxy for ticket</text>
+
+        <rect x="14" y="250" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="p3bN" x="38" y="262">A collider is the only shape that starts blocked. Conditioning is what breaks it.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - three arrangements plus the descendant case, with the default state of each.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The Kestrelmark check, worked through<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Estimand: the total effect of email on spend. Candidate set: <code class="mono">{season, tenure}</code>.</p>
+        <p><strong>Condition (i).</strong> Descendants of email are opened, ticket, and spend itself. Season and tenure are neither, so (i) holds.</p>
+        <p><strong>Condition (ii).</strong> The back-door paths, meaning every path whose first arrow points into email:</p>
+        <ul>
+          <li><code class="mono">email &lt;- season -&gt; spend</code>. A fork at season. Blocked, because season is in Z.</li>
+          <li><code class="mono">email &lt;- tenure -&gt; spend</code>. A fork at tenure. Blocked, because tenure is in Z.</li>
+          <li><code class="mono">email &lt;- u1 -&gt; loyalty &lt;- u2 -&gt; spend</code>. A collider at loyalty. Blocked by default, and it stays blocked precisely because loyalty is not in Z.</li>
+          <li><code class="mono">email -&gt; ticket &lt;- spend</code>. Not a back-door path at all: the first arrow points out of email. It is also a collider, so it is blocked, and adding ticket to Z would open it.</li>
+        </ul>
+        <p>Every back-door path is blocked and no element of Z is a descendant of email, so <code class="mono">{season, tenure}</code> satisfies the criterion. The bench agrees: 6.56 against a true effect of 6.23, leaving +0.33. Refit on five seeds, that leftover reads +0.33, +0.17, -0.38, +0.19 and -0.01, a mean of +0.06. It changes sign, so it is noise around zero rather than bias, and more rows shrink it; every contaminated set, by contrast, keeps the same sign on all five and no amount of data moves it.</p>
+        <p>Adding device gives 6.56 again, because device sits on no path and blocks nothing, so it neither helps nor hurts. <code class="mono">recency</code> is the same kind of passenger as far as this check is concerned: it causes spend but not the email, so it opens no back door and <code class="mono">{season, tenure}</code> is still the set. Sessions 7 and 8 are where that column earns its keep.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Notice that the third path was handled by leaving something out. There is no covariate list on which loyalty appears as an absence, which is why a list cannot be reviewed and a graph can. The decision not to include it is a decision, and it is only visible against the graph.</p>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2 ============ -->
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers the case where the answer is no</span>
+      <h2>When no valid set exists</h2>
+      <span class="tag concept">7 min live</span>
+    </div>
+    <p class="lede">Kestrelmark is a friendly graph: the confounders are measured and the criterion is satisfiable. Most real graphs are not, and the honest handling of that case is a professional skill in its own right rather than a failure to be worked around.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>A back door running through the unmeasured<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Change one thing in the Kestrelmark graph. Suppose the disposition u1, which drives who gets the email, also drove spend directly, so that <code class="mono">email &lt;- u1 -&gt; spend</code> is a path. It is a fork, it is a back-door path, and blocking it requires conditioning on u1. There is no u1 column.</p>
+        <p>Condition (ii) now fails for every subset of the warehouse. Not for the one you tried: for all of them, because the only node that could block that path is not in the data. The effect is not identified from this data, and that conclusion is final until either the graph changes or the data does.</p>
+        <ul>
+          <li><strong>More rows do not help.</strong> Sample size affects the width of an interval, not which quantity the interval surrounds.</li>
+          <li><strong>A better estimator does not help.</strong> Every observational estimator computes a function of the observed distribution, and the whole finding is that no such function equals the effect.</li>
+          <li><strong>A better fit is actively misleading.</strong> Predictive accuracy improves as the model absorbs the confounded association, so the diagnostics get healthier while the answer gets worse.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The four responses, in the order they are usually available<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Measure the missing variable.</strong> Often the cheapest and almost never considered, because by the time the analysis starts the column list feels fixed. Identification checked at design time is a specification for instrumentation: this field, on this event, from this date.</li>
+          <li><strong>Find another identification strategy.</strong> A different structure can rescue an effect the back door cannot reach. The front-door criterion is the case where a fully mediating variable is measured even though the confounder is not, and session 4 is that case in full.</li>
+          <li><strong>Randomise.</strong> An experiment removes the incoming arrows to the treatment by construction, which is why it needs no adjustment set. Designing, powering and analysing one is the territory of <code class="mono">learn-experimentation-with-phoebe</code>, and so is every observational estimator that gets reached for when randomising is impossible.</li>
+          <li><strong>Report the association honestly.</strong> "Emailed customers spent 10.54 more, and we cannot separate the campaign from the season and the tenure" is a defensible sentence. "The campaign drove 10.54 in incremental spend" is not, and the difference between them is one clause.</li>
+        </ul>
+        <div class="callout tip">
+          <p><strong>The fourth response is a result, not a surrender.</strong> A team that knows which of its numbers are causal and which are descriptive makes better decisions than one that believes all of them are causal, and it is the only version of the answer that stays true when somebody checks.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Ten minutes on paper against a month of modelling<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The whole check needs a graph, a list of columns and a pen. Sweep forwards from the treatment for condition (i), enumerate the back-door paths for condition (ii), and see whether anything in the warehouse blocks them all. On a graph with a dozen nodes this is a coffee break.</p>
+        <p>What that buys is a decision made before the expensive part starts. Identified, with the set in hand: proceed, and the estimation work has a target worth hitting. Not identified: stop, and spend the month on instrumenting the missing variable or on designing an experiment instead of on cross-validation.</p>
+        <ul>
+          <li><strong>Do it at design time, not analysis time.</strong> The check tells you what to collect, and that is only actionable before collection starts.</li>
+          <li><strong>Put the verdict in writing next to the graph.</strong> Identified or not, with the set and the paths it blocks, so the next person inherits the reasoning rather than the covariate list.</li>
+          <li><strong>Re-run it whenever an arrow changes.</strong> The verdict is a function of the graph, so a disputed arrow that gets added can flip it.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The honest limit: the criterion inherits your graph<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The criterion is a theorem, and like every theorem it is conditional on its premises. It says: <em>given this graph</em>, this set is sufficient. It says nothing about whether the graph is right, and it cannot, because no procedure operating on the data can tell you that.</p>
+        <p>So a clean pass through both conditions is worth exactly as much as the arrows it was checked against. Get one arrow wrong and the criterion will certify a set that does not close the back door, with no warning anywhere in the output.</p>
+        <ul>
+          <li><strong>Missing arrows are the dangerous kind.</strong> Session 1 made the point that a missing arrow is the stronger claim, and this is where the bill arrives: an unmeasured common cause you did not draw produces a graph on which the criterion passes.</li>
+          <li><strong>The response is not to abandon the method.</strong> Every alternative also rests on assumptions; the graph's virtue is that its assumptions are written down and specific enough to argue with.</li>
+          <li><strong>The response is to price the doubt.</strong> Ask how strong an unmeasured confounder would have to be to overturn the finding, and report that number beside the estimate. Session 9 is that calculation, and it exists because of this limit.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>The strongest version of a causal write-up states the estimate, the adjustment set, the graph it was checked against, and the strength of unmeasured confounding that would flip the conclusion. Four items, one paragraph, and it survives a hostile reader in a way that a coefficient and a confidence interval do not.</p>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>Check one graph, in code</h2>
+      <span class="tag demo">★ 18 min · everyone builds</span>
+    </div>
+    <p class="lede">Sixty lines of plain Python turn the criterion into something you can run against a graph in a text file. No library beyond numpy for the arithmetic at the end, and nothing here is an estimator.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Encode the DAG as an edge list.</strong> The same file session 1 put in version control, read into a list of pairs. One line per arrow, and it is deliberately the graph and not the data.</p>
+      </div>
+      <div class="step">
+        <p><strong>Write the path enumerator.</strong> Walk the graph as if it were undirected, remembering the direction of each arrow you cross, and collect every simple path from email to spend. There are only a handful on this graph and printing them all is the point.</p>
+      </div>
+      <div class="step">
+        <p><strong>Mark the back-door paths.</strong> A path is back-door when its first arrow points into the treatment. Everything else is a causal path and must be left alone.</p>
+      </div>
+      <div class="step">
+        <p><strong>Implement condition (i) as a reachability query.</strong> Collect the descendants of email by following arrows forwards, and check that Z is disjoint from that set.</p>
+      </div>
+      <div class="step">
+        <p><strong>Implement condition (ii) with the three blocking rules.</strong> For each intermediate node on a path, decide chain, fork or collider from its two adjacent arrows, then apply the rule, remembering that a collider is opened by Z containing it <em>or any descendant of it</em>.</p>
+      </div>
+      <div class="step">
+        <p><strong>Run it on four candidate sets:</strong> <code class="mono">{}</code>, <code class="mono">{season}</code>, <code class="mono">{season, tenure}</code>, <code class="mono">{season, tenure, ticket}</code>. Predict each verdict out loud before you press enter.</p>
+      </div>
+      <div class="step">
+        <p><strong>Then run the matching regressions</strong> and line the two outputs up. The set that passes lands at 6.56 against a truth of 6.23; the one that fails condition (i) lands at 2.59. The paper check predicted the arithmetic.</p>
+      </div>
+      <div class="step">
+        <p><strong>Point the script at your own graph</strong> and record the verdict in the repository beside it. If nothing passes, that sentence is tonight's real output.</p>
+      </div>
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - paths, back doors, and the two conditions</span>
+EDGES = [                      # kestrelmark-email.dag, one pair per arrow
+    ("season", "email"), ("season", "spend"),
+    ("tenure", "email"), ("tenure", "spend"),
+    ("u1", "email"),     ("u1", "loyalty"),
+    ("u2", "loyalty"),   ("u2", "spend"),
+    ("email", "opened"), ("opened", "spend"), ("email", "spend"),
+    ("email", "ticket"), ("spend", "ticket"),
+]
+X, Y = "email", "spend"
+
+def neighbours(n):
+    """every adjacent node, with the direction of the arrow we cross"""
+    out = [(b, "out") for a, b in EDGES if a == n]
+    return out + [(a, "in") for a, b in EDGES if b == n]
+
+def paths(a, b, seen=None):
+    """every simple path, walked as if the graph were undirected"""
+    seen = (seen or []) + [a]
+    if a == b:
+        return [[a]]
+    found = []
+    for nxt, _ in neighbours(a):
+        if nxt not in seen:
+            found += [[a] + p for p in paths(nxt, b, seen)]
+    return found
+
+def arrow(u, v):
+    return "out" if (u, v) in EDGES else "in"      # direction relative to u
+
+def is_backdoor(p):
+    return arrow(p[0], p[1]) == "in"               # first arrow points INTO X
+
+def descendants(n, acc=None):
+    acc = acc if acc is not None else set()
+    for a, b in EDGES:
+        if a == n and b not in acc:
+            acc.add(b); descendants(b, acc)
+    return acc
+
+def blocked(p, Z):
+    """one blocked node blocks the whole path"""
+    Zplus = set(Z) | {d for z in Z for d in descendants(z)}
+    for k in range(1, len(p) - 1):
+        prev, mid, nxt = p[k - 1], p[k], p[k + 1]
+        collider = arrow(mid, prev) == "out" and arrow(mid, nxt) == "out"
+        if collider:
+            if mid not in Zplus and not (descendants(mid) &amp; set(Z)):
+                return True                        # closed by default
+        elif mid in Z:
+            return True                            # chain or fork, conditioned
+    return False
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - the verdict for four candidate sets</span>
+def backdoor_criterion(Z):
+    Z = set(Z)
+    bad = Z &amp; descendants(X)
+    if bad:
+        return False, f"fails (i): {sorted(bad)} descend from {X}"
+    open_paths = [p for p in paths(X, Y) if is_backdoor(p) and not blocked(p, Z)]
+    if open_paths:
+        return False, "fails (ii): " + " ; ".join(" - ".join(p) for p in open_paths)
+    return True, "satisfies the back-door criterion"
+
+for Z in ([], ["season"], ["season", "tenure"], ["season", "tenure", "ticket"]):
+    ok, why = backdoor_criterion(Z)
+    print(f"{str(sorted(Z)):&lt;44} {'PASS' if ok else 'FAIL'}  {why}")
+
+# []                        FAIL  fails (ii): email - season - spend ; ...
+# ['season']                FAIL  fails (ii): email - tenure - spend
+# ['season', 'tenure']      PASS  satisfies the back-door criterion
+# ['season','tenure','ticket'] FAIL  fails (i): ['ticket'] descend from email
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Read the failure reasons, not just the verdicts.</strong> The two failures are diagnostic and they point at different fixes. A condition (ii) failure names the path that is still open, which tells you which column to go and find. A condition (i) failure names the variable to remove, and removing it costs nothing.</p>
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - confirm the paper check against the arithmetic</span>
+import numpy as np, pandas as pd
+df, TRUTH = pd.read_csv("kestrelmark.csv"), 6.23
+
+def effect(adjust):
+    """OLS coefficient on email. Arithmetic only: no inference here."""
+    cols = ["email"] + [c for c in adjust if c != "email"]
+    A = np.column_stack([np.ones(len(df))] + [df[c].to_numpy(float) for c in cols])
+    beta, *_ = np.linalg.lstsq(A, df["spend"].to_numpy(float), rcond=None)
+    return beta[1]
+
+for Z in ([], ["season", "tenure"], ["season", "tenure", "ticket"],
+          ["season", "tenure", "device"]):
+    ok, _ = backdoor_criterion(Z)
+    est = effect(Z)
+    print(f"{str(sorted(Z)):&lt;40} {'PASS' if ok else 'FAIL'}  "
+          f"{est:6.2f}  bias {est - TRUTH:+.2f}")
+
+# []                                       FAIL   10.54  bias +4.31
+# ['season', 'tenure']                     PASS    6.56  bias +0.33
+# ['season', 'ticket', 'tenure']           FAIL    2.59  bias -3.64
+# ['device', 'season', 'tenure']           PASS    6.56  bias +0.33
+
+# both passing sets leave +0.33, and that leftover changes sign from seed to
+# seed. the paper check predicted the arithmetic before any data was read.
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Device is the useful control on this experiment.</strong> It passes both conditions, because it is not a descendant of email and it sits on no back-door path, and it leaves the estimate where it was, to two decimal places. The criterion never claimed a valid set has to be minimal, only that it has to be sufficient and free of descendants.</p>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before session 4</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li>Run the script against your own graph from session 1. Enumerate every path between your treatment and your outcome and print them; the count is usually larger than expected.</li>
+      <li>Write down the smallest set in your data that satisfies both conditions. If there is none, write down which single unmeasured variable would rescue it.</li>
+      <li>For that variable, write one sentence on what it would take to instrument it: which event, which field, which system, and roughly what it costs.</li>
+      <li>Put the verdict in the repository beside the graph, in the form "identified via {..}" or "not identified from current data because of the path ..". One line, dated.</li>
+      <li>If your graph has a back door blocked by an unmeasured node and a fully mediating variable you do measure, flag it and bring it to session 4, where the front door handles exactly that shape.</li>
+    </ol>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">A path from email to spend runs through the ticket flag, which is caused by both. Nobody has conditioned on anything. Is that path transmitting association, and what changes if ticket is added to the adjustment set?</p>
+      <button class="qopt" type="button">A · It is open, like every path, and adding ticket blocks it in the usual way</button>
+      <button class="qopt" type="button">B · It is blocked by default, because two arrows meet head to head at ticket, and conditioning on ticket or on any descendant of ticket opens it</button>
+      <button class="qopt" type="button">C · It is blocked by default, and conditioning on ticket leaves it blocked, so adding ticket is harmless</button>
+      <p class="qwhy">A collider is the one arrangement that starts closed. Chains and forks are open until you condition; a collider is shut until you condition, and the descendant clause means a proxy opens it too. The bench prices this one at -3.64, the most expensive wrong adjustment on the graph.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">A team proposes the set {season, tenure, opened} and points out that it blocks every back-door path from email to spend. Does it satisfy the back-door criterion?</p>
+      <button class="qopt" type="button">A · Yes: condition (ii) is the substantive one and it holds</button>
+      <button class="qopt" type="button">B · Yes, and the extra variable will also tighten the estimate</button>
+      <button class="qopt" type="button">C · No: opened is a descendant of email, so the set fails condition (i) regardless of what it blocks</button>
+      <p class="qwhy">The two conditions are both required. Condition (i) removes mediators and post-treatment colliders in one stroke, before any path is examined, and the resulting number here is 5.48, a clean estimate of the direct effect rather than the total.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">Every back-door path in a graph runs through a variable that was never logged. What follows?</p>
+      <button class="qopt" type="button">A · The effect is not identified from this data, so the options are to measure the variable, find another identification strategy, randomise, or report the association honestly</button>
+      <button class="qopt" type="button">B · Collect more rows until the confounding averages out</button>
+      <button class="qopt" type="button">C · Use a more flexible model, since the bias comes from the linear specification</button>
+      <p class="qwhy">Identification is a property of the graph plus the column list, and no sample size or estimator changes which quantity is being computed. Finding this out on paper is worth a month of modelling that would have produced a precise wrong answer.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ COVERAGE ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What tonight maps to</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">The back-door criterion, stated formally</span>
+        <span class="note">Both conditions in their exact form, with condition (i) as the descendant sweep and condition (ii) as the path-blocking test.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Path-blocking rules for chains, forks and colliders</span>
+        <span class="note">Open by default for the first two and blocked by conditioning; blocked by default for a collider and opened by conditioning on it or a descendant.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Is there a valid set, and is it in your data</span>
+        <span class="note">{season, tenure} verified against the graph and confirmed on the bench at 6.56, leaving a residual of +0.33 that changes sign across seeds; the unmeasured-back-door case and its four responses.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">The front-door criterion</span>
+        <span class="note">Session 4. Named tonight as the strategy for a back door blocked by something unmeasured, and left there.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">Sensitivity to a graph you got wrong</span>
+        <span class="note">Session 9. The criterion certifies a set given the arrows, so the honest limit is priced rather than argued away.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill inkpill">·</span>
+        <span class="name">Propensity scores, IPW, doubly robust, difference-in-differences, synthetic control, DoWhy</span>
+        <span class="note">Not covered by design, in any session. Whether a set exists is this track; fitting anything with it, and designing the experiment when nothing exists, belongs to learn-experimentation-with-phoebe.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill inkpill">·</span>
+        <span class="name">Standard errors, p-values, confidence intervals</span>
+        <span class="note">Not covered by design. Regression appears here as the arithmetic the bench runs; inference belongs to learn-statistics-with-phoebe.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Session 3 cheat sheet</h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Identification first</b><span>Can it be computed at all, given the graph. Estimation quality is a separate, later question.</span></div>
+      <div class="cheat-item"><b>Condition (i)</b><span>No node in Z is a descendant of X. Kills mediators and post-treatment colliders in one sweep.</span></div>
+      <div class="cheat-item"><b>Condition (ii)</b><span>Z blocks every path with an arrow into X. That is what makes Z the confounders and no more.</span></div>
+      <div class="cheat-item"><b>Chain and fork</b><span>Open by default, blocked by conditioning on the middle node.</span></div>
+      <div class="cheat-item"><b>Collider</b><span>Blocked by DEFAULT, opened by conditioning on it or on any descendant.</span></div>
+      <div class="cheat-item"><b>Kestrelmark passes</b><span>{season, tenure} clears both conditions; the bench returns 6.56, and the +0.33 left over is noise, not bias.</span></div>
+      <div class="cheat-item"><b>No valid set</b><span>Measure it, change strategy, randomise, or report the association honestly. More rows do nothing.</span></div>
+      <div class="cheat-item"><b>The criterion inherits the graph</b><span>Sufficient given the arrows you drew. Price the doubt in session 9.</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pagefoot">
+  <div class="wrap">
+    <p>Practitioner session 3 of 10 · learn-causal-inference-with-phoebe · by Phoebe Fu</p>
+    <nav class="pagenav">
+      <a href="p2-confounder-collider-mediator.html">← Practitioner session 2 · Confounder, collider, mediator</a>
+      <a href="p4-the-front-door.html">Practitioner session 4 · The front door →</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

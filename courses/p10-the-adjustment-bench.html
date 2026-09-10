@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Practitioner session 10 of 10. Six adjustment sets scored against a true effect that is known by construction. The back-door set leaves 0.33 of sampling noise that changes sign across seeds; every wrong variable leaves bias with a fixed sign, and the three harmful ones compound to 5.25 rather than cancelling.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="The adjustment bench - learn causal inference with phoebe">
+<meta property="og:description" content="Practitioner session 10 of 10. Tick the variables; the engine knows the true answer and scores you.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/courses/p10-the-adjustment-bench.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The adjustment bench - learn causal inference with phoebe">
+<meta name="twitter:description" content="Noise of 0.33 with the right set, bias of 5.25 with every column. Wrong adjustments compound.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Practitioner session 10 · The adjustment bench - learn causal inference with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-causal-inference-with-phoebe</a> / Practitioner session 10 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Causal Inference with Phoebe · Practitioner session 10 of 10</div>
+    <h1>The adjustment <span class="accent">bench</span></h1>
+    <p class="sub">Nine sessions of argument about which variables belong in the model, and one thing has been missing from every one of them: the right answer. Tonight it is available. Kestrelmark's 5,000 customers come from a causal model written out in full, so the true effect of the email can be computed rather than estimated, by running that model twice with the email forced on and forced off. Every adjustment set you tick is scored against it. The correct one leaves 0.33, a residual that changes sign when the seed changes. The one containing every column in the table leaves 5.25, and it leaves it in the same direction every time.</p>
+    <div class="chip-row">
+      <span class="chip level">🔴 Hardest</span>
+      <span class="chip audience">Data scientists and analysts</span>
+      <span class="chip audience">Whoever signs off the model spec</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:3">3-15 · A dataset with a known answer</span>
+      <span class="a3" style="flex:6">15-40 · Build-along: score six sets</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>What the bench measures</h2>
+    </div>
+    <p class="lede">Bias, and nothing else. Not fit, not significance, not how sensible the covariate list looks in a review. The distance between the estimate a regression produced and the effect that is actually there, which is a number no real analysis has and every learner should see once.</p>
+
+    <div class="legend">
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">🔍 Every diagram zooms</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> The measured cost of each of the three ways an adjustment set goes wrong, on one dataset, against one truth. The distinction the bench exists to make: <strong>a wrong adjustment is bias, the correct one leaves noise.</strong> Run the correct set over five seeds and its residual reads +0.33, +0.17, -0.38, +0.19, -0.01, mean +0.06, changing sign as it goes. Run any contaminated set over the same five and the sign never moves. And one result that should change how you review a model spec: the harmless variable is genuinely harmless, to two decimal places, which is exactly why the harmful ones cannot be spotted by looking at the list.</p>
+    </div>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Where a known answer comes from<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Real data never comes with the answer attached, which is why this bench generates its own. The customers are produced by a structural causal model written out in the source file: season and tenure feed both the email and spend, the email feeds opening which feeds spend, and so on for eight arrows. To get the true effect, the engine runs that model twice with everything else held identical, once with the email forced on for every customer and once forced off, and differences the mean spend. That is the do-operator computed by brute force, and it gives <strong>6.23</strong>.</p>
+        <p>The number is worth trusting for a second reason. Worked out on paper, the effect should be the direct part, which now varies by person and averages 5.161, plus the mediated part, 3.0 times the change in open rate of 1.056, which comes to 6.22. The simulation says 6.23. The engine and the algebra agree, which is the check that matters, because a simulation validated only against itself proves nothing.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Kestrelmark's actual review process was a covariate list in a pull request and two people saying it looked reasonable. Both would have approved every set below, including the one that misses by 5.25, because all of them look reasonable. The list is not readable by eye and the graph is.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>What is real here<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>The data.</strong> 5,000 rows from a fixed seed, identical for every learner, generated from the model in <code class="mono">causal-live.js</code> where every coefficient is visible.</li>
+          <li><strong>The truth.</strong> Computed by intervention, not estimated, and cross-checked against the analytic value.</li>
+          <li><strong>Every estimate.</strong> A real ordinary least squares fit of spend on the email plus whatever you ticked, solved by Gaussian elimination in the page. The coefficient on the email is the estimate.</li>
+          <li><strong>Nothing is modelled.</strong> There is no human behaviour to approximate anywhere in this widget, and no result is written down in advance.</li>
+          <li><strong>The one simplification.</strong> Least squares with no interaction terms, which assumes the effect is the same for everybody. Session 7 spent a whole hour on why that is false, and the bench keeps it because one lesson at a time is enough. It is worth knowing how false it is here: the model carries a <code class="mono">recency</code> segment that sets what the email is worth to each customer, and the four segments are far apart. Active customers, the sure things, gain <strong>+2.10</strong>. Customers lapsed 30 to 90 days, the persuadables, gain <strong>+29.09</strong>. Customers dormant a year, the lost causes, gain <strong>+1.04</strong>. Customers who have cancelled once, the sleeping dogs, are <strong>-8.87</strong>: a genuinely harmed group, not a rounding error.</li>
+          <li><strong>Why <code class="mono">recency</code> is not one of the six tickable variables.</strong> It is an effect modifier, not a confounder. It changes how much the email is worth and it shifts baseline spend, but it does not cause the email, so it opens no back door and closing it buys nothing. The back-door set is still season and tenure, and every graph from sessions 1 to 3 stands unchanged.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers the six sets and the three readings</span>
+      <h2>Six adjustment sets, one truth</h2>
+      <span class="tag concept">10 min live</span>
+    </div>
+    <p class="lede">Every row below is computed by the bench on this page against a true effect of 6.23. Read the sign of the bias as carefully as the size: the direction tells you which mechanism is at work, and whether the sign holds still under a new seed tells you whether you are looking at bias or at noise.</p>
+
+    <table class="clean">
+      <thead><tr><th>Adjustment set</th><th>Estimate</th><th>Bias</th><th>What is happening</th></tr></thead>
+      <tbody>
+        <tr><td>Nothing</td><td>10.54</td><td><strong>+4.31</strong></td><td>Two back doors wide open: season and tenure</td></tr>
+        <tr><td><strong>season, tenure</strong></td><td><strong>6.56</strong></td><td><strong>+0.33</strong></td><td>The back-door set. What is left is sampling noise, not error</td></tr>
+        <tr><td>+ loyalty score</td><td>5.26</td><td>-0.97</td><td>A pre-treatment collider. Conditioning opens a path that was closed</td></tr>
+        <tr><td>+ opened</td><td>5.48</td><td>-0.75</td><td>The mediator. Now measuring the mean direct effect, 5.16, not the total</td></tr>
+        <tr><td>+ ticket</td><td>2.59</td><td><strong>-3.64</strong></td><td>A post-treatment collider, and by far the most expensive single variable here</td></tr>
+        <tr><td>+ device</td><td>6.56</td><td>+0.33</td><td>A bystander. No change at all, to two decimals</td></tr>
+        <tr><td>Everything in the table</td><td>0.98</td><td><strong>-5.25</strong></td><td>All three harms at once, pushing the same way</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <p><strong>The three readings that matter.</strong> First, confounding inflated the estimate by two thirds of the true effect again, and no amount of extra data would have touched it. Second, adjusting for the mediator returns 5.48, which is close to the mean direct effect of 5.16: not a mistake so much as an answer to a different question, and the spec has to say which question. Third, and least expected, the three harmful adjustments all push downward and <strong>compound</strong>, reaching 5.25 rather than partly cancelling.</p>
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Noise versus bias, which is the real lesson.</strong> The correct set's +0.33 is not a small error, it is the absence of one. Re-run the whole bench on five different seeds and the back-door set gives +0.33, +0.17, -0.38, +0.19, -0.01, a mean of +0.06, and it <strong>changes sign</strong>. That is what a residual looks like when nothing is systematically wrong. Every contaminated set keeps the same sign in all five seeds and lands in the same place each time: loyalty about -1.2, opened about -1.0, ticket about -3.7, everything about -5.2. More rows shrink the first kind and leave the second exactly where it is.</p>
+    </div>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p>The size order is not the one a review expects. The pre-treatment collider, the one everybody argues about because its timing makes it look defensible, is <strong>not</strong> the dearest of the three: it costs 0.97, while the mediator costs 0.75. The dearest by a wide margin is the post-treatment collider at 3.64, and ticket is exactly the kind of column that gets added without argument: recent, well populated, and it improves the fit.</p>
+      <p>Which is why the full list here loses to the empty one. Adjust for everything and the bias is 5.25; adjust for nothing at all and it is 4.31. An analyst who controlled for every column Kestrelmark had would have been further from the truth than one who ran the raw difference and went home.</p>
+    </div>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 364" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Seven adjustment sets plotted as bars of bias against a true effect of 6.23. Nothing overshoots by 4.31, the back-door set sits on the truth line with a residual of 0.33, the pre-treatment collider undershoots by 0.97, the mediator by 0.75, the post-treatment collider by 3.64, the bystander is unchanged, and everything together undershoots by 5.25.">
+        <style>
+          .p10aH { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .p10aB { font: 400 10px Inter, sans-serif; fill: #5A6B68; }
+          .p10aW { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .p10aN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p10aR { font: 800 11px Inter, sans-serif; fill: #9A3412; }
+          .p10aG { font: 800 11px Inter, sans-serif; fill: #134E4A; }
+        </style>
+
+        <text class="p10aH" x="14" y="26">Bias against the true effect of 6.23. The line is the truth.</text>
+        <line x1="14" y1="160" x2="866" y2="160" stroke="#134E4A" stroke-width="2"></line>
+        <text class="p10aG" x="790" y="154">truth 6.23</text>
+
+        <rect x="30" y="74" width="96" height="86" rx="4" fill="#9A3412"></rect>
+        <text class="p10aW" x="78" y="124" text-anchor="middle">+4.31</text>
+        <text class="p10aB" x="78" y="176" text-anchor="middle">nothing</text>
+        <text class="p10aB" x="78" y="192" text-anchor="middle">10.54</text>
+
+        <rect x="150" y="153" width="96" height="7" rx="3" fill="#0F6F66"></rect>
+        <text class="p10aG" x="198" y="147" text-anchor="middle">+0.33</text>
+        <text class="p10aB" x="198" y="176" text-anchor="middle">season, tenure</text>
+        <text class="p10aB" x="198" y="192" text-anchor="middle">6.56</text>
+
+        <rect x="270" y="160" width="96" height="19" rx="4" fill="#9A3412"></rect>
+        <text class="p10aW" x="318" y="174" text-anchor="middle">-0.97</text>
+        <text class="p10aB" x="318" y="200" text-anchor="middle">+ loyalty</text>
+        <text class="p10aB" x="318" y="216" text-anchor="middle">5.26</text>
+
+        <rect x="390" y="160" width="96" height="15" rx="4" fill="#9A3412"></rect>
+        <text class="p10aW" x="438" y="172" text-anchor="middle">-0.75</text>
+        <text class="p10aB" x="438" y="200" text-anchor="middle">+ opened</text>
+        <text class="p10aB" x="438" y="216" text-anchor="middle">5.48</text>
+
+        <rect x="510" y="160" width="96" height="73" rx="4" fill="#9A3412"></rect>
+        <text class="p10aW" x="558" y="201" text-anchor="middle">-3.64</text>
+        <text class="p10aB" x="558" y="253" text-anchor="middle">+ ticket</text>
+        <text class="p10aB" x="558" y="269" text-anchor="middle">2.59</text>
+
+        <rect x="630" y="153" width="96" height="7" rx="3" fill="#0F6F66"></rect>
+        <text class="p10aG" x="678" y="147" text-anchor="middle">+0.33</text>
+        <text class="p10aB" x="678" y="176" text-anchor="middle">+ device</text>
+        <text class="p10aB" x="678" y="192" text-anchor="middle">6.56</text>
+
+        <rect x="750" y="160" width="96" height="105" rx="4" fill="#9A3412"></rect>
+        <text class="p10aW" x="798" y="217" text-anchor="middle">-5.25</text>
+        <text class="p10aB" x="798" y="285" text-anchor="middle">everything</text>
+        <text class="p10aB" x="798" y="301" text-anchor="middle">0.98</text>
+
+        <rect x="14" y="330" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="p10aN" x="38" y="342">Three harms, all downward, stacking to 5.25. The post-treatment collider alone costs 3.64.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - one bar sits on the line, one is harmless, and the deepest bar is a variable measured after the email went out.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ============ DEMO ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>Score the sets yourself</h2>
+      <span class="tag demo">★ 25 min · everyone builds</span>
+    </div>
+    <p class="lede">The bench is live below. Each variable is labelled with its role in the graph, which is information you would not have in real life; the point of tonight is to feel what each role does before you have to guess.</p>
+
+    <div data-causal-bench></div>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Start with nothing ticked.</strong> 10.54 against a truth of 6.23. This is the number a dashboard produces and the number the growth team took to the board. Every path from email to spend is open, including the two that are not the email's doing.</p>
+      </div>
+      <div class="step">
+        <p><strong>Tick season, then tenure.</strong> Watch the estimate fall to 6.56 as each back door closes. The residual of 0.33 is worth pausing on, because it is the only number tonight that is not an error: change the seed and it reads +0.17, then -0.38, then +0.19, then -0.01, mean +0.06, wandering either side of zero. The correct answer was available all along from two columns everybody had.</p>
+      </div>
+      <div class="step">
+        <p><strong>Add the loyalty score.</strong> It was computed before the email went out, which is the reason people call a variable safe, and the estimate drops to 5.26. Loyalty is a common effect of two unobserved things, one of which feeds the email and one of which feeds spend. Conditioning on it connects them. The cost, 0.97, is the middle of the three harms, and it survives every seed at about -1.2 while the correct set's residual keeps flipping.</p>
+      </div>
+      <div class="step">
+        <p><strong>Untick loyalty, add opened.</strong> 5.48. Compare that with the mean direct effect of 5.16 in the model. You have not made an error; you have answered "what does the email do for people whose opening it did not change", which is a real question and not the one on the spec.</p>
+      </div>
+      <div class="step">
+        <p><strong>Untick opened, add ticket.</strong> 2.59, a bias of 3.64, and this is the moment of the session. Same mechanism as loyalty, but this collider sits after the treatment, and it is far and away the most expensive of the three, well ahead of the 0.97 that the pre-treatment collider costs. Ticket is the variable most likely to be in a real model, because it is recent, well populated and correlates beautifully with everything.</p>
+      </div>
+      <div class="step">
+        <p><strong>Untick ticket, add device.</strong> 6.56, unchanged. A variable related to nothing costs nothing. Sit with that for a moment: the list of six looks homogeneous, and one member is free while three are expensive and one of those three is expensive on its own.</p>
+      </div>
+      <div class="step">
+        <p><strong>Press "everything in the table".</strong> 0.98, a bias of 5.25. Three harms in the same direction, compounding. If your instinct was that they might partly cancel, that instinct is now measured and wrong. Note where that leaves the full list against the empty one: 5.25 against 4.31, so on this data the analyst who controlled for everything did worse than the analyst who controlled for nothing.</p>
+      </div>
+      <div class="step">
+        <p><strong>Write the covariate list you would defend in a review,</strong> and next to each variable write the role you believe it plays. Any variable whose role you cannot name is a variable you are including by habit.</p>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <p><strong>What the bench leaves out, deliberately.</strong> The regression fits one number for everybody, and the generating model is not that simple at all: the email is worth +2.10 to an active customer, +29.09 to one lapsed 30 to 90 days, +1.04 to one dormant a year, and -8.87 to one who has already cancelled once. Every set you tick tonight is averaging over those four. Session 7 recovered them and session 8 built the targeting that follows, but stacking heterogeneity onto this bench would blur the one thing it is built to show. Add it to your own version second, not first.</p>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Closing the track</h2>
+      <span class="tag exercise">45 min</span>
+    </div>
+    <ol>
+      <li>Take the covariate list from a model your team already ships and write the graph role beside every variable: confounder, mediator, collider, bystander, or unknown. Count the unknowns.</li>
+      <li>Find one variable in that list that is caused by the treatment. There is usually one, and it is usually there because it improved the fit.</li>
+      <li>Run the session 1 graph and the session 3 identification check on that model and write down whether the estimand is identified from the data you have.</li>
+      <li>Put the graph, the estimand and the adjustment set in the repository beside the query, and make the next review a review of the graph rather than the list.</li>
+    </ol>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">Adjusting for the loyalty score, which was measured before the email was sent, moves the estimate from 6.56 to 5.26. Why is "it happened before the treatment" not a safety argument?</p>
+      <button class="qopt" type="button">A · Because pre-treatment variables are always colliders</button>
+      <button class="qopt" type="button">B · Because loyalty is a common effect of two unobserved causes, one feeding the email and one feeding spend, so conditioning on it opens a path between them that was closed</button>
+      <button class="qopt" type="button">C · Because the loyalty score was measured with error</button>
+      <p class="qwhy">Timing says nothing about the shape. What matters is whether the variable is a common effect, and a pre-treatment collider does the same damage as a post-treatment one.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">Adjusting for whether the customer opened the email gives 5.48, against a true total effect of 6.23 and a mean direct effect of 5.16. What has the analyst done?</p>
+      <button class="qopt" type="button">A · Introduced collider bias of about 0.75 units</button>
+      <button class="qopt" type="button">B · Made an arithmetic error, since the answer should be 6.23</button>
+      <button class="qopt" type="button">C · Answered a different question: holding the open fixed measures the direct effect, which is what 5.48 is estimating</button>
+      <p class="qwhy">The open is the mechanism, not a nuisance. Conditioning on a mediator is only an error if the spec asked for the total effect, which is why the estimand goes in writing before the covariate list.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">The three harmful adjustments cost 0.97, 0.75 and 3.64 alone. Together they cost 5.25, against 4.31 for adjusting for nothing at all. What does that tell you?</p>
+      <button class="qopt" type="button">A · They all push the same direction and compound, so a longer covariate list is not a hedge against getting one variable wrong, and here it is worse than an empty one</button>
+      <button class="qopt" type="button">B · They partly cancel, since 5.25 is less than the sum of the three</button>
+      <button class="qopt" type="button">C · The biases are independent and can be corrected one at a time afterwards</button>
+      <p class="qwhy">5.25 is close to the sum and nowhere near zero, and it is larger than the 4.31 you get by controlling for nothing. Adding more controls in the hope that errors wash out makes the estimate worse, not more robust.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ COVERAGE ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What tonight maps to</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">The back-door criterion, measured</span>
+        <span class="note">A valid set leaves 0.33, and that residual changes sign across seeds; every departure from it is priced on the same data against the same truth and keeps its sign.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Collider bias, including the pre-treatment case</span>
+        <span class="note">Both colliders measured separately, 0.97 before the treatment and 3.64 after it, with the timing argument shown to be irrelevant to whether it is a collider and no guide at all to the price.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Mediators and the total-against-direct distinction</span>
+        <span class="note">5.48 recovered against a mean direct effect of 5.16 in the model.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">Heterogeneous effects</span>
+        <span class="note">Sessions 7 and 8. The effect really does vary here, from +29.09 to -8.87 by recency segment; the bench fits one number for everybody on purpose so that adjustment is the only thing moving.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill inkpill">·</span>
+        <span class="name">Propensity scores, IPW, doubly robust, difference-in-differences</span>
+        <span class="note">Not covered by design. Choosing the adjustment set is this course; fitting an estimator with it belongs to the experimentation course.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Session 10 cheat sheet</h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Truth 6.23</b><span>Computed by intervention, and it agrees with the algebra at 6.22.</span></div>
+      <div class="cheat-item"><b>Nothing: 10.54</b><span>Bias +4.31. Two thirds of the true effect again, from season and tenure.</span></div>
+      <div class="cheat-item"><b>Back door: 6.56</b><span>What is left, +0.33, is noise: across five seeds +0.33, +0.17, -0.38, +0.19, -0.01, mean +0.06.</span></div>
+      <div class="cheat-item"><b>Noise versus bias</b><span>The correct set's residual changes sign. Every wrong set keeps its sign in all five seeds.</span></div>
+      <div class="cheat-item"><b>Pre-treatment is not safe</b><span>The loyalty collider costs 0.97 despite preceding the email.</span></div>
+      <div class="cheat-item"><b>The dearest variable is the late one</b><span>Ticket, measured after the email, costs 3.64 on its own.</span></div>
+      <div class="cheat-item"><b>Mediator answers another question</b><span>5.48 against a mean direct effect of 5.16. Write the estimand down first.</span></div>
+      <div class="cheat-item"><b>Bystanders are free</b><span>Device changes nothing, which is why the list cannot be read by eye.</span></div>
+      <div class="cheat-item"><b>Harms compound</b><span>0.97, 0.75 and 3.64 become 5.25, which is worse than the 4.31 of adjusting for nothing.</span></div>
+      <div class="cheat-item"><b>Review the graph, not the list</b><span>Any variable whose role you cannot name is there by habit.</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pagefoot">
+  <div class="wrap">
+    <p>Practitioner session 10 of 10 · learn-causal-inference-with-phoebe · by Phoebe Fu</p>
+    <nav class="pagenav">
+      <a href="p9-sensitivity-analysis.html">← Practitioner session 9 · Sensitivity analysis</a>
+      <a href="../index.html">All sessions →</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../assets/app.js?v=1"></script>
+<script src="../assets/causal-live.js?v=1"></script>
+</body>
+</html>

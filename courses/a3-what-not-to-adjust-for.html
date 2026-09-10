@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Leader session 3 of 6. Adding a control is not a safe default. On Kestrelmark's numbers a pre-treatment collider gives 5.26, a mediator 5.48, a post-treatment collider 2.59, and the three harms compound to a bias of 5.25 against the correct set's 0.33.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="What not to adjust for - learn causal inference with phoebe">
+<meta property="og:description" content="Leader session 3 of 6. Three ways a control makes the answer worse, and the one rule a leader can enforce.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/courses/a3-what-not-to-adjust-for.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="What not to adjust for - learn causal inference with phoebe">
+<meta name="twitter:description" content="One free variable and three expensive ones, and the list looks identical.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Leader session 3 · What not to adjust for - learn causal inference with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-causal-inference-with-phoebe</a> / Leader session 3 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Causal Inference with Phoebe · Leader session 3 of 6</div>
+    <h1>What <span class="accent">not</span> to adjust for</h1>
+    <p class="sub">The instinct in every model review is that another control is a safety measure. It is not. On Kestrelmark's 5,000 customers, where the true effect of the re-engagement email is known to be 6.23, the correct two-variable adjustment lands at 6.56. Adding one variable that was measured before the email went out drops it to 5.26. Adding the mechanism itself gives 5.48. Adding a variable that was measured after the email drops it to 2.59. And a fourth variable, sitting in the same list, changes nothing at all. Tonight is about which is which, and about the one rule you can enforce without opening the model.</p>
+    <div class="chip-row">
+      <span class="chip level">🟠 Advanced</span>
+      <span class="chip audience">Data and product leaders</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:5">3-22 · Three ways a control makes it worse</span>
+      <span class="a3" style="flex:4">22-40 · Build-along: read a covariate list</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>How the leader track works</h2>
+    </div>
+    <p class="lede">Six sessions, 45 minutes each, no code and no query boxes. The output is not a model; it is the ability to read a causal claim, say what it assumes, and know when to send it back. Session 1 was the three rungs, session 2 was the claim audit, tonight is the covariate list, session 4 is whether the question is answerable at all, session 5 is why an average effect can be positive while the policy is wrong, and session 6 is what to require in writing when you commission the work. The example throughout is <strong>Kestrelmark</strong>, a subscription retailer whose re-engagement email appears to lift spend by 10.54 units and truly lifts it by 6.23.</p>
+
+    <div class="legend">
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">🔍 Every diagram zooms</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> Three named ways a well-intentioned control makes an estimate worse, each with the number it costs on one dataset where the truth is known. The finding that those three push the same direction and stack rather than cancelling. The uncomfortable observation that a genuinely harmless variable is indistinguishable from an expensive one by reading the list. And one rule, enforceable in a review by somebody who does not fit models: every variable in the adjustment set has a named role, and "it improved the fit" is not a role.</p>
+    </div>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Why the covariate list is a leadership artifact<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A covariate list is usually treated as a technical detail, delegated downward, approved on the grounds that it looks thorough. It is not a technical detail. It is the place where the analysis quietly decides which question it is answering, and the decision is invisible in the output: every one of the sets below produces a clean regression, a plausible coefficient and a defensible-looking table.</p>
+        <p>The reason this belongs to whoever commissioned the work is that the information needed to judge the list is not in the data. It is knowledge about how the business actually operates - what happens first, what causes what, what the scoring model was built from. That knowledge sits with the people who run the process, not with the person writing the query.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Kestrelmark's model spec went through review as a list of six variable names in a pull request, approved by two people who said it looked reasonable. Every set on this page looks reasonable, including the one that misses the true effect by 5.25. Nobody in that review was careless. The list simply cannot be read by eye, and nobody had told them that.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Four words worth having exactly right<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Confounder</strong> - something that causes both the treatment and the outcome. Season and tenure at Kestrelmark: winter sends more email and sells more; long-tenured accounts get more email and buy more anyway. These are the variables that must be adjusted for.</li>
+          <li><strong>Mediator</strong> - something on the causal route from treatment to outcome, carrying part of the real effect. Whether the customer opened the email. Adjusting for one is not an error; it changes the question.</li>
+          <li><strong>Collider</strong> - something caused by two other things at once. Whether a support ticket was raised, which is caused both by getting the email and by spending more. Adjusting for one manufactures an association that was not there.</li>
+          <li><strong>Bystander</strong> - something related to neither. The customer's device. Harmless, and worth knowing about because it proves the other three cannot be spotted by feel.</li>
+        </ul>
+        <p>These four words are the whole vocabulary for tonight. A leader who can ask "which of these four is it" for every line in a covariate list has most of the value of the technique.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers the three harms and what each one costs</span>
+      <h2>Adding a control is not a safe default</h2>
+      <span class="tag concept">10 min live</span>
+    </div>
+    <p class="lede">Three shapes account for nearly every harmful control in applied work. They are distinguishable on a diagram in seconds and indistinguishable in a list of column names. Each one below is measured on the same 5,000 Kestrelmark customers, against the same true effect of 6.23, starting from the correct adjustment set that gives 6.56.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 290" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three harmful shapes side by side. First, a mediator: email causes opened which causes spend, and adjusting for opened gives 5.48, a bias of minus 0.75. Second, a post-treatment collider: email and spend both cause ticket, and adjusting for ticket gives 2.59, a bias of minus 3.64, the largest of the three. Third, a pre-treatment collider: two unobserved causes both feed the loyalty score, one also feeding the email and the other spend, and adjusting for loyalty gives 5.26, a bias of minus 0.97, the smallest of the three and still bias.">
+        <style>
+          .a3aH { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .a3aM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .a3aT { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .a3aK { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .a3aR { font: 800 12px Inter, sans-serif; fill: #9A3412; }
+          .a3aN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+        <defs>
+          <marker id="a3aAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5A6B68"></path></marker>
+          <marker id="a3aRd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9A3412"></path></marker>
+        </defs>
+
+        <text class="a3aH" x="14" y="24">Three harmful shapes, each measured from the correct set at 6.56.</text>
+
+        <!-- panel 1: mediator -->
+        <rect x="14" y="40" width="268" height="200" rx="10" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a3aH" x="30" y="62">Mediator</text>
+        <text class="a3aM" x="30" y="79">adjust for opened, the mechanism</text>
+        <rect x="26" y="134" width="64" height="24" rx="7" fill="#0F6F66"></rect>
+        <text class="a3aT" x="58" y="150" text-anchor="middle">Email</text>
+        <rect x="118" y="98" width="64" height="24" rx="7" fill="#99F6E4"></rect>
+        <text class="a3aK" x="150" y="114" text-anchor="middle">Opened</text>
+        <rect x="210" y="134" width="64" height="24" rx="7" fill="#0F6F66"></rect>
+        <text class="a3aT" x="242" y="150" text-anchor="middle">Spend</text>
+        <line x1="90" y1="138" x2="114" y2="118" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#a3aAr)"></line>
+        <line x1="182" y1="118" x2="206" y2="138" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#a3aAr)"></line>
+        <line x1="92" y1="152" x2="206" y2="152" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#a3aAr)"></line>
+        <text class="a3aR" x="30" y="204">5.48, bias -0.75</text>
+        <text class="a3aM" x="30" y="222">near the direct effect, 5.16</text>
+
+        <!-- panel 2: post-treatment collider -->
+        <rect x="306" y="40" width="268" height="200" rx="10" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a3aH" x="322" y="62">Post-treatment collider</text>
+        <text class="a3aM" x="322" y="79">adjust for ticket, raised after</text>
+        <rect x="318" y="98" width="64" height="24" rx="7" fill="#0F6F66"></rect>
+        <text class="a3aT" x="350" y="114" text-anchor="middle">Email</text>
+        <rect x="502" y="98" width="64" height="24" rx="7" fill="#0F6F66"></rect>
+        <text class="a3aT" x="534" y="114" text-anchor="middle">Spend</text>
+        <rect x="410" y="146" width="64" height="24" rx="7" fill="#99F6E4"></rect>
+        <text class="a3aK" x="442" y="162" text-anchor="middle">Ticket</text>
+        <line x1="384" y1="110" x2="498" y2="110" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#a3aAr)"></line>
+        <line x1="356" y1="124" x2="412" y2="144" stroke="#9A3412" stroke-width="1.5" marker-end="url(#a3aRd)"></line>
+        <line x1="528" y1="124" x2="472" y2="144" stroke="#9A3412" stroke-width="1.5" marker-end="url(#a3aRd)"></line>
+        <text class="a3aR" x="322" y="204">2.59, bias -3.64</text>
+        <text class="a3aM" x="322" y="222">a common effect, and the worst</text>
+
+        <!-- panel 3: pre-treatment collider -->
+        <rect x="598" y="40" width="268" height="200" rx="10" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a3aH" x="614" y="62">Pre-treatment collider</text>
+        <text class="a3aM" x="614" y="79">adjust for the loyalty score</text>
+        <ellipse cx="636" cy="100" rx="17" ry="13" fill="none" stroke="#5A6B68" stroke-dasharray="3 3"></ellipse>
+        <text class="a3aK" x="636" y="104" text-anchor="middle">u1</text>
+        <ellipse cx="756" cy="100" rx="17" ry="13" fill="none" stroke="#5A6B68" stroke-dasharray="3 3"></ellipse>
+        <text class="a3aK" x="756" y="104" text-anchor="middle">u2</text>
+        <rect x="664" y="120" width="64" height="24" rx="7" fill="#5EEAD4"></rect>
+        <text class="a3aK" x="696" y="136" text-anchor="middle">Loyalty</text>
+        <rect x="612" y="158" width="62" height="24" rx="7" fill="#0F6F66"></rect>
+        <text class="a3aT" x="643" y="174" text-anchor="middle">Email</text>
+        <rect x="742" y="158" width="62" height="24" rx="7" fill="#0F6F66"></rect>
+        <text class="a3aT" x="773" y="174" text-anchor="middle">Spend</text>
+        <line x1="648" y1="110" x2="668" y2="119" stroke="#9A3412" stroke-width="1.5" marker-end="url(#a3aRd)"></line>
+        <line x1="744" y1="110" x2="724" y2="119" stroke="#9A3412" stroke-width="1.5" marker-end="url(#a3aRd)"></line>
+        <line x1="632" y1="114" x2="638" y2="154" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#a3aAr)"></line>
+        <line x1="760" y1="114" x2="768" y2="154" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#a3aAr)"></line>
+        <line x1="676" y1="170" x2="738" y2="170" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#a3aAr)"></line>
+        <text class="a3aR" x="614" y="204">5.26, bias -0.97</text>
+        <text class="a3aM" x="614" y="222">measured before, still biased</text>
+
+        <rect x="14" y="262" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="a3aN" x="38" y="274">Rust arrows point INTO the variable being adjusted for. That is the shape that bites.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - three shapes, three costs, and none of them visible in a list of column names.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The mediator: 5.48, and an answer to a different question<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Kestrelmark's email works partly because people open it and then buy. Whether the customer opened is therefore on the causal route, carrying part of the effect the campaign is being credited with. Hold it fixed and the estimate falls from 6.56 to <strong>5.48</strong>, a bias of 0.75 against the true total effect of 6.23.</p>
+        <p>Notice what 5.48 actually is. The direct part of the effect, averaged over the customers in the model that generated this data, is 5.16. The analyst who adjusted for opening has not miscalculated anything. She has measured "what does the email do for somebody who never opens it", accurately, and reported it under a heading that promised the total effect.</p>
+        <ul>
+          <li><strong>Total effect</strong> answers "should we send the email". Nearly always the business question, and 6.23 is its answer.</li>
+          <li><strong>Direct effect</strong> answers "how much survives if nobody opens it". A real question for a subject-line project, and 5.16 is its answer.</li>
+          <li><strong>Nothing in the output distinguishes them.</strong> Both are a coefficient with a small standard error and a sensible sign.</li>
+        </ul>
+        <div class="callout tip">
+          <p><strong>The leadership version of this rule.</strong> Ask which effect the brief asked for before anybody chooses variables, and put the answer in one sentence at the top of the brief. A mediator in the list is only an error relative to a question, and if the question was never written down, no reviewer can call it.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The post-treatment collider: 2.59, and the most expensive line on the list<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A support ticket at Kestrelmark has two causes. Getting the email prompts questions, so the email raises the ticket rate. Spending more also prompts questions, so higher spend raises it too. Two arrows point into one box, and that box is a <strong>collider</strong>. Adjusting for it moves the estimate to <strong>2.59</strong>, a bias of <strong>3.64</strong>, and that is by a wide margin the largest single harm on this bench.</p>
+        <p>The rule behind this is worth stating in its general form, because it applies far outside analytics. In a structure <strong>i -&gt; m &lt;- j</strong>, conditioning on m makes i and j dependent when they were independent. Epidemiologists call it Berkson's paradox, after the observation that among hospital patients two unrelated diseases appear correlated: each one is a reason to be admitted, so knowing a patient is admitted and does not have the first raises the chance they have the second.</p>
+        <p>The same machinery runs at Kestrelmark. Among customers who raised a ticket, one who did not get the email probably spent a lot, because something had to prompt the ticket. Conditioning on the ticket has invented a relationship between the email and spend that the business never created, and it pushes the estimate down.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Post-treatment colliders enter model specs because they correlate beautifully with the outcome. Support contact, app sessions after the campaign, whether the customer reached the checkout: all measured after the intervention, all strongly related to spend, all attractive to anybody optimising fit. The fit does improve. The answer gets worse.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The pre-treatment collider: 5.26, and the end of the timing defence<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>This is the one that surprises experienced teams. Kestrelmark's loyalty score is computed monthly, long before the campaign is decided, from behaviour that predates the email entirely. By the usual folk rule it is safe: it happened first, so it cannot have been affected by the treatment. Adjust for it and the estimate falls to <strong>5.26</strong>, a bias of <strong>0.97</strong>. That is the middle of tonight's three harms by size, and it is still bias, arriving from a variable the folk rule certified as safe.</p>
+        <p>The reason is the shape, not the clock. Two things nobody measured feed into that score. One of them is the disposition that also makes a customer a target for the campaign; the other is the disposition that also makes them a spender. The loyalty score is their common effect, so conditioning on it links the two unmeasured causes, and through them links the email to spend by a route that has nothing to do with the campaign. The shape is written <strong>A &lt;- U1 -&gt; C &lt;- U2 -&gt; Y</strong> and it is known as <strong>M-bias</strong>, after the letter the diagram draws.</p>
+        <ul>
+          <li><strong>"It was measured before the treatment" is not a safety argument.</strong> It rules out one specific problem and says nothing about this one. Being far from the largest harm on the bench does not make it a small one.</li>
+          <li><strong>Composite scores are the usual carriers.</strong> A propensity-to-churn score, a health score, an engagement tier: each one is built from many inputs, which is exactly what makes it a common effect of many things.</li>
+          <li><strong>The unmeasured causes are what make it dangerous,</strong> which means no amount of inspecting the score itself will reveal the problem. It is a question about how the score was built.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Why the diagram is the only place these are visible<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>All three harms are statements about the direction of arrows, and direction is precisely what a dataset does not contain. Two columns that move together are consistent with the first causing the second, the second causing the first, and a third thing causing both. No statistic separates those, at any sample size, which is why a correlation matrix cannot tell you whether a variable belongs in an adjustment set.</p>
+        <p>What separates them is knowledge of the business: what happens first, what the scoring model was fitted on, which team's process generates the field. That knowledge is held by operators, not by the analyst, and the diagram is simply the format that lets an operator contribute it in twenty minutes without learning any statistics.</p>
+        <div class="callout tip">
+          <p><strong>The twenty-minute version.</strong> Put the treatment and the outcome on a whiteboard. For every variable in the proposed adjustment set, ask the operator two questions: does this affect who gets treated, and is this affected by the treatment or by the outcome. The first question finds the confounders you need. The second finds the harms.</p>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2 ============ -->
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers why the list looks fine and what to enforce instead</span>
+      <h2>Why the list cannot be read by eye</h2>
+      <span class="tag concept">9 min live</span>
+    </div>
+    <p class="lede">If harmful variables looked harmful, review would work. The reason it does not is a pair of results on the same bench: one variable in the list costs nothing whatsoever, and the three that cost something all push in the same direction and add up.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 336" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Seven adjustment sets shown as bias bars against a true effect of 6.23. Adjusting for nothing overstates by 4.31. The back-door set of season and tenure is nearly exact at plus 0.33. Loyalty costs 0.97, opened 0.75 and ticket 3.64, all understating. Device changes nothing and stays at plus 0.33. Everything together understates by 5.25, which is more than adjusting for nothing costs.">
+        <style>
+          .a3bH { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .a3bS { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .a3bL { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+          .a3bM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .a3bR { font: 800 11px Inter, sans-serif; fill: #9A3412; }
+          .a3bG { font: 800 11px Inter, sans-serif; fill: #134E4A; }
+          .a3bN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+
+        <text class="a3bH" x="14" y="24">Bias against the true effect of 6.23.</text>
+        <text class="a3bS" x="14" y="42">Right of the line overstates the effect, left understates it.</text>
+        <line x1="420" y1="58" x2="420" y2="286" stroke="#134E4A" stroke-width="2"></line>
+        <text class="a3bG" x="426" y="54">truth 6.23</text>
+
+        <text class="a3bL" x="14" y="81">nothing</text>
+        <text class="a3bM" x="196" y="81" text-anchor="end">10.54</text>
+        <rect x="420" y="68" width="147" height="18" rx="4" fill="#9A3412"></rect>
+        <text class="a3bR" x="575" y="81">+4.31</text>
+        <text class="a3bM" x="712" y="81">two back doors open</text>
+
+        <text class="a3bL" x="14" y="113">season, tenure</text>
+        <text class="a3bM" x="196" y="113" text-anchor="end">6.56</text>
+        <rect x="420" y="100" width="11" height="18" rx="2" fill="#0F6F66"></rect>
+        <text class="a3bG" x="439" y="113">+0.33</text>
+        <text class="a3bM" x="712" y="113">the correct set, noise</text>
+
+        <text class="a3bL" x="14" y="145">+ loyalty score</text>
+        <text class="a3bM" x="196" y="145" text-anchor="end">5.26</text>
+        <rect x="387" y="132" width="33" height="18" rx="4" fill="#9A3412"></rect>
+        <text class="a3bR" x="379" y="145" text-anchor="end">-0.97</text>
+        <text class="a3bM" x="712" y="145">harm, the middle one</text>
+
+        <text class="a3bL" x="14" y="177">+ opened</text>
+        <text class="a3bM" x="196" y="177" text-anchor="end">5.48</text>
+        <rect x="394" y="164" width="26" height="18" rx="4" fill="#9A3412"></rect>
+        <text class="a3bR" x="386" y="177" text-anchor="end">-0.75</text>
+        <text class="a3bM" x="712" y="177">harm, compounding</text>
+
+        <text class="a3bL" x="14" y="209">+ ticket</text>
+        <text class="a3bM" x="196" y="209" text-anchor="end">2.59</text>
+        <rect x="296" y="196" width="124" height="18" rx="4" fill="#9A3412"></rect>
+        <text class="a3bR" x="288" y="209" text-anchor="end">-3.64</text>
+        <text class="a3bM" x="712" y="209">harm, the largest</text>
+
+        <text class="a3bL" x="14" y="241">+ device</text>
+        <text class="a3bM" x="196" y="241" text-anchor="end">6.56</text>
+        <rect x="420" y="228" width="11" height="18" rx="2" fill="#5EEAD4"></rect>
+        <text class="a3bG" x="439" y="241">+0.33</text>
+        <text class="a3bM" x="712" y="241">free: no change at all</text>
+
+        <text class="a3bL" x="14" y="273">everything</text>
+        <text class="a3bM" x="196" y="273" text-anchor="end">0.98</text>
+        <rect x="241" y="260" width="179" height="18" rx="4" fill="#9A3412"></rect>
+        <text class="a3bR" x="233" y="273" text-anchor="end">-5.25</text>
+        <text class="a3bM" x="712" y="273">the three harms stacked</text>
+
+        <rect x="14" y="304" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="a3bN" x="38" y="316">One free variable and three expensive ones, and the list of names looks identical.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the bystander is genuinely harmless, which is exactly why the others are invisible.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The bystander result: device changes nothing<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The customer's device is in the same table, was written by the same pipeline, and looks exactly as respectable as the loyalty score. Add it to the correct adjustment set and the estimate is <strong>6.56</strong>, with a bias of <strong>0.33</strong>. That is the back-door set's own answer, unchanged to two decimal places. It is related to neither the email nor spend, so holding it fixed costs nothing.</p>
+        <p>That result is not a footnote. It is the reason the other three are dangerous. A covariate list contains free variables and expensive ones, and the free ones are not marked. Somebody reading six column names and asking whether they seem sensible will pass all six, because five of them are sensible-looking and one of them genuinely is harmless.</p>
+        <div class="callout tip">
+          <p><strong>What this rules out as a review method.</strong> Judging the list by plausibility, by how well the model fits, by whether the coefficient looks stable, or by whether an experienced person nods at it. All four of those pass the 5.25 set. Only the roles distinguish them.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The compounding result: 0.97 plus 0.75 plus 3.64 becomes 5.25<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The natural hope is that a long list is a hedge: if one variable is wrong, surely the others dilute it, and the errors partly wash out. On this bench they do not. Each harm alone costs 0.97, 0.75 and 3.64. All three together give an estimate of <strong>0.98</strong>, a bias of <strong>5.25</strong>, which is close to their sum and nowhere near zero. They push the same direction and they stack.</p>
+        <p>On this data the cautious-sounding list is worse than no list at all. <strong>Adjusting for everything costs 5.25; adjusting for nothing costs 4.31.</strong> A team that controlled for every column it had would have been further from the truth than a team that ran the raw comparison and thought about nothing, because the post-treatment collider alone gives up 3.64.</p>
+        <p>The comparison worth quoting, though, is not one error against another. It is <strong>bias against noise</strong>. Regenerate the data under five different random draws and the correct set's residual is +0.33, +0.17, -0.38, +0.19, -0.01, averaging +0.06. It changes sign, which is what sampling noise does. Every contaminated set keeps the same sign in all five draws: loyalty about -1.2, opened about -1.0, ticket about -3.7, everything about -5.2. A wrong adjustment is bias, and it does not shrink when the sample grows. The correct one leaves noise, which does.</p>
+        <ul>
+          <li><strong>A longer list is not insurance.</strong> Each additional variable is a separate bet that its role is benign, and the losing bets accumulate.</li>
+          <li><strong>The right set was two columns everybody already had.</strong> Season and tenure. The work was knowing which two, not collecting more.</li>
+          <li><strong>Both directions are available.</strong> Confounding pushed the estimate up by 4.31; the three harms pushed it down by 5.25. A team cannot even assume they are being conservative.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Simpson's paradox: the version that reverses the sign<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Everything above shrinks or inflates a number. There is a harsher version in which the number changes sign: an effect that is positive in every subgroup is negative overall, or the reverse. That is <strong>Simpson's paradox</strong>, and it is the same mechanism at a magnitude that cannot be explained away as noise.</p>
+        <p>What makes it a leadership problem rather than a curiosity is that both tables are correct arithmetic. The aggregate is right, each stratum is right, and they disagree. Choosing which one to act on is not a calculation; it is a decision about the causal structure, and the diagram is what settles it. Practitioner session 5 reproduces the reversal from real numbers and works through which table to believe and why.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>The board-deck form is a slide showing a treatment beating control overall, and an appendix where the same treatment loses in every segment. Both charts are produced by the same pipeline from the same data. The question "which of these is the causal answer" has a definite answer, and it does not come from the data.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The one rule to enforce: every variable has a named role<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>None of this requires a leader to fit a model, read code or evaluate a standard error. It requires one rule, applied to every causal analysis the team ships: <strong>each variable in the adjustment set carries a written role - confounder, mediator, collider, or bystander - and one sentence saying why.</strong> Anything that cannot be labelled is labelled unknown and blocks sign-off until it is resolved.</p>
+        <ul>
+          <li><strong>"It improved the fit" is not a role.</strong> Fit improves fastest for variables caused by the treatment or the outcome, which is to say for the harmful ones.</li>
+          <li><strong>"It was in the standard feature set" is not a role.</strong> Standard sets are assembled for prediction, where anything correlated with the outcome is welcome. Different job, opposite rules.</li>
+          <li><strong>"It was measured before the treatment" is not a role.</strong> The loyalty score was, and it still costs 0.97. The most expensive variable on the bench, the support ticket at 3.64, is the one measured after.</li>
+          <li><strong>"We adjusted for everything to be safe" is not a role.</strong> On this data it is worse than adjusting for nothing: 5.25 of bias against 4.31.</li>
+        </ul>
+        <p>The rule is cheap to enforce and it is self-teaching. A team asked to name roles for six months stops including variables it cannot name, which removes most of the harm before anybody reaches a review.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ BUILD-ALONG ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>Read a covariate list</h2>
+      <span class="tag demo">★ 18 min · everyone builds</span>
+    </div>
+    <p class="lede">No code and no model. Bring the variable list from one causal analysis your team currently ships - a campaign readout, a feature impact study, a pricing claim. If you have nothing to hand, use Kestrelmark's six: season, tenure, loyalty score, opened, ticket, device.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Get the actual list, not the summary of it.</strong> Ask for the variables the model controls for, by name, as they appear in the code. Not "we control for the usual customer attributes". The harm lives in individual names, and a summary is where individual names go to hide.</p>
+      </div>
+      <div class="step">
+        <p><strong>Write the suspected role beside every variable.</strong> Five options: confounder, mediator, collider, bystander, unknown. Do this yourself, from business knowledge, before asking the analyst. You are testing whether the list is legible to somebody who knows how the business runs, which is the standard it has to meet.</p>
+      </div>
+      <div class="step">
+        <p><strong>Count the unknowns.</strong> That count is the honest measure of how much of the analysis is running on habit. A list of nine variables with six unknowns is not a rigorous model with some loose ends; it is three decisions and six coin flips.</p>
+      </div>
+      <div class="step">
+        <p><strong>Find anything measured after the treatment.</strong> Go through the list asking one question per variable: could the treatment have changed this? Anything with a yes is either a mediator or a post-treatment collider, and both change the answer. This single sweep catches most of the damage in most real lists.</p>
+      </div>
+      <div class="step">
+        <p><strong>Check every composite score against how it was built.</strong> Loyalty tiers, health scores, propensity scores, engagement grades. Ask what the score was fitted on. A score built from many behaviours is a common effect of many causes, which is the collider shape by construction, and timing does not rescue it.</p>
+      </div>
+      <div class="step">
+        <p><strong>Send the list back with the two questions that matter.</strong> First: which effect was the brief asking for, the total or the direct? Second: what is the role of each variable, in one sentence each? Ask for the answers in writing and attached to the analysis, not in a meeting.</p>
+      </div>
+    </div>
+
+    <div class="prompt-box bad">
+      <span class="label">✗ The covariate list as it usually arrives</span>
+Controls: season, tenure, loyalty_score, opened_flag, ticket_raised, device_type
+
+Reviewer note: "Looks thorough. Approved."
+Model note:    "Added ticket_raised &amp; opened_flag, they improved the fit."
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ The same list with a role beside every line, which is the whole ask</span>
+Estimand: TOTAL effect of the email on 90-day spend. Not the direct effect.
+
+season         confounder  winter sends more email and sells more
+tenure         confounder  long accounts get more email and buy more
+loyalty_score  COLLIDER    built from behaviours that also drive send and spend
+opened_flag    MEDIATOR    the mechanism; holding it fixed answers the direct question
+ticket_raised  COLLIDER    caused by the email and by spend, both
+device_type    bystander   harmless, and it earns nothing either
+
+Adjustment set: season, tenure. Nothing else.
+Unknowns: 0. Anything unknown blocks sign-off until it is named.
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Keep the roles beside the query, not in a slide.</strong> A role list in a deck describes last quarter's model. A role list in the repository next to the code gets reviewed when somebody adds a variable, and the person adding it has to write the role to get it merged. That is the whole enforcement mechanism, and it costs one line per variable.</p>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before session 4</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li>Finish the role list for one shipped analysis and count the unknowns. Send the count to the person who owns the model, with no commentary attached. The number does the work.</li>
+      <li>Pick the one composite score in your organisation that appears in the most models - the churn score, the health score, the engagement tier - and find out what it was fitted on. Write down whether it is a common effect of things that also drive your treatments.</li>
+      <li>Find one analysis where a variable measured after the intervention is in the adjustment set. Decide whether the brief wanted the total effect or the direct effect, and write which, in one sentence, at the top of the brief.</li>
+      <li>Bring one analysis where you suspect a back-door path runs through something nobody measures. Session 4 is about what to do when that is true, and the answer is not always "collect more data".</li>
+    </ol>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">Kestrelmark's loyalty score was computed a month before the campaign was decided. Adjusting for it moves the estimate from 6.56 to 5.26. Why does the timing not protect it?</p>
+      <button class="qopt" type="button">A · Because any variable computed from historical behaviour is measured with error, and error biases estimates downward</button>
+      <button class="qopt" type="button">B · Because the harm is a matter of shape, not timing: loyalty is a common effect of two unmeasured causes, one feeding the email and one feeding spend, so conditioning on it links them</button>
+      <button class="qopt" type="button">C · Because a month is too short a gap, and a score computed a year earlier would have been safe</button>
+      <p class="qwhy">This is M-bias, in the shape A &lt;- U1 -&gt; C &lt;- U2 -&gt; Y. Preceding the treatment rules out one problem and says nothing about being a common effect, which is why the pre-treatment collider still costs 0.97, even though it is not the largest of tonight's three harms.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">A team argues that including all six variables is the cautious choice, since errors in individual controls should partly offset. On this data, all three harmful controls together give a bias of 5.25 while each alone costs 0.97, 0.75 and 3.64. What does that show?</p>
+      <button class="qopt" type="button">A · They push the same direction and compound, so a longer list is a stack of separate bets rather than a hedge against getting one wrong</button>
+      <button class="qopt" type="button">B · That the largest harm sets the total, so dropping the single worst variable would bring the estimate back to the truth</button>
+      <button class="qopt" type="button">C · That the harms are independent and can each be corrected afterwards</button>
+      <p class="qwhy">5.25 is close to the sum of the three and nowhere near zero: every one of them pushes the estimate down, so nothing offsets. Dropping the worst would still leave the other two. And the errors do not stop at each other: adjusting for everything costs 5.25 against 4.31 for adjusting for nothing at all.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">Adding the device variable to the correct adjustment set leaves the estimate at 6.56, unchanged to two decimal places. What is the leadership lesson in that non-result?</p>
+      <button class="qopt" type="button">A · That harmless variables should be added freely, since they cost nothing and may help</button>
+      <button class="qopt" type="button">B · That the bench is insensitive, since a real control should always move the number</button>
+      <button class="qopt" type="button">C · That a covariate list contains free variables and expensive ones that look identical, so plausibility review cannot separate them and only named roles can</button>
+      <p class="qwhy">The bystander being genuinely harmless is what makes the other three invisible. Six respectable-looking column names, one of which costs nothing and three of which cost 0.97, 0.75 and 3.64.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ COVERAGE ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What tonight maps to</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Colliders, stated formally and in business terms</span>
+        <span class="note">In the structure i -&gt; m &lt;- j, conditioning on m makes i and j dependent when they were independent. Berkson's paradox named as the epidemiological form, and both Kestrelmark colliders measured: the ticket raised after the email costs 3.64, the loyalty score computed before it costs 0.97.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Mediators and the total-against-direct distinction</span>
+        <span class="note">Adjusting for the open gives 5.48, close to the mean direct effect of 5.16. An answer to a different question, and the brief has to say which question.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">M-bias and the failure of the timing defence</span>
+        <span class="note">The shape A &lt;- U1 -&gt; C &lt;- U2 -&gt; Y induces bias even though C precedes treatment, which is why "we measured it first" is not a safety argument. It costs 0.97 here, well short of the post-treatment collider's 3.64, and still bias.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">The canon numbers and the compounding reading</span>
+        <span class="note">10.54 naive, 6.56 with the back-door set, 5.26 / 5.48 / 2.59 for the three harms, 6.56 unchanged for the bystander, 0.98 for everything. Three harms stacking to 5.25, worse than the 4.31 of adjusting for nothing, while the correct set's +0.33 changes sign across five draws and is therefore noise.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">Simpson's paradox in detail</span>
+        <span class="note">Named tonight as the version that reverses a sign rather than shrinking a number. Practitioner session 5 reproduces the reversal from real numbers and settles which table to believe.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">The back-door criterion stated formally</span>
+        <span class="note">Leader session 4. Tonight names the harmful sets; session 4 asks whether a valid set exists in your data at all.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill inkpill">·</span>
+        <span class="name">Propensity scores, IPW, doubly robust, difference-in-differences, synthetic control, DoWhy</span>
+        <span class="note">Not covered by design, in any session. Estimating an effect from observational data belongs to <strong>learn-experimentation-with-phoebe</strong>, which teaches every one of these. Choosing what must not be conditioned on is the work here.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Session 3 cheat sheet</h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>A control is not a safe default</b><span>Each added variable is a separate bet that its role is benign.</span></div>
+      <div class="cheat-item"><b>Mediator: 5.48</b><span>Close to the mean direct effect of 5.16. A different question, not a mistake. Write the estimand first.</span></div>
+      <div class="cheat-item"><b>Post-treatment collider: 2.59</b><span>Ticket is caused by the email and by spend. The largest harm here, at 3.64.</span></div>
+      <div class="cheat-item"><b>Pre-treatment collider: 5.26</b><span>Loyalty was measured first and still costs 0.97. Timing is not a safety argument.</span></div>
+      <div class="cheat-item"><b>The collider rule</b><span>In i -&gt; m &lt;- j, conditioning on m makes i and j dependent. Berkson's paradox.</span></div>
+      <div class="cheat-item"><b>Bystanders are free</b><span>Device leaves 6.56 unchanged, which is why the expensive ones are invisible in a list.</span></div>
+      <div class="cheat-item"><b>Harms compound to 5.25</b><span>Worse than adjusting for nothing, at 4.31. The correct set's +0.33 is noise, not bias.</span></div>
+      <div class="cheat-item"><b>Every variable has a role</b><span>Confounder, mediator, collider, bystander. "It improved the fit" is not a role.</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pagefoot">
+  <div class="wrap">
+    <p>Leader session 3 of 6 · learn-causal-inference-with-phoebe · by Phoebe Fu</p>
+    <nav class="pagenav">
+      <a href="a2-the-claim-audit.html">← Leader session 2 · The claim audit</a>
+      <a href="a4-identifiable-or-not.html">Leader session 4 · Identifiable or not →</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

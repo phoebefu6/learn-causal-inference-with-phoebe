@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Practitioner session 8 of 10. Rank the same 1,500 customers by uplift and by likelihood to buy and both campaigns end at 9,729 units. Only one of the two curves has a peak before 100 percent, and that, not the coefficient, is the decision.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="Qini curves and who to treat - learn causal inference with phoebe">
+<meta property="og:description" content="Practitioner session 8 of 10. Rank by how much the treatment changes the outcome, not by how likely the outcome is.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/courses/p8-qini-and-who-to-treat.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Qini curves and who to treat - learn causal inference with phoebe">
+<meta name="twitter:description" content="The uplift curve peaks at the ninth decile. The likelihood-to-buy curve never peaks at all, so it can never beat treating everybody.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Practitioner session 8 · Qini curves and who to treat - learn causal inference with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-causal-inference-with-phoebe</a> / Practitioner session 8 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Causal Inference with Phoebe · Practitioner session 8 of 10</div>
+    <h1>Qini curves and <span class="accent">who to treat</span></h1>
+    <p class="sub">Session 7 ended with a number per customer: a predicted effect of the re-engagement email on that person's spend. A number per customer is not yet a decision. Kestrelmark can send the email to everybody, to nobody, or to a chosen share, and the choice is worth real money: on a held-out set of 1,500 customers, treating everybody earns 9,729 units of incremental spend, while stopping at the ninth decile of an uplift ranking earns 10,698. Tonight you build the curve that finds the stopping point, and you watch a ranking by likelihood to buy climb all the way to the same endpoint without ever beating it.</p>
+    <div class="chip-row">
+      <span class="chip level">🔴 Hardest</span>
+      <span class="chip audience">Data scientists and analysts</span>
+      <span class="chip audience">Whoever owns the campaign budget</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:5">3-22 · Ranking by uplift, not by likelihood</span>
+      <span class="a3" style="flex:4">22-40 · Build-along: build a Qini curve</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>What a per-customer effect is for</h2>
+    </div>
+    <p class="lede">A predicted effect per customer only earns its keep once it changes who gets treated. Between the model and the send list sits one question that has a right answer and is almost never asked out loud: how far down the ranked list should the campaign go? The Qini curve answers it from data rather than from a round number somebody liked.</p>
+
+    <div class="legend">
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">🔍 Every diagram zooms</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> A Qini curve built from a held-out split and a real ranked list, read the way an ROC curve is read. A single number, the Qini coefficient, that says how much of the available gain your ranking captures: 0.94 for Kestrelmark's uplift ranking against 0.53 for a likelihood-to-buy ranking of the same customers. And the finding that actually changes the campaign, which is not that number at all: only the uplift curve has a peak before 100 percent, and stopping there is worth about 1,000 units against a blanket send.</p>
+    </div>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The number session 7 produced, and the shape of the data underneath it<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The S-, T- and X-learners of session 7 each return the same object: an estimated individual effect, one row per customer, in the units of the outcome. For Kestrelmark that is extra spend caused by receiving the email. Across all 5,000 customers the true average effect is 6.23, and the distribution around that average is the whole point, because 6.23 is an average of numbers that are mostly not 6.23.</p>
+        <p>Leader session 5 splits the same population four ways, and in this data the split has a name in the columns: <code class="mono">recency</code>. Sure things, still active, are 22.4 percent of the base and the email is worth +2.10 to them. Persuadables, lapsed 30 to 90 days, are 20.4 percent and worth +29.09. Lost causes, dormant a year, are 49.3 percent and worth +1.04. Sleeping dogs, customers who cancelled once already, are 7.9 percent, and the email costs them 8.87 units each.</p>
+        <p>Session 7 measured how far that goes: <code class="mono">recency</code> alone explains the individual effect with an R-squared of 0.986. Which is to say the group is recoverable and the person is not, because inside every group there is still a 3.0 coin flip that nobody can predict. Tonight only needs the group, which is fortunate, because the group is all any model can give you.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Kestrelmark's campaign tool ships with one targeting control: a slider labelled "propensity to purchase", top N percent. Nobody at the company chose that control, it came with the platform, and it ranks on the wrong quantity in a way that is invisible from inside the tool. The first hour of tonight is about seeing it from outside.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The held-out split, and why the curve needs one<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>3,500 customers to fit, 1,500 to score.</strong> The meta-learner from session 7 never sees the 1,500. Every number tonight comes from the held-out block.</li>
+          <li><strong>Both arms live in the held-out block.</strong> The curve compares treated against untreated customers inside each slice of the ranking, so a slice with no controls in it produces nothing.</li>
+          <li><strong>The ranking is predicted, the response is actual.</strong> Order the held-out customers by predicted uplift; measure the gain from what those customers actually did. A curve built from predictions on both axes is a picture of the model agreeing with itself.</li>
+          <li><strong>The truth is available here and nowhere else.</strong> Kestrelmark comes from a written structural model, so tonight's curve can be checked against a known answer. Your own curve cannot be, which is the reason the held-out discipline is not optional.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers the two rankings and why they disagree</span>
+      <h2>The most common targeting mistake is ranking by the wrong thing</h2>
+      <span class="tag concept">10 min live</span>
+    </div>
+    <p class="lede">A likelihood-to-buy model answers "who is going to spend". An uplift model answers "whose spend does the email change". Those are different questions, they produce different orderings of the same customers, and a campaign budget spent against the first one buys mostly things that were going to happen anyway.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 344" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Four horizontal bars, one per recency segment, showing the effect of the re-engagement email on spend. Sure things, still active, 22.4 percent of the base, plus 2.10. Persuadables, lapsed 30 to 90 days, 20.4 percent, plus 29.09, by far the longest bar. Lost causes, dormant 12 months, 49.3 percent, plus 1.04. Sleeping dogs, cancelled once, 7.9 percent, minus 8.87, the only bar pointing left of zero. A dashed vertical line marks the 7.00 fully loaded cost of a send, and only the persuadable bar reaches past it.">
+        <style>
+          .p8aH { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .p8aS { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .p8aL { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .p8aD { font: 400 10px Inter, sans-serif; fill: #5A6B68; }
+          .p8aV { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .p8aN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+
+        <text class="p8aH" x="24" y="26">Effect of the re-engagement email on spend, by recency segment</text>
+        <text class="p8aS" x="24" y="46">One number per group, 5,000 customers. The average of all four is 6.23.</text>
+
+        <line x1="360" y1="80" x2="360" y2="300" stroke="#5A6B68" stroke-width="1.5"></line>
+        <text class="p8aD" x="360" y="72" text-anchor="middle">0</text>
+
+        <line x1="444" y1="80" x2="444" y2="300" stroke="#9A3412" stroke-width="1.5" stroke-dasharray="4 3"></line>
+        <text class="p8aD" x="452" y="72">7.00, the fully loaded cost of one send</text>
+
+        <text class="p8aL" x="24" y="104">Sure thing</text>
+        <text class="p8aD" x="24" y="120">still active · 22.4% of the base</text>
+        <rect x="360" y="95" width="25.2" height="26" rx="4" fill="#99F6E4" stroke="#0F6F66"></rect>
+        <text class="p8aV" x="393" y="113">+2.10</text>
+
+        <text class="p8aL" x="24" y="160">Persuadable</text>
+        <text class="p8aD" x="24" y="176">lapsed 30-90 days · 20.4%</text>
+        <rect x="360" y="151" width="349.1" height="26" rx="4" fill="#0F6F66"></rect>
+        <text class="p8aV" x="717" y="169">+29.09</text>
+
+        <text class="p8aL" x="24" y="216">Lost cause</text>
+        <text class="p8aD" x="24" y="232">dormant 12 months · 49.3%</text>
+        <rect x="360" y="207" width="12.5" height="26" rx="4" fill="#99F6E4" stroke="#0F6F66"></rect>
+        <text class="p8aV" x="380" y="225">+1.04</text>
+
+        <text class="p8aL" x="24" y="272">Sleeping dog</text>
+        <text class="p8aD" x="24" y="288">cancelled once · 7.9%</text>
+        <rect x="253.6" y="263" width="106.4" height="26" rx="4" fill="#9A3412"></rect>
+        <text class="p8aV" x="246" y="281" text-anchor="end">-8.87</text>
+
+        <rect x="24" y="316" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="p8aN" x="48" y="328">One group in four clears the cost of a send. One is harmed by the campaign outright.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - four groups, four very different answers to the same email.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Two models, two questions, two lists<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A likelihood-to-buy model is fit on outcomes. It learns that customers with high tenure, recent activity and a full basket tend to spend, and it ranks them first. Nothing in that fitting procedure ever sees a comparison between a treated customer and an untreated one, so nothing in the resulting score is about the email at all. It is a good model of who spends and it is silent on the question being asked.</p>
+        <p>An uplift model is fit on the difference between arms. Whatever the meta-learner does internally, the quantity it targets is the change in spend caused by the email for a customer with those characteristics. The two scores are related only through whatever accidental overlap exists between "spends a lot" and "responds to a nudge", and at Kestrelmark that overlap is weak enough to be worth 0.94 against 0.53 on the scale Part 2 builds.</p>
+        <div class="callout tip">
+          <p><strong>A naming collision worth clearing up.</strong> The word propensity is used for two unrelated things in this area. A campaign tool's "propensity to purchase" score is the likelihood-to-buy model above. A propensity score in the causal literature is the probability of being treated, used inside estimators that correct an observational comparison, and that family of methods lives in <code class="mono">learn-experimentation-with-phoebe</code>. Neither one ranks customers by uplift, and the shared word has cost more than one campaign its budget.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>What a likelihood ranking buys, and what it misses<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Send down a likelihood-to-buy list and the money goes to sure things. These are customers who were going to purchase whether or not the email arrived, so the discount, the send cost and the attention are spent to produce an outcome that was already coming. The campaign report will look excellent, because the emailed group really did spend a lot, and every unit of that spend belongs to the customer rather than to the campaign. Session 1 priced exactly this confusion at Kestrelmark: 10.54 reported against 6.23 real.</p>
+        <ul>
+          <li><strong>Sure things get the budget.</strong> 22.4 percent of the population, high baseline spend, an effect of +2.10. They are at the top of the likelihood list by construction.</li>
+          <li><strong>Persuadables carry the business case.</strong> 20.4 percent of the population at +29.09 each, an order of magnitude above every other group. Many of them are low-baseline customers precisely because they are drifting, which is what puts them low on a likelihood ranking.</li>
+          <li><strong>Lost causes waste less than they look.</strong> Half the population, 49.3 percent, at +1.04. They are cheap mistakes: the send cost, and almost nothing else.</li>
+        </ul>
+        <p>The arithmetic is unforgiving, and Part 2 measures it. At the ninth decile the uplift ranking has banked 10,698 units of incremental spend on the held-out block. At the same send volume the likelihood ranking has 9,644, and it has nowhere left to go but the blanket total.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The fourth group, and why a likelihood model targets it happily<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Sleeping dogs are the customers a campaign actively drives away. 7.9 percent of Kestrelmark's base, at an effect of -8.87 each: the email reminds a semi-dormant subscriber that the subscription exists, and they cancel, downgrade, or simply stop drifting pleasantly along. Their existence is not exotic. Any contact that carries a cancel link, a price, or a reminder of a commitment has a group like this.</p>
+        <p>The dangerous part is that sleeping dogs look engaged. They have history, they have spend, they open things. A likelihood-to-buy model reads that history, scores them high, and puts them near the top of the send list, which is the worst place they could be. On the held-out block, 111 of the 1,500 customers are genuinely harmed by the email, and no report built on outcomes alone will ever surface them.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>The trap is that the average survives. Kestrelmark's true average effect is +6.23, comfortably positive, and on that number alone the campaign is worth running. A positive average is fully compatible with a subgroup being harmed, and the average is the only number most campaign reports contain.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>When the two rankings do agree<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The two lists are not always almost disjoint, and knowing when they converge saves the argument. They agree when the treatment effect is roughly proportional to baseline outcome, which happens with percentage-style interventions: a ten percent discount on a customer who buys more is worth more in absolute units. In that world, ranking by predicted spend is a decent proxy for ranking by uplift and the Qini curves of the two rankings sit close together.</p>
+        <p>They diverge when the effect is roughly flat in absolute units, when the treatment works by removing a barrier that high-baseline customers never had, or when a harmed subgroup is concentrated among the engaged. Kestrelmark is the second kind: the email is a reminder, reminders do nothing for people already active, and the reminder itself irritates a slice of the customers who have cancelled before. Check which world you are in before assuming either result.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2 ============ -->
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers the curve, the coefficient and the peak</span>
+      <h2>The Qini curve, read like an ROC curve</h2>
+      <span class="tag concept">9 min live</span>
+    </div>
+    <p class="lede">The Qini curve plots cumulative incremental gain against the share of the population targeted, walking down a ranking. It is read the way an ROC curve is read: the further the line sits above the diagonal, the better the targeting, and the diagonal represents random targeting. The area between the curve and the diagonal is summarised as the Qini coefficient, also written AUUC. Two rankings of the same 1,500 customers are plotted below, and the difference that matters is not the area.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 384" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two Qini curves on Kestrelmark's held-out block of 1,500 customers, plus a diagonal for random targeting. The curve ranked by predicted uplift rises steeply to 8,715 units at 20 percent, climbs slowly to a peak of 10,698 units at 90 percent, then drops to 9,729 at 100 percent. The curve ranked by likelihood to buy rises much more gradually, reaching 5,792 at 20 percent and 9,644 at 90 percent, and it has no peak: it simply climbs to 9,729 at 100 percent. Both curves finish at the same 9,729, the value a blanket send produces. The last decile of the uplift ranking is shaded and labelled as the sleeping dogs.">
+        <style>
+          .p8bH { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .p8bB { font: 400 10px Inter, sans-serif; fill: #5A6B68; }
+          .p8bM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .p8bW { font: 700 11px Inter, sans-serif; fill: #fff; }
+          .p8bG { font: 800 11px Inter, sans-serif; fill: #0F6F66; }
+          .p8bR { font: 800 11px Inter, sans-serif; fill: #9A3412; }
+          .p8bN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+
+        <text class="p8bH" x="14" y="26">Cumulative incremental gain, 1,500 held-out customers</text>
+
+        <rect x="693" y="50" width="67" height="250" fill="#F0FDFA"></rect>
+
+        <line x1="90" y1="237.5" x2="760" y2="237.5" stroke="#C6D6D3" stroke-width="1" stroke-dasharray="2 4"></line>
+        <line x1="90" y1="175" x2="760" y2="175" stroke="#C6D6D3" stroke-width="1" stroke-dasharray="2 4"></line>
+        <line x1="90" y1="112.5" x2="760" y2="112.5" stroke="#C6D6D3" stroke-width="1" stroke-dasharray="2 4"></line>
+        <line x1="90" y1="50" x2="760" y2="50" stroke="#C6D6D3" stroke-width="1" stroke-dasharray="2 4"></line>
+
+        <line x1="90" y1="50" x2="90" y2="300" stroke="#C6D6D3" stroke-width="1.5"></line>
+        <line x1="90" y1="300" x2="790" y2="300" stroke="#C6D6D3" stroke-width="1.5"></line>
+
+        <text class="p8bB" x="82" y="304" text-anchor="end">0</text>
+        <text class="p8bB" x="82" y="241" text-anchor="end">3,000</text>
+        <text class="p8bB" x="82" y="179" text-anchor="end">6,000</text>
+        <text class="p8bB" x="82" y="116" text-anchor="end">9,000</text>
+        <text class="p8bB" x="82" y="54" text-anchor="end">12,000</text>
+
+        <text class="p8bB" x="90" y="316" text-anchor="middle">0%</text>
+        <text class="p8bB" x="224" y="316" text-anchor="middle">20%</text>
+        <text class="p8bB" x="358" y="316" text-anchor="middle">40%</text>
+        <text class="p8bB" x="492" y="316" text-anchor="middle">60%</text>
+        <text class="p8bB" x="626" y="316" text-anchor="middle">80%</text>
+        <text class="p8bB" x="760" y="316" text-anchor="middle">100%</text>
+
+        <line x1="90" y1="300" x2="760" y2="97.3" stroke="#5A6B68" stroke-width="1.5" stroke-dasharray="5 4"></line>
+
+        <polyline points="90,300 157,211.6 224,179.3 291,167.4 358,152.5 425,140.3 492,131.9 559,118.2 626,110.5 693,99.1 760,97.3"
+                  fill="none" stroke="#9A3412" stroke-width="2.5"></polyline>
+
+        <polyline points="90,300 157,209.0 224,118.4 291,101.2 358,94.8 425,90.4 492,86.7 559,83.7 626,80.6 693,77.1 760,97.3"
+                  fill="none" stroke="#0F6F66" stroke-width="2.5"></polyline>
+
+        <text class="p8bG" x="250" y="76">ranked by predicted uplift</text>
+        <text class="p8bR" x="250" y="196">ranked by likelihood to buy</text>
+        <text class="p8bM" x="250" y="268">random targeting</text>
+
+        <line x1="693" y1="46" x2="693" y2="300" stroke="#134E4A" stroke-width="1.5" stroke-dasharray="4 3"></line>
+        <circle cx="693" cy="77.1" r="5" fill="#134E4A"></circle>
+        <circle cx="760" cy="97.3" r="4" fill="#5A6B68"></circle>
+
+        <rect x="596" y="10" width="238" height="36" rx="8" fill="#134E4A"></rect>
+        <text class="p8bW" x="608" y="27">peak at the ninth decile, 10,698</text>
+        <text class="p8bW" x="608" y="41">about 1,000 above a blanket send</text>
+
+        <text class="p8bM" x="766" y="94">both end at 9,729</text>
+        <text class="p8bM" x="766" y="200">the last decile:</text>
+        <text class="p8bM" x="766" y="214">the sleeping dogs</text>
+
+        <text class="p8bM" x="425" y="336" text-anchor="middle">share of the population targeted, walking down the ranking</text>
+
+        <rect x="14" y="352" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="p8bN" x="38" y="364">Only one of these two curves ever tells anybody to stop. Both are built from estimated uplift.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - two rankings, one endpoint, one peak.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>How the curve is constructed, slice by slice<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Sort the held-out customers by predicted uplift, highest first. Walk down the list in deciles. At each stopping point, take everyone above it and ask what the treated ones actually earned compared with the untreated ones in the same slice, scaling the control group up to the size of the treated group so the two are comparable. That is the cumulative incremental gain at that share, and it is measured from what people did, not from what the model predicted they would do.</p>
+        <ul>
+          <li><strong>The x axis is share of the population, not a threshold.</strong> Reading it as a budget is the point: at the fourth decile you are sending to four rows in every ten of the held-out block.</li>
+          <li><strong>The y axis is cumulative and in outcome units.</strong> Units of spend here, so the height is directly comparable to the cost of sending.</li>
+          <li><strong>The right-hand endpoint is fixed.</strong> Target everybody and the ranking is irrelevant, so every curve on the same data must end at the same value. Kestrelmark's is 9,729 units, and both rankings arrive there, because treating everybody is the same campaign whatever order you did it in. The endpoint is a property of the campaign, not of the model.</li>
+          <li><strong>The diagonal is random targeting.</strong> A random s percent of the population captures s percent of the total gain, in expectation, which is a straight line from the origin to that fixed endpoint.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The Qini coefficient, and what a peak means<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The area between the curve and the diagonal is the Qini coefficient. Larger is better, zero means the ranking is no better than shuffling the list, and negative means the ranking is actively inverted. On Kestrelmark's held-out block the uplift ranking scores 4,061 and the likelihood-to-buy ranking scores 2,290. Divided by the 4,298 a perfect ranking would achieve on the same data, those become 0.94 and 0.53, numbers between 0 and 1 that can be compared across models.</p>
+        <p>A curve that <strong>peaks and then falls</strong> is saying something specific and easy to miss. Gain accumulates while the customers being added have positive actual response. It flattens where the added customers do nothing. It falls where the added customers are harmed. So the peak is not a modelling artifact to be smoothed away: it is the recommendation. Kestrelmark's uplift curve peaks at the ninth decile, 10,698 units, and treating the last decile as well gives about 1,000 of them back, arriving at the 9,729 a blanket send would have produced. On a finer grid than deciles the true optimum is the top 92.5 percent at 10,731, which is 1,002 units above the blanket send.</p>
+        <div class="callout tip">
+          <p><strong>The coefficient is not the finding. The peak is.</strong> 0.94 against 0.53 says the uplift ranking gets to the money sooner, and that is worth knowing. What changes the campaign is that only the uplift curve has a maximum below 100 percent. The likelihood-to-buy curve climbs the whole way and finishes at 9,729, exactly where a blanket send finishes, so it can never recommend stopping and therefore can never beat treating everybody. Ranking on the wrong quantity does not always look like failure. Here it looks like a curve that rises the whole way.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Once a send costs money, the case sharpens<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Everything above is gross incremental gain. Leader session 5 prices a Kestrelmark send at 7.00 fully loaded, and once that bar is on the page the four groups sort themselves without a curve at all.</p>
+        <ul>
+          <li><strong>Persuadables clear it, and only persuadables.</strong> +29.09 against 7.00.</li>
+          <li><strong>Everybody else loses money on every send.</strong> Sure things return 2.10, lost causes 1.04, sleeping dogs -8.87. All three sit below the cost line in the figure above.</li>
+          <li><strong>The blanket campaign is net negative.</strong> Run at that cost across the base it is -3,848. Sending only to the 20.4 percent persuadable segment is +22,578.</li>
+        </ul>
+        <p>That is the same lesson as the peak, stated in money rather than in units of spend. The average effect of 6.23 is positive, the gross gain of 9,729 is positive, and the programme as it is actually run destroys value. Nothing in a campaign report built on the average can see it.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>What the curve cannot do<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The honest limits are worth more than the curve, because they are what stops it being quoted as proof.</p>
+        <ul>
+          <li><strong>It is built from estimated uplift.</strong> Every identification assumption from sessions 2 and 3 travels straight into it. If a back-door path was left open, the per-customer effects are biased and so is the ordering built from them. A beautiful Qini curve computed on a mis-specified adjustment set is a confident picture of the wrong ranking.</li>
+          <li><strong>Fit and score on the same rows and it flatters itself.</strong> The model that produced the ranking has already seen those outcomes, so the top slices look better than they are. Held-out, always, and a curve reported without a stated split should be assumed to be in-sample.</li>
+          <li><strong>Both arms must be present in every slice.</strong> Squeeze the deciles too fine, or rank in a way that correlates with who was treated, and some slices lose their control group. The gain in those slices is noise wearing a number.</li>
+          <li><strong>The peak is estimated too.</strong> It moves between resamples, and on 1,500 rows it can move by a decile. The decile grid puts it at 90 percent and the finer grid at 92.5 percent, which is a useful reminder that it is a region rather than a point. Say so when you hand over the share.</li>
+          <li><strong>Correcting a contaminated comparison is a different job.</strong> Reweighting or modelling a treated-against-control comparison to remove the remaining imbalance belongs to <code class="mono">learn-experimentation-with-phoebe</code>. What the graph decides is whether the comparison is correctable at all.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Reading it against an ROC curve, and where the analogy breaks<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The similarity is real and it is what makes the plot legible on sight: cumulative capture against cumulative population, a diagonal for chance, an area for a summary. An analyst who reads ROC curves needs no training to read a Qini curve, which is most of the reason the format won.</p>
+        <ul>
+          <li><strong>An ROC curve cannot go down.</strong> Every extra case adds a non-negative amount of capture. A Qini curve can, and the descent carries the most actionable information on the page.</li>
+          <li><strong>The y axis is in outcome units, not a rate.</strong> That is a feature: it converts directly against a send cost, so a cost line drawn on the same axes gives a net-value optimum rather than a gross one.</li>
+          <li><strong>There is no ground truth per row.</strong> An ROC curve is scored against labels that exist. No customer's individual effect is ever observed, so the curve is scored against group differences and inherits their noise.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>Build a Qini curve, then break it on purpose</h2>
+      <span class="tag demo">★ 18 min · everyone builds</span>
+    </div>
+    <p class="lede">Start from the per-customer predicted effects session 7 produced. Everything below runs on the 1,500 held-out rows the meta-learner never saw.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Load the held-out block and attach the predictions.</strong> One row per customer, one column of predicted uplift from the X-learner, plus the columns that record what actually happened: whether the email was sent, and what the customer spent.</p>
+      </div>
+      <div class="step">
+        <p><strong>Sort descending by predicted uplift.</strong> This ordering is the model's entire contribution. Nothing about the curve depends on the magnitude of the predictions, only on the order they impose, which is worth knowing when somebody objects that the effects look poorly calibrated.</p>
+      </div>
+      <div class="step">
+        <p><strong>Compute cumulative actual incremental response at each decile.</strong> Inside the top k percent, sum the spend of the treated, sum the spend of the untreated, scale the second by the ratio of the group sizes, and difference. Ten stopping points, ten numbers.</p>
+      </div>
+      <div class="step">
+        <p><strong>Plot it against the diagonal.</strong> The diagonal runs from the origin to the last point of your own curve. Drawing it from anything else, such as a total computed on the full sample, is the most common way this plot is wrong.</p>
+      </div>
+      <div class="step">
+        <p><strong>Compute the Qini coefficient.</strong> Trapezoidal area under the curve, minus the area under the diagonal. Divide by the area a perfect ranking would reach if you want the normalised version that survives being compared across models.</p>
+      </div>
+      <div class="step">
+        <p><strong>Find the peak and read off the share.</strong> The decile with the largest cumulative gain is the recommendation. Report the share, the gain at that share, and the gain at 100 percent, so the budget owner sees what stopping early is worth.</p>
+      </div>
+      <div class="step">
+        <p><strong>Rebuild the same curve ranking on predicted spend, and overlay it.</strong> Identical function, different sort column. The two curves end at the same point. Check whether the second one has a maximum anywhere before that point, because if it does not, it has no recommendation in it.</p>
+      </div>
+      <div class="step">
+        <p><strong>Then break it.</strong> Rerun the whole thing on the rows the model was fit on. The curve rises, the coefficient rises, and nothing about the targeting got better. Keep that number next to the honest one for the rest of the week.</p>
+      </div>
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - the Qini curve, from session 7's predictions</span>
+import numpy as np
+import pandas as pd
+
+held = pd.read_csv("kestrelmark_holdout.csv")        # 1,500 rows the learner never saw
+held["tau_hat"]   = xlearner.predict(held[FEATURES]) # per-customer effect, session 7
+held["spend_hat"] = outcome_model.predict(held[FEATURES])   # likelihood-to-buy ranking
+
+def qini_points(df, score, bins=10):
+    """Cumulative ACTUAL incremental response, walking down a PREDICTED ranking."""
+    d = df.sort_values(score, ascending=False).reset_index(drop=True)
+    n, out = len(d), []
+    for k in range(1, bins + 1):
+        top = d.iloc[: int(round(n * k / bins))]
+        nt  = top.email.sum()
+        nc  = len(top) - nt
+        yt  = top.loc[top.email == 1, "spend"].sum()
+        yc  = top.loc[top.email == 0, "spend"].sum()
+        out.append((k / bins, yt - yc * (nt / nc)))    # scale controls to treated size
+    return pd.DataFrame(out, columns=["share", "gain"])
+
+q     = qini_points(held, "tau_hat")
+total = q.gain.iloc[-1]                 # 9,729 units: everybody treated, ranking irrelevant
+q["random"] = q.share * total           # the diagonal, from YOUR endpoint
+q["lift"]   = q.gain - q.random
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - the coefficient, the peak, and the ranking that never peaks</span>
+def qini_coef(q, total):
+    x = np.concatenate([[0.0], q.share.values])
+    y = np.concatenate([[0.0], q.gain.values])
+    return np.trapz(y, x) - total / 2.0      # area between the curve and the diagonal
+
+perfect = 4298                               # same data, effects ordered by their true value
+print(round(qini_coef(q, total)))                       # 4,061 raw
+print(round(qini_coef(q, total) / perfect, 2))          # 0.94 normalised
+
+peak = q.loc[q.gain.idxmax()]
+print(f"treat the top {peak.share:.0%}: {peak.gain:,.0f} units")   # top 90%: 10,698 units
+print(f"blanket send:            {total:,.0f} units")              # 9,729 units
+
+qs = qini_points(held, "spend_hat")          # the ranking most campaign tools ship with
+print(round(qini_coef(qs, total) / perfect, 2))         # 0.53
+print(qs.loc[qs.share == 0.9, "gain"].item())           # 9,644 at the same send volume
+print(qs.gain.idxmax() == len(qs) - 1)                  # True: its maximum IS the blanket send
+    </div>
+
+    <p class="lede">The ten stopping points, both rankings, on the same held-out block:</p>
+
+    <table class="clean">
+      <thead><tr><th>Share targeted</th><th>Ranked by predicted uplift</th><th>Ranked by likelihood to buy</th></tr></thead>
+      <tbody>
+        <tr><td>10%</td><td>4,368</td><td>4,245</td></tr>
+        <tr><td>20%</td><td>8,715</td><td>5,792</td></tr>
+        <tr><td>30%</td><td>9,543</td><td>6,364</td></tr>
+        <tr><td>40%</td><td>9,849</td><td>7,082</td></tr>
+        <tr><td>50%</td><td>10,062</td><td>7,667</td></tr>
+        <tr><td>60%</td><td>10,239</td><td>8,069</td></tr>
+        <tr><td>70%</td><td>10,383</td><td>8,725</td></tr>
+        <tr><td>80%</td><td>10,530</td><td>9,096</td></tr>
+        <tr><td><strong>90%</strong></td><td><strong>10,698</strong></td><td>9,644</td></tr>
+        <tr><td>100%</td><td>9,729</td><td>9,729</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p>Three readings the table gives up that the headline coefficient does not. <strong>Both columns end at 9,729</strong>, because treating everybody is the same campaign whatever order you did it in: the endpoint is a property of the campaign, not of the model, and a business that sends to everybody can never tell whether its targeting is any good. <strong>Only the uplift column has a maximum before the last row</strong>, 10,698 at 90 percent, worth about 1,000 units against the blanket send, and the reason it turns down there is that the last decile is where the sleeping dogs are. <strong>The likelihood-to-buy column rises the whole way and stops</strong>, which is what ranking on the wrong quantity looks like when it is not obviously failing: a respectable-looking climb whose best available recommendation is "send to everyone".</p>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before session 9</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li>Find out what your production campaign actually ranks on. Ask for the column name, not the label in the interface. If it is an outcome model, you now know what the budget is buying.</li>
+      <li>Build the Qini curve for one live campaign on a held-out split, and write down the share at which it peaks. If it never peaks, say so: a monotone curve means the ranking found nobody it believes is harmed, which is either a claim about your population or a sign you are ranking on the wrong quantity, and the two are worth telling apart.</li>
+      <li>Report the peak as three numbers to whoever owns the budget: the share, the gain at that share, and the gain at a blanket send. Watch which of the three they ask about first.</li>
+      <li>Put your cost per contact on the same axes and find out which segments clear it. A curve that peaks late can still be a programme that loses money at every stopping point.</li>
+      <li>Rebuild the same curve in-sample and record how much the coefficient inflates. That gap is what a Qini curve with no stated split is hiding, and it is the number to ask a vendor for.</li>
+    </ol>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">A campaign platform ranks customers by predicted likelihood to purchase. A colleague argues that this is fine, because the customers most likely to buy are also the ones the email will work best on. What is wrong with the argument?</p>
+      <button class="qopt" type="button">A · Nothing, provided the likelihood model is well calibrated and fit on enough data</button>
+      <button class="qopt" type="button">B · Only the ordering matters, so any monotone score gives the same send list</button>
+      <button class="qopt" type="button">C · A likelihood model ranks by how likely the outcome is, an uplift model ranks by how much the treatment changes it, and on Kestrelmark's held-out block the two score 0.53 and 0.94: the likelihood ranking never gets above the 9,729 a blanket send produces</button>
+      <p class="qwhy">A likelihood model is fit on outcomes and never sees a comparison between arms, so nothing in its score is about the treatment. It puts sure things at the top, misses low-baseline persuadables, and happily targets sleeping dogs, who look engaged and lose 8.87 units each when contacted.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">A Qini curve rises to 10,698 units at the ninth decile and then falls to 9,729 at 100 percent. What should the recommendation be?</p>
+      <button class="qopt" type="button">A · Treat the top 90 percent: beyond the peak the added customers are harmed by the campaign, so the peak is the budget recommendation</button>
+      <button class="qopt" type="button">B · Treat everybody, since 9,729 is the total gain actually available in the population</button>
+      <button class="qopt" type="button">C · Smooth the curve, because a Qini curve that decreases indicates a fitting artifact</button>
+      <p class="qwhy">The descent is information, not noise to be removed. Stopping at the peak earns about 1,000 more units than a blanket send and pays for one decile fewer emails. Report the peak as a region, though: the decile grid puts it at 90 percent and a finer grid at 92.5 percent.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">Two Qini curves are presented for the same campaign. One was computed on the rows the uplift model was fit on; one was computed on a held-out block and scores 0.94. The in-sample curve scores higher. Which is the honest number, and why?</p>
+      <button class="qopt" type="button">A · The higher one, since more rows give a more reliable estimate of the curve</button>
+      <button class="qopt" type="button">B · The held-out one: a curve computed on the fitting rows flatters itself, because the model has already seen those outcomes and the top slices look better than they are</button>
+      <button class="qopt" type="button">C · Neither, because a Qini coefficient cannot be compared between two datasets of different sizes</button>
+      <p class="qwhy">The ranking and the response have to come from different rows or the plot is a picture of the model agreeing with itself. A Qini curve reported with no stated split should be assumed to be in-sample.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ COVERAGE ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What tonight maps to</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Targeting by predicted uplift against targeting at random</span>
+        <span class="note">The full construction on a held-out block, the diagonal as random targeting, and the measured gap between two rankings of the same 1,500 customers: a Qini of 4,061 against 2,290, or 0.94 against 0.53 once normalised by a perfect ranking's 4,298.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Qini curve and AUUC, read like an ROC curve</span>
+        <span class="note">Distance above the diagonal as the gain from uplift ranking, the area summarised as one coefficient, and the three places the ROC analogy breaks.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">The peak as a budget recommendation</span>
+        <span class="note">Why the curve falls, what the falling section is made of, and why only the uplift ranking has a peak at all: 10,698 at the ninth decile against the 9,729 a blanket send produces, with the true optimum at the top 92.5 percent and 10,731.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">S-, T- and X-learners and their documented weaknesses</span>
+        <span class="note">Session 7. Tonight consumes the per-customer effects those produce and never refits them.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">Persuadables, sure things, lost causes, sleeping dogs, and the 7.00 cost of a send</span>
+        <span class="note">Leader session 5 owns the four-group split, the cost bar and the policy argument. Tonight uses them to explain why the two rankings disagree and why the curve turns down.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill inkpill">·</span>
+        <span class="name">Propensity scores, IPW, doubly robust, difference-in-differences, DoWhy</span>
+        <span class="note">Not covered by design, in any session. Correcting an observational treated-against-control comparison is the experimentation course's territory; ranking who to treat, and knowing what the ranking inherits, is this one's.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Session 8 cheat sheet</h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Likelihood is not uplift</b><span>One ranks how likely the outcome is, the other how much the treatment changes it. The lists can be almost disjoint.</span></div>
+      <div class="cheat-item"><b>Sure things eat the budget</b><span>22.4 percent of the base at +2.10. A likelihood ranking puts them first by construction.</span></div>
+      <div class="cheat-item"><b>Persuadables are the business case</b><span>20.4 percent at +29.09, an order of magnitude above every other group, and often low baseline because they are drifting.</span></div>
+      <div class="cheat-item"><b>Sleeping dogs look engaged</b><span>7.9 percent at -8.87. History and opens score them high, which is the worst place for them.</span></div>
+      <div class="cheat-item"><b>Read it like an ROC curve</b><span>Cumulative gain against share targeted. Further above the diagonal is better; the diagonal is random.</span></div>
+      <div class="cheat-item"><b>Qini coefficient</b><span>The area between curve and diagonal, also written AUUC. 4,061 on uplift and 2,290 on likelihood to buy, against a perfect 4,298: 0.94 and 0.53.</span></div>
+      <div class="cheat-item"><b>Only the uplift curve peaks</b><span>Ninth decile, 10,698, about 1,000 units above a blanket send. A ranking with no peak can never recommend stopping.</span></div>
+      <div class="cheat-item"><b>Every curve ends at the same point</b><span>Treat everybody and the ranking stops mattering. Kestrelmark's endpoint is 9,729 for both rankings.</span></div>
+      <div class="cheat-item"><b>Cost moves the answer again</b><span>At 7.00 a send only persuadables clear the bar. Blanket is net -3,848; persuadables only is +22,578.</span></div>
+      <div class="cheat-item"><b>Held out, or it flatters itself</b><span>And the ordering inherits every identification assumption from sessions 2 and 3.</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pagefoot">
+  <div class="wrap">
+    <p>Practitioner session 8 of 10 · learn-causal-inference-with-phoebe · by Phoebe Fu</p>
+    <nav class="pagenav">
+      <a href="p7-cate-and-uplift.html">← Practitioner session 7 · CATE and uplift</a>
+      <a href="p9-sensitivity-analysis.html">Practitioner session 9 · Sensitivity analysis →</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

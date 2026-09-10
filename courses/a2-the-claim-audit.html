@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Leader session 2 of 6. Five questions that take any causal claim apart: which rung, what exactly is the treatment, what common causes could do this instead, what was adjusted for, and what would make it wrong. Plus the vocabulary that gives a rung-1 study away.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="The claim audit - learn causal inference with phoebe">
+<meta property="og:description" content="Leader session 2 of 6. Every causal claim has a graph, whether or not anybody drew it.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/courses/a2-the-claim-audit.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The claim audit - learn causal inference with phoebe">
+<meta name="twitter:description" content="Drove, led to, incremental. Three words that promise rung 2 on rung-1 evidence.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Leader session 2 · The claim audit - learn causal inference with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-causal-inference-with-phoebe</a> / Leader session 2 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Causal Inference with Phoebe · Leader session 2 of 6</div>
+    <h1>The <span class="accent">claim audit</span></h1>
+    <p class="sub">Claims arrive finished. A deck, a headline, a dashboard tile, a vendor case study, and always a number that has already been rounded and bolded by the time you see it. You will rarely have the data, you will never have the time to redo the analysis, and you are still the person who has to decide whether to spend against it. Five questions is enough. They take about four minutes, none of them requires a method, and they work as well on a competitor's press release as on your own team's slide. Kestrelmark's claim was that the email "drove 10.54 units of incremental spend". Every one of the five questions has something to say about that sentence.</p>
+    <div class="chip-row">
+      <span class="chip level">🟠 Advanced</span>
+      <span class="chip audience">Data and product leaders</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:5">3-22 · Five questions for any causal claim</span>
+      <span class="a3" style="flex:4">22-40 · Build-along: audit three real claims</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>What an audit can and cannot do</h2>
+    </div>
+    <p class="lede">An audit is not a re-analysis. It does not need the raw data, it does not produce a corrected number, and it is not an accusation. It establishes one thing: whether the evidence offered is of the kind that could support the claim being made. That question is answerable from the claim itself, which is why a leader can run it in the meeting where the claim is presented rather than three weeks later.</p>
+
+    <div class="legend">
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">🔍 Every diagram zooms</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> Five questions you can ask out loud without a laptop, each with a worked example and the shape of a bad answer. The vocabulary that reliably marks a rung-1 study dressed as rung 2. Three of your own claims audited, and the one sentence you would send back to the author of the weakest.</p>
+    </div>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Every causal claim has a graph, whether or not anybody drew it<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>When somebody says the email drove spend, they have asserted a picture: an arrow from email to spend, and crucially, the absence of anything else pointing into both. That second half is never stated and is always where the claim lives or dies. The person making it may not think of themselves as having drawn a diagram. They have, and the audit consists of drawing it for them and asking what is missing.</p>
+        <p>This is what makes the five questions portable. They do not depend on the method used, the tool, the sample size or the industry. They ask what the claimed picture is, what other pictures produce the same data, and whether anything was done to tell them apart. A claim that survives all five may still be wrong, but it will be wrong in a way that somebody has looked for.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Kestrelmark's slide had no diagram on it. It had a bar chart, a sample size, and the word incremental. The picture it asserted was two boxes and one arrow. The picture the business actually ran had winter and tenure pointing into both boxes, and both of those were known to everyone in the room the moment somebody said them out loud.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Who the audit is for, and how to run it without a fight<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Ask about the claim, not the person.</strong> "What would we have to hold fixed for this comparison to be fair" is a question about the world. "Did you control for anything" is a question about their competence. The first gets answers.</li>
+          <li><strong>Ask in order and stop early.</strong> If the claim cannot survive question one, questions three through five are a waste of everybody's afternoon.</li>
+          <li><strong>Expect the answer to come from the business, not the analyst.</strong> What drives who gets treated is usually known by the campaign manager, the sales lead or the product owner. They are the ones to ask.</li>
+          <li><strong>Say what a pass looks like.</strong> An audit with no possible passing outcome is not an audit. Before you start, know what evidence would satisfy you, and say it.</li>
+          <li><strong>Write the finding as one sentence.</strong> Not a memo. The sentence you would send back to the author, which is the exercise in the second half of tonight.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers the five questions and what a bad answer sounds like</span>
+      <h2>Five questions for any causal claim</h2>
+      <span class="tag concept">12 min live</span>
+    </div>
+    <p class="lede">Four minutes, in order, no tooling. The examples below use three claim shapes you will meet constantly: a campaign lift, a feature launch, and the perennial "customers who use X retain better".</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The five audit questions as a checklist strip. Which rung is the claim on against the rung of the evidence. What are the treatment and outcome, stated precisely enough to dispute. What common causes could produce the pattern. What was adjusted for and is anything on the list caused by the treatment. What would make this wrong and how would we know. Each column shows the shape of a bad answer underneath.">
+        <style>
+          .a2aT { font: 800 11px Inter, sans-serif; fill: #fff; }
+          .a2aH { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .a2aB { font: 400 10px Inter, sans-serif; fill: #0F1C1A; }
+          .a2aM { font: 400 10px Inter, sans-serif; fill: #5A6B68; }
+          .a2aR { font: 800 10px Inter, sans-serif; fill: #9A3412; }
+          .a2aN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+
+        <text class="a2aH" x="14" y="22">Ask them in order. Stop at the first one with no good answer.</text>
+
+        <rect x="14" y="32" width="164" height="44" rx="9" fill="#134E4A"></rect>
+        <text class="a2aT" x="28" y="50">1 · Which rung is</text>
+        <text class="a2aT" x="28" y="64">the claim on</text>
+        <rect x="14" y="84" width="164" height="48" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a2aB" x="28" y="104">Rung 2 wording on</text>
+        <text class="a2aB" x="28" y="120">rung 1 evidence</text>
+        <rect x="14" y="140" width="164" height="76" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a2aR" x="28" y="160">Bad answer</text>
+        <text class="a2aM" x="28" y="180">The data clearly</text>
+        <text class="a2aM" x="28" y="196">shows it worked</text>
+
+        <rect x="188" y="32" width="164" height="44" rx="9" fill="#0F6F66"></rect>
+        <text class="a2aT" x="202" y="50">2 · Treatment and</text>
+        <text class="a2aT" x="202" y="64">outcome, exactly</text>
+        <rect x="188" y="84" width="164" height="48" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a2aB" x="202" y="104">Sharp enough for</text>
+        <text class="a2aB" x="202" y="120">someone to dispute</text>
+        <rect x="188" y="140" width="164" height="76" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a2aR" x="202" y="160">Bad answer</text>
+        <text class="a2aM" x="202" y="180">Engagement went up</text>
+        <text class="a2aM" x="202" y="196">after the launch</text>
+
+        <rect x="362" y="32" width="164" height="44" rx="9" fill="#134E4A"></rect>
+        <text class="a2aT" x="376" y="50">3 · What common</text>
+        <text class="a2aT" x="376" y="64">causes could do it</text>
+        <rect x="362" y="84" width="164" height="48" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a2aB" x="376" y="104">Something driving</text>
+        <text class="a2aB" x="376" y="120">both, on its own</text>
+        <rect x="362" y="140" width="164" height="76" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a2aR" x="376" y="160">Bad answer</text>
+        <text class="a2aM" x="376" y="180">We could not think</text>
+        <text class="a2aM" x="376" y="196">of anything else</text>
+
+        <rect x="536" y="32" width="164" height="44" rx="9" fill="#0F6F66"></rect>
+        <text class="a2aT" x="550" y="50">4 · What did they</text>
+        <text class="a2aT" x="550" y="64">adjust for</text>
+        <rect x="536" y="84" width="164" height="48" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a2aB" x="550" y="104">Is anything on it</text>
+        <text class="a2aB" x="550" y="120">caused by treatment</text>
+        <rect x="536" y="140" width="164" height="76" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a2aR" x="550" y="160">Bad answer</text>
+        <text class="a2aM" x="550" y="180">We controlled for</text>
+        <text class="a2aM" x="550" y="196">everything we had</text>
+
+        <rect x="710" y="32" width="156" height="44" rx="9" fill="#134E4A"></rect>
+        <text class="a2aT" x="724" y="50">5 · What would</text>
+        <text class="a2aT" x="724" y="64">make this wrong</text>
+        <rect x="710" y="84" width="156" height="48" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a2aB" x="724" y="104">And how would</text>
+        <text class="a2aB" x="724" y="120">we ever find out</text>
+        <rect x="710" y="140" width="156" height="76" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a2aR" x="724" y="160">Bad answer</text>
+        <text class="a2aM" x="724" y="180">Nothing could</text>
+        <text class="a2aM" x="724" y="196">show it is wrong</text>
+
+        <rect x="14" y="240" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="a2aN" x="38" y="252">A claim too vague to fail any of the five is unfalsifiable, not strong.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - five questions, and the answer that tells you to keep pulling.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Question 1</span>Which rung is the claim on, and which rung is the evidence on<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Two separate rungs, and the whole audit turns on whether they match. The claim's rung is set by its verb: "is associated with" is rung 1, "drove" and "caused" and "delivered" are rung 2, "would not have happened otherwise" is rung 3. The evidence's rung is set by how the comparison was made: a difference between people who did and did not do a thing, however carefully sliced, is rung 1 unless something was actively done to make the two groups comparable.</p>
+        <p>A mismatch is not automatically fatal. It is the point at which the claim needs to justify the promotion, and questions three and four are how it does that. A match at rung 1 on both sides is fine and often exactly what was wanted.</p>
+        <ul>
+          <li><strong>Campaign lift.</strong> "The email drove 10.54 units of incremental spend" is rung 2. The evidence is a comparison of emailed against not emailed, which is rung 1. Mismatch, so keep going.</li>
+          <li><strong>Feature launch.</strong> "Sessions rose 14 percent after we shipped the new home screen" is rung 1 as stated, and would be honest if it stopped there. Almost nobody stops there, and the next slide is titled impact.</li>
+          <li><strong>Retention.</strong> "Customers who use the mobile app retain better" is a clean rung-1 sentence right up until it becomes a roadmap item to drive app installs, at which point it has been read as rung 2 without anybody saying so.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Question 2</span>What is the treatment and what is the outcome, precisely<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Precisely enough that a colleague could disagree with the definition. This sounds pedantic and it is the question that most often ends an audit in ninety seconds, because a surprising number of claims dissolve when you ask what exactly was done to whom, and what exactly was measured afterwards.</p>
+        <ul>
+          <li><strong>The treatment.</strong> Sent, or delivered, or opened? A single send or a three-week sequence? Everybody, or everybody the targeting rules selected? "Received the email" and "was chosen to receive the email" are different treatments with different answers.</li>
+          <li><strong>The outcome.</strong> Over what window, for whom, measured how? Spend in the following month is a different claim from spend in the following year, and both are different from spend among people who bought anything at all.</li>
+          <li><strong>The population.</strong> Everyone, or the 5,000 who were drifting? An effect on a selected subgroup does not transfer to the base, and the rollout decision is always about the base.</li>
+        </ul>
+        <p>The Kestrelmark claim survives this one once it is pinned down: a single send, to 5,000 drifting subscription customers, with spend measured over the following quarter. That is a claim specific enough to be wrong, which is the compliment it deserves. A feature-launch claim usually does worse here, because "shipped the new home screen" was in truth a staged rollout to the users most likely to tolerate it.</p>
+        <div class="callout tip">
+          <p><strong>Write both definitions on the whiteboard before continuing.</strong> Half of all disagreements about causal claims turn out to be two people auditing two different claims, and neither notices for forty minutes.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Question 3</span>What common causes could produce this pattern anyway<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The load-bearing question. Ask the room to name anything that makes somebody more likely to be treated <em>and</em> independently makes their outcome better. Two arrows from one thing, into both sides. Each one is a story in which the pattern appears exactly as reported and the treatment did nothing whatsoever.</p>
+        <p>The reason to ask this out loud, rather than to request it in writing, is that the answers come from operational knowledge rather than from the data. The person who set the targeting rules can list them in under a minute. The analyst who received the extract usually cannot, because the rules were never a column.</p>
+        <ul>
+          <li><strong>Campaign lift.</strong> Winter: the campaign calendar sends more in December and people buy more in December. Tenure: long-standing accounts are on more lists and buy more anyway. Two candidates, both known to the business, together worth 4.31 of the reported 10.54.</li>
+          <li><strong>Feature launch.</strong> The rollout order. New surfaces go to the most engaged cohort first, so the feature's users were the heaviest users before it existed.</li>
+          <li><strong>Retention.</strong> Whatever makes somebody committed enough to install an app is also what makes them stay. Nobody has ever measured "committed", which is what makes this claim so durable and so hard to act on.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>At Kestrelmark the whole question took nine minutes and one whiteboard. Holding season and tenure fixed moved the answer from 10.54 to 6.56, against a true effect of 6.23. What is left over is noise rather than bias: rerun on five different samples it reads +0.33, +0.17, -0.38, +0.19, -0.01, a mean of +0.06 that changes sign, while every wrong adjustment keeps its sign every time. Nothing was collected, nothing was re-run from scratch, and the two variables required had been sitting in the same table as the outcome the entire time.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Question 4</span>What did they adjust for, and is anything on that list caused by the treatment<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Ask for the covariate list. Not the model, not the code: the list of things held fixed. Then read it for one thing before anything else. Is any item on that list something the treatment itself could have changed?</p>
+        <p>Holding fixed something that the treatment caused removes part of the effect you were trying to measure, and it can do worse than that. On Kestrelmark's data, holding fixed whether the customer opened the email moves the estimate to 5.48, because opening is how the email works. Holding fixed whether they raised a support ticket, which happens after the email and after the spending, moves it to 2.59, and that one is by far the most damaging single item anybody has put on this covariate list. Both of them look like careful analysis and both are worse than the correct set's 6.56.</p>
+        <ul>
+          <li><strong>The green flag.</strong> A short list, every item of which was determined before the treatment, and each of which somebody can explain the role of.</li>
+          <li><strong>The red flag.</strong> A long list assembled because it improved the fit. Session 3 shows what each kind of wrong variable costs, and the harmful ones do not cancel out against each other.</li>
+          <li><strong>The subtle one.</strong> "It was measured before the treatment" is not by itself a safety argument. Kestrelmark's loyalty score predates the send and holding it fixed still moves the estimate to 5.26, which puts it in the middle of the three harmful adjustments rather than at the mild end. Session 3 explains why.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Question 5</span>What would have to be true for this to be wrong, and how would we know<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Put the burden where it belongs: on the claim, not on the sceptic. A strong claim can name the thing that would overturn it. "If tenure were driving this, we would see the effect vanish among accounts of the same age, and it does not" is an answer. So is "an unmeasured factor would have to be about as strong as the season effect, which we think is implausible, and here is why".</p>
+        <p>An answer of "nothing could really show this is wrong" is not a strength. It is the finding, and it should be reported as one. The follow-up worth asking is the cheapest version of the test: what would we have to look at, and could we look at it this week?</p>
+        <ul>
+          <li><strong>Campaign lift.</strong> Compare within the same month and the same tenure band. If the gap collapses, season and tenure were carrying it.</li>
+          <li><strong>Feature launch.</strong> Look at what the adopting cohort was doing in the weeks <em>before</em> the feature existed. If they were already ahead, the rollout order is the story.</li>
+          <li><strong>Retention.</strong> Ask what a randomised nudge to install would cost. If nobody will fund it, that is a real answer about how much the claim is trusted.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2 ============ -->
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers the surface signals that survive without the data</span>
+      <h2>The tells</h2>
+      <span class="tag concept">7 min live</span>
+    </div>
+    <p class="lede">Most of the time you cannot run all five questions properly, because the claim came from outside and there is nobody to ask. What is left is the text of the claim itself, and it gives away more than its authors intend. These are the signals worth reacting to, and the one honest limitation on all of them.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="One headline claim taken apart in four bands. The stated claim that the email drove 10.54 units of incremental spend. The implied graph, a single arrow from email to spend and nothing else. The missing arrows, season and tenure feeding both the email and spend. The verdict, rung 2 wording on rung 1 evidence with two common causes unaddressed, and 6.56 once they are held fixed.">
+        <style>
+          .a2bW { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .a2bS { font: 400 11px Inter, sans-serif; fill: #fff; }
+          .a2bH { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .a2bM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .a2bN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+        <defs>
+          <marker id="a2bAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5A6B68"></path></marker>
+          <marker id="a2bRd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9A3412"></path></marker>
+        </defs>
+
+        <text class="a2bH" x="14" y="22">One claim, taken apart in four bands.</text>
+
+        <rect x="14" y="32" width="852" height="54" rx="9" fill="#134E4A"></rect>
+        <text class="a2bW" x="30" y="56">Stated claim: the email drove 10.54 units of incremental spend</text>
+        <text class="a2bS" x="30" y="74">Quarterly review slide, 5,000 customers, no diagram anywhere on the page</text>
+
+        <rect x="14" y="98" width="420" height="142" rx="9" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a2bH" x="30" y="120">The implied graph</text>
+        <rect x="54" y="152" width="110" height="30" rx="8" fill="#0F6F66"></rect>
+        <text class="a2bW" x="109" y="172" text-anchor="middle">Email</text>
+        <rect x="284" y="152" width="110" height="30" rx="8" fill="#0F6F66"></rect>
+        <text class="a2bW" x="339" y="172" text-anchor="middle">Spend</text>
+        <line x1="168" y1="167" x2="278" y2="167" stroke="#5A6B68" stroke-width="2" marker-end="url(#a2bAr)"></line>
+        <text class="a2bM" x="30" y="208">One arrow and nothing else.</text>
+        <text class="a2bM" x="30" y="226">That is the entire assumption.</text>
+
+        <rect x="446" y="98" width="420" height="142" rx="9" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a2bH" x="462" y="120">The missing arrows</text>
+        <rect x="486" y="140" width="100" height="26" rx="7" fill="#134E4A"></rect>
+        <text class="a2bW" x="536" y="158" text-anchor="middle">Season</text>
+        <rect x="486" y="176" width="100" height="26" rx="7" fill="#134E4A"></rect>
+        <text class="a2bW" x="536" y="194" text-anchor="middle">Tenure</text>
+        <rect x="664" y="132" width="94" height="26" rx="7" fill="#0F6F66"></rect>
+        <text class="a2bW" x="711" y="150" text-anchor="middle">Email</text>
+        <rect x="664" y="186" width="94" height="26" rx="7" fill="#0F6F66"></rect>
+        <text class="a2bW" x="711" y="204" text-anchor="middle">Spend</text>
+        <line x1="590" y1="149" x2="658" y2="145" stroke="#9A3412" stroke-width="1.5" marker-end="url(#a2bRd)"></line>
+        <line x1="590" y1="157" x2="658" y2="192" stroke="#9A3412" stroke-width="1.5" marker-end="url(#a2bRd)"></line>
+        <line x1="590" y1="185" x2="658" y2="152" stroke="#9A3412" stroke-width="1.5" marker-end="url(#a2bRd)"></line>
+        <line x1="590" y1="193" x2="658" y2="197" stroke="#9A3412" stroke-width="1.5" marker-end="url(#a2bRd)"></line>
+        <line x1="711" y1="160" x2="711" y2="180" stroke="#0F6F66" stroke-width="2" marker-end="url(#a2bAr)"></line>
+        <text class="a2bM" x="462" y="228">Both feed the sending and the spending.</text>
+
+        <rect x="14" y="254" width="852" height="58" rx="9" fill="#9A3412"></rect>
+        <text class="a2bW" x="30" y="278">Verdict: rung 2 wording, rung 1 evidence, two common causes unaddressed</text>
+        <text class="a2bS" x="30" y="298">Held fixed, the same data gives 6.56. The word incremental was doing unearned work.</text>
+
+        <rect x="14" y="330" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="a2bN" x="38" y="342">The audit never needed the raw data. It needed the claim to be specific.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the claim, the picture it assumes, the picture it left out, and the verdict.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The vocabulary that promotes a claim a rung<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Certain words carry a rung-2 promise, and when they are attached to an observational comparison, the promise was not paid for. This is rarely deception. Writing "customers who received the email subsequently spent 10.54 more, and we have not established why" is accurate and nobody puts it on a slide, so the sentence drifts upward one word at a time between the analysis and the review.</p>
+        <ul>
+          <li><strong>Drove, led to, delivered, generated.</strong> All rung 2. Each asserts that acting produced the outcome.</li>
+          <li><strong>Incremental.</strong> The strongest of them, and the most casually used. Incremental means "over and above what would have happened otherwise", which is a claim about a world that did not occur.</li>
+          <li><strong>Impact, uplift, contribution.</strong> Rung 2 in a noun's clothing, which is why they slip past. "Campaign impact: 10.54" reads like a measurement and asserts a cause.</li>
+          <li><strong>The honest forms.</strong> "Associated with", "correlated with", "customers who did X also did Y", "we observed". These are rung 1 and they are not weaker writing. They are accurate writing, and a leader who visibly rewards them will get more of them.</li>
+        </ul>
+        <p>The reaction to a tell is a question, never a conclusion. The claim may be perfectly well supported and the author may simply have written naturally. What the word does is tell you which of the five questions to ask first.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The covariate list is evidence about the analysis<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>When a claim comes with a list of what was controlled for, read it as a document in its own right. It tells you what the analyst believed the picture looked like, and its shape is informative even before you know what the variables mean.</p>
+        <ul>
+          <li><strong>A list with anything measured after the treatment is a warning.</strong> Opens, clicks, tickets, subsequent visits, downstream status. If the treatment could have changed it, holding it fixed changes the question being answered and usually damages the estimate. The reason is session 3, and the numbers are unambiguous: 5.48 for the mediator and 2.59 for the later collider, against 6.56 for the correct set.</li>
+          <li><strong>A very long list is a warning of a different kind.</strong> It usually means variables were added until the fit improved. Model fit is not evidence about causation, and the harmful additions on Kestrelmark's data push the same direction and stack to a bias of 5.25 rather than cancelling each other, which is a worse answer than holding nothing fixed at all and its bias of 4.31.</li>
+          <li><strong>An empty list is not automatically bad.</strong> If the treatment was genuinely randomly assigned, nothing needs holding fixed. Ask whether it was, and how.</li>
+          <li><strong>The item you cannot get a role for is the item to worry about.</strong> Ask what job each variable is doing. Anything that gets "it was in the table" as an answer is there by habit.</li>
+        </ul>
+        <div class="callout tip">
+          <p><strong>Ask for the list before you ask for the model.</strong> It is one line in a reply, it arrives the same day, and it discriminates between careful and careless work far better than the choice of technique does.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The missing denominator and the self-selected group<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Two failure shapes that are older than any of the vocabulary and still account for a large share of confident wrong claims.</p>
+        <ul>
+          <li><strong>The missing denominator.</strong> "Four hundred customers who received the offer upgraded." Out of how many? A number without its base is not a rate, and a rate is the minimum needed to compare anything. The same trick appears as counts of successes with no mention of attempts, and as testimonials with no mention of the people who did not respond.</li>
+          <li><strong>The self-selected group.</strong> The people who opted in, installed the app, attended the webinar or joined the loyalty programme chose to. Whatever made them choose is very often the same thing that makes their outcome good. This is why "customers who use X retain better" is nearly always true and nearly never actionable: the comparison group differs by the one thing you cannot see.</li>
+          <li><strong>The survivor version.</strong> Measuring outcomes only among people still present at the end. If the treatment affects who is still there, the surviving group is not the group you started with, and the comparison silently changed populations.</li>
+        </ul>
+        <p>The reason to keep these on the list alongside the five questions is that they are visible in the claim's own wording. You do not need the data to notice that a denominator is absent or that a group joined itself.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>An audit can only find the flaws the claim is specific enough to have<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>This is the honest limitation and it deserves saying plainly, because otherwise the method quietly rewards the wrong behaviour. Every one of the five questions works by taking the claim seriously enough to test it. A claim that says "the campaign contributed to a strong quarter" cannot fail question two, because there is no treatment definition to be wrong about. It cannot fail question three, because there is no comparison to confound. It sails through, and it means nothing.</p>
+        <ul>
+          <li><strong>Vagueness is not strength.</strong> A claim that cannot be wrong is not a claim that survived scrutiny; it is a claim that could not be scrutinised. Record that as the finding, in exactly those words.</li>
+          <li><strong>The correct response is a request, not a rejection.</strong> Ask for the treatment, the outcome, the window and the population. If the answer is that those were never defined, the audit is complete and the answer is that there is no result yet.</li>
+          <li><strong>Watch for vagueness arriving under pressure.</strong> A specific claim that becomes vague after being questioned has told you something about how much its author believes it.</li>
+          <li><strong>Reward the specific version publicly.</strong> The team that writes "a single send to 5,000 drifting customers, spend measured over the following quarter, 10.54 unadjusted" has made itself easier to challenge. If challenging is punished, the next version will be a sentence about contribution.</li>
+        </ul>
+        <p>When the audit concludes that the claim needs an actual estimation method rather than a sharper sentence, that is where <strong>learn-experimentation-with-phoebe</strong> begins: potential outcomes, propensity scores, difference-in-differences and the rest are covered there in working depth.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ BUILD-ALONG ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>Audit three real claims</h2>
+      <span class="tag demo">★ 18 min · everyone builds</span>
+    </div>
+    <p class="lede">Your own material, not a case study. Three claims that are currently influencing a decision somewhere near you: one from your inbox, one from a deck, one from a dashboard tile that gets quoted in meetings.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Take three claims from your own inbox, deck or dashboard.</strong> Copy the exact sentence, including the verb. If the claim is a chart with no sentence, write the sentence people say out loud about it, because that is the claim actually being acted on.</p>
+      </div>
+      <div class="step">
+        <p><strong>Run question 1 on all three before going deeper.</strong> Mark the rung of the claim and the rung of the evidence separately. Two columns, six marks, about two minutes. Any claim where both marks are rung 1 and nobody is acting on it can be set aside now.</p>
+      </div>
+      <div class="step">
+        <p><strong>Run questions 2 through 5 on the survivors.</strong> Write one line per question. Where you do not know the answer, write "unknown" rather than guessing, because the pattern of unknowns is itself the finding and it tells you who to ask.</p>
+      </div>
+      <div class="step">
+        <p><strong>For question 3, name at least two common causes for each claim.</strong> Force yourself past the first one. The first is usually obvious and already handled; the second is the one nobody has said out loud. At Kestrelmark the second was tenure, and it was worth roughly as much as the first.</p>
+      </div>
+      <div class="step">
+        <p><strong>Write the one sentence you would send back to the author of the weakest claim.</strong> One sentence, no method names, ending in a question they can actually answer. It should be sendable without editing and without embarrassing anybody.</p>
+      </div>
+      <div class="step">
+        <p><strong>Note which of the five questions found the most.</strong> Across three claims there is usually a clear winner, and it says something about your organisation rather than about the claims. Teams that never define the treatment have a writing problem. Teams that never name a common cause have a targeting-knowledge problem, and the fix is who is in the room.</p>
+      </div>
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ The sentence to send back, three worked versions</span>
+Campaign lift
+  Before we size the rollout, could you tell me whether the emailed and
+  not-emailed groups were matched on send month and account tenure? Those two
+  moved our last number by about 40 percent.
+
+Feature launch
+  Do we know what the adopting cohort's session count looked like in the four
+  weeks before the feature shipped? If they were already ahead, the rollout
+  order is doing some of the work.
+
+Retention on app usage
+  What is the shortest test that would tell us whether installing the app
+  raises retention, rather than committed customers doing both? Happy with a
+  rough answer.
+
+# one sentence, no method names, ends in a question they can answer.
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Audit one of your own team's claims first, in front of them.</strong> The five questions land very differently when the leader applies them to work they commissioned before applying them to work somebody else did. It also makes the point that the audit is about the evidence and not about the analyst.</p>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before session 3</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li>Send the sentence. Not a memo, not a meeting request: the one sentence from the build-along, to the actual author. Note how long the reply takes and whether it answers the question asked.</li>
+      <li>Audit one claim from outside your organisation with real money attached to it: a vendor case study, an analyst report, a competitor's announcement. Outside claims are easier to be honest about and the muscle transfers.</li>
+      <li>Collect the covariate list from one model your team currently ships. Mark each variable as before or after the treatment. Bring the list to session 3, which prices exactly this.</li>
+      <li>Find one claim in your own materials that uses "drove", "led to" or "incremental" on rung-1 evidence, and rewrite the sentence honestly. Notice whether the honest version is still worth putting on the slide, because sometimes it is and sometimes that is the discovery.</li>
+    </ol>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">A claim reads "the campaign contributed to a strong quarter". It survives all five audit questions without a scratch. What should you conclude?</p>
+      <button class="qopt" type="button">A · The claim is well supported, since nothing in the audit found a problem with it</button>
+      <button class="qopt" type="button">B · The audit was run incorrectly and should be repeated with the underlying data</button>
+      <button class="qopt" type="button">C · The claim is too vague to have testable flaws, which is unfalsifiable rather than strong, and that is itself the finding</button>
+      <p class="qwhy">Each question works by taking the claim seriously enough to test it. With no treatment definition, no outcome window and no comparison, there is nothing to be wrong about, and nothing to act on either.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">A team presents a lift number and their covariate list includes whether the customer opened the email. Why is that worth a question?</p>
+      <button class="qopt" type="button">A · Opening happens after the send and is caused by it, so holding it fixed removes part of the effect and answers a different question</button>
+      <button class="qopt" type="button">B · Open rates are unreliable because of image-blocking, so the variable is too noisy to include</button>
+      <button class="qopt" type="button">C · It is fine, because a longer covariate list makes an estimate more robust</button>
+      <p class="qwhy">On Kestrelmark's data holding opens fixed gives 5.48 against the correct set's 6.56. Anything the treatment could have changed does not belong on the list unless the question really was about the direct effect.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">Which of these pairings is a mismatch worth stopping on in question 1?</p>
+      <button class="qopt" type="button">A · "Mobile users are associated with higher retention", supported by a segment comparison</button>
+      <button class="qopt" type="button">B · "The email drove 10.54 units of incremental spend", supported by a comparison of emailed against not-emailed customers</button>
+      <button class="qopt" type="button">C · "Signups fell 8 percent in March", supported by a monthly count</button>
+      <p class="qwhy">Drove and incremental are rung-2 words. A comparison of two groups that were never made comparable is rung-1 evidence. The other two match their evidence honestly.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ COVERAGE ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What tonight maps to</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Reading a published claim and naming its rung</span>
+        <span class="note">The rung of the claim and the rung of the evidence marked separately, with the mismatch as the trigger to keep asking.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">The graph a claim assumes without stating it</span>
+        <span class="note">One arrow and the absence of everything else, drawn for the author, on a campaign lift, a feature launch and a retention claim.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Naming the unmeasured or unaddressed common cause</span>
+        <span class="note">Season and tenure at Kestrelmark, rollout order for a feature, and the commitment nobody measures behind app usage.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">Why post-treatment variables damage an estimate</span>
+        <span class="note">Session 3. Tonight flags them on a covariate list; the mechanism and the price of each kind come next.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">Marketing attribution as a discipline</span>
+        <span class="note">Media mix and multi-touch modelling belong to the marketing attribution course. The campaign headline here is one audit example, not a method.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill inkpill">·</span>
+        <span class="name">Propensity scores, IPW, doubly robust, difference-in-differences, synthetic control</span>
+        <span class="note">Not covered by design, in any session. Estimating an effect from observational data is the experimentation course's territory; this track stops at which question is being asked, whether it is answerable, and what must not be conditioned on.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Session 2 cheat sheet</h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Every claim has a graph</b><span>An arrow, and the silent absence of everything else. Draw it for them.</span></div>
+      <div class="cheat-item"><b>Two rungs, marked separately</b><span>The rung of the claim and the rung of the evidence. Mismatch means keep asking.</span></div>
+      <div class="cheat-item"><b>Define it sharply</b><span>Sent or opened, which window, which population. Half of all disputes end here.</span></div>
+      <div class="cheat-item"><b>Name two common causes</b><span>Force past the first. The second is the one nobody has said out loud.</span></div>
+      <div class="cheat-item"><b>Read the covariate list</b><span>Anything measured after the treatment is a warning. Ask for the list, not the model.</span></div>
+      <div class="cheat-item"><b>Drove, led to, incremental</b><span>Rung-2 words. On an observational comparison the promise was not paid for.</span></div>
+      <div class="cheat-item"><b>Ask what would falsify it</b><span>"Nothing could" is the finding, not the defence.</span></div>
+      <div class="cheat-item"><b>Vague is not strong</b><span>A claim with no testable flaw had nothing to test. Report it as such.</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pagefoot">
+  <div class="wrap">
+    <p>Leader session 2 of 6 · learn-causal-inference-with-phoebe · by Phoebe Fu</p>
+    <nav class="pagenav">
+      <a href="a1-three-questions-three-rungs.html">← Leader session 1 · Three questions, three rungs</a>
+      <a href="a3-what-not-to-adjust-for.html">Leader session 3 · What not to adjust for →</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

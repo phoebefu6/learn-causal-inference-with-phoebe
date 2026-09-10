@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Practitioner session 7 of 10. A conditional average treatment effect is a function, not a number, and 6.23 is its mean. At Kestrelmark one observed field explains the individual effect with an R-squared of 0.986, and inside every segment a 3.0 coin flip stays unpredictable. S-, T- and X-learners, each with its documented weakness.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="CATE and uplift - learn causal inference with phoebe">
+<meta property="og:description" content="Practitioner session 7 of 10. The segment is recoverable, the person is not. Three meta-learners and what each one gets wrong.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/courses/p7-cate-and-uplift.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="CATE and uplift - learn causal inference with phoebe">
+<meta name="twitter:description" content="Recency explains the effect with an R-squared of 0.986. It still cannot tell you what the email will do to one person.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Practitioner session 7 · CATE and uplift - learn causal inference with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-causal-inference-with-phoebe</a> / Practitioner session 7 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Causal Inference with Phoebe · Practitioner session 7 of 10</div>
+    <h1>CATE and <span class="accent">uplift</span></h1>
+    <p class="sub">6.23 is a mean, and at Kestrelmark it is the mean of four very different numbers. The re-engagement email is worth +29.09 to a customer who lapsed 30 to 90 days ago, +2.10 to one still active, +1.04 to one dormant a year, and -8.87 to one who has already cancelled. One observed field, <code class="mono">recency</code>, explains the individual effect with an R-squared of 0.986. Tonight is about how much of that a model can recover from the table, exactly where the recovery stops, and which three recipes to run to find out.</p>
+    <div class="chip-row">
+      <span class="chip level">🔴 Hardest</span>
+      <span class="chip audience">Data scientists and analysts</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:5">3-22 · The average is a summary of a distribution</span>
+      <span class="a3" style="flex:4">22-40 · Build-along: three meta-learners</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>From one number to a function</h2>
+    </div>
+    <p class="lede">Everything up to session 6 produced a single figure for the whole list. That figure is what a policy needs when the policy is "send it or do not". The moment the policy becomes "send it to some people", the object of interest stops being a number and becomes a function of the customer, and almost every practical property changes with it: what can be validated, what can be plotted, and what a wrong answer costs.</p>
+
+    <div class="legend">
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">🔍 Every diagram zooms</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> Three working meta-learners on the Kestrelmark table, each with its documented weakness demonstrated rather than described. The one distinction that decides how much any of them can deliver: the <strong>segment</strong> effect here is almost fully recoverable, at an R-squared of <strong>0.986</strong> from a single field, and the <strong>individual</strong> effect is not recoverable at all, because inside every segment there is still a 3.0 coin flip no feature predicts. And the reason a covariate can belong in a CATE model without belonging in the adjustment set.</p>
+    </div>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Why the average stopped being enough<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A budget that covers the whole list makes heterogeneity a curiosity. A budget that covers a fifth of it makes heterogeneity the entire problem, because the question is no longer whether the campaign works but which fifth to spend it on. Those two questions can have opposite answers: a campaign with a healthy average can be worth running on half the list and worth withholding from the other half, and the average will never say so.</p>
+        <p>Kestrelmark is that case, measurably. The file carries a <code class="mono">recency</code> segment, and the email is worth a different amount in each of its four values: <strong>+2.10</strong> to a customer who is still active, <strong>+29.09</strong> to one who lapsed 30 to 90 days ago, <strong>+1.04</strong> to one dormant a year, and <strong>-8.87</strong> to one who has already cancelled once. Those four average to the 6.23 the bench recovers, and the 6.23 describes none of them.</p>
+        <p>There is a second layer underneath, and it is the one that sets the ceiling on every model tonight. Inside each of those four groups the effect still takes one of two values, 3.0 apart, according to whether the email is what tipped that person into opening. Nothing observed predicts which. So the honest shape of the answer is: the group is knowable, the person is not.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>The version that reaches a planning meeting is a proposal to cut a campaign whose average lift has fallen. Half the time the average fell because a large low-response segment was added to the list, and the original segment is performing exactly as it always did. Nothing in an average distinguishes those two stories.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The vocabulary, kept straight<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>ATE</strong> - the average treatment effect over the whole population. 6.23 here.</li>
+          <li><strong>CATE</strong> - the average effect among customers sharing a given set of covariate values. A function of those covariates. At Kestrelmark, conditioning on <code class="mono">recency</code> alone gives +2.10, +29.09, +1.04 and -8.87.</li>
+          <li><strong>Individual effect</strong> - one person's own difference between two worlds. Session 6, and it needs the structural equations.</li>
+          <li><strong>Effect modifier</strong> - a variable that changes the size of the effect. It need not cause the treatment, and if it does not, it is not a confounder. <code class="mono">recency</code> is the one here.</li>
+          <li><strong>Uplift</strong> - the industry word for a predicted CATE used for targeting. Same object, different room.</li>
+          <li><strong>Meta-learner</strong> - a recipe that turns any ordinary regression algorithm into a CATE estimator by arranging what it is fitted on.</li>
+          <li><strong>Base learner</strong> - the ordinary algorithm doing the fitting inside a meta-learner. Gradient boosting, ridge, a forest: the choice matters and it is a separate literature.</li>
+        </ul>
+        <p>The distinction that causes the most trouble in practice is the second against the third. A CATE describes a group defined by covariates and can be estimated from data. An individual effect describes a person and cannot. A targeting system that quietly slides from one to the other is making rung-3 claims on rung-2 evidence.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers what a CATE is, what it recovers here, and where it stops</span>
+      <h2>Conditional average treatment effects</h2>
+      <span class="tag concept">9 min live</span>
+    </div>
+    <p class="lede">The definition is short: the average treatment effect conditional on covariates. That makes it a function rather than a number, and the average effect of 6.23 is its mean over the population. On this data the function is far from flat, and one field carries almost all of it.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 366" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Four cards, one per recency segment, each showing the segment's conditional average effect and the two individual effects that sit inside it. Sure things, still active, are 22.4 percent of the file with a segment effect of plus 2.10, and the individuals inside are 1.0 or 4.0. Persuadables, lapsed 30 to 90 days, are 20.4 percent with a segment effect of plus 29.09, and the individuals are 28.0 or 31.0. Lost causes, dormant 12 months, are 49.3 percent with a segment effect of plus 1.04, and the individuals are 0.0 or 3.0. Sleeping dogs, who cancelled once, are 7.9 percent with a segment effect of minus 8.87, and the individuals are minus 10.0 or minus 7.0. Every card carries the same 3.0 gap between its two individual values. Recency alone explains the individual effect with an R-squared of 0.986, so a model can tell you which card a customer is on but never which of the two numbers on it is hers.">
+        <style>
+          .p7bT { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .p7bW { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .p7bD { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .p7bK { font: 800 24px Inter, sans-serif; fill: #0F1C1A; }
+          .p7bG { font: 800 24px Inter, sans-serif; fill: #0F6F66; }
+          .p7bX { font: 800 24px Inter, sans-serif; fill: #9A3412; }
+          .p7bS { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .p7bL { font: 400 10px Inter, sans-serif; fill: #5A6B68; }
+          .p7bP { font: 700 12px Inter, sans-serif; fill: #0F1C1A; }
+          .p7bB { font: 400 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p7bN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+
+        <rect x="14" y="14" width="852" height="30" rx="8" fill="#134E4A"></rect>
+        <text class="p7bT" x="30" y="34">The segment is recoverable: recency alone explains the individual effect, R-squared 0.986</text>
+
+        <rect x="14" y="54" width="12" height="12" rx="3" fill="#0F6F66"></rect>
+        <text class="p7bS" x="32" y="64">gains, worth paying for</text>
+        <rect x="180" y="54" width="12" height="12" rx="3" fill="#5EEAD4"></rect>
+        <text class="p7bS" x="198" y="64">barely moves</text>
+        <rect x="290" y="54" width="12" height="12" rx="3" fill="#9A3412"></rect>
+        <text class="p7bS" x="308" y="64">harmed by the email</text>
+
+        <rect x="14" y="74" width="200" height="32" rx="9" fill="#5EEAD4"></rect>
+        <text class="p7bD" x="114" y="95" text-anchor="middle">Sure thing</text>
+        <rect x="14" y="112" width="200" height="196" rx="9" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p7bS" x="114" y="134" text-anchor="middle">still active</text>
+        <text class="p7bK" x="114" y="176" text-anchor="middle">+2.10</text>
+        <text class="p7bL" x="114" y="194" text-anchor="middle">segment CATE</text>
+        <text class="p7bS" x="114" y="216" text-anchor="middle">22.4% of the file</text>
+        <line x1="30" y1="234" x2="198" y2="234" stroke="#C6D6D3" stroke-width="1"></line>
+        <text class="p7bL" x="114" y="252" text-anchor="middle">inside the segment</text>
+        <rect x="40" y="260" width="64" height="24" rx="7" fill="#fff" stroke="#C6D6D3"></rect>
+        <text class="p7bP" x="72" y="277" text-anchor="middle">1.0</text>
+        <rect x="124" y="260" width="64" height="24" rx="7" fill="#fff" stroke="#C6D6D3"></rect>
+        <text class="p7bP" x="156" y="277" text-anchor="middle">4.0</text>
+        <text class="p7bL" x="114" y="300" text-anchor="middle">a 3.0 coin flip apart</text>
+
+        <rect x="231" y="74" width="200" height="32" rx="9" fill="#0F6F66"></rect>
+        <text class="p7bW" x="331" y="95" text-anchor="middle">Persuadable</text>
+        <rect x="231" y="112" width="200" height="196" rx="9" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p7bS" x="331" y="134" text-anchor="middle">lapsed 30-90 days</text>
+        <text class="p7bG" x="331" y="176" text-anchor="middle">+29.09</text>
+        <text class="p7bL" x="331" y="194" text-anchor="middle">segment CATE</text>
+        <text class="p7bS" x="331" y="216" text-anchor="middle">20.4% of the file</text>
+        <line x1="247" y1="234" x2="415" y2="234" stroke="#C6D6D3" stroke-width="1"></line>
+        <text class="p7bL" x="331" y="252" text-anchor="middle">inside the segment</text>
+        <rect x="257" y="260" width="64" height="24" rx="7" fill="#fff" stroke="#C6D6D3"></rect>
+        <text class="p7bP" x="289" y="277" text-anchor="middle">28.0</text>
+        <rect x="341" y="260" width="64" height="24" rx="7" fill="#fff" stroke="#C6D6D3"></rect>
+        <text class="p7bP" x="373" y="277" text-anchor="middle">31.0</text>
+        <text class="p7bL" x="331" y="300" text-anchor="middle">a 3.0 coin flip apart</text>
+
+        <rect x="448" y="74" width="200" height="32" rx="9" fill="#5EEAD4"></rect>
+        <text class="p7bD" x="548" y="95" text-anchor="middle">Lost cause</text>
+        <rect x="448" y="112" width="200" height="196" rx="9" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p7bS" x="548" y="134" text-anchor="middle">dormant 12 months</text>
+        <text class="p7bK" x="548" y="176" text-anchor="middle">+1.04</text>
+        <text class="p7bL" x="548" y="194" text-anchor="middle">segment CATE</text>
+        <text class="p7bS" x="548" y="216" text-anchor="middle">49.3% of the file</text>
+        <line x1="464" y1="234" x2="632" y2="234" stroke="#C6D6D3" stroke-width="1"></line>
+        <text class="p7bL" x="548" y="252" text-anchor="middle">inside the segment</text>
+        <rect x="474" y="260" width="64" height="24" rx="7" fill="#fff" stroke="#C6D6D3"></rect>
+        <text class="p7bP" x="506" y="277" text-anchor="middle">0.0</text>
+        <rect x="558" y="260" width="64" height="24" rx="7" fill="#fff" stroke="#C6D6D3"></rect>
+        <text class="p7bP" x="590" y="277" text-anchor="middle">3.0</text>
+        <text class="p7bL" x="548" y="300" text-anchor="middle">a 3.0 coin flip apart</text>
+
+        <rect x="665" y="74" width="200" height="32" rx="9" fill="#9A3412"></rect>
+        <text class="p7bW" x="765" y="95" text-anchor="middle">Sleeping dog</text>
+        <rect x="665" y="112" width="200" height="196" rx="9" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p7bS" x="765" y="134" text-anchor="middle">cancelled once</text>
+        <text class="p7bX" x="765" y="176" text-anchor="middle">-8.87</text>
+        <text class="p7bL" x="765" y="194" text-anchor="middle">segment CATE</text>
+        <text class="p7bS" x="765" y="216" text-anchor="middle">7.9% of the file</text>
+        <line x1="681" y1="234" x2="849" y2="234" stroke="#C6D6D3" stroke-width="1"></line>
+        <text class="p7bL" x="765" y="252" text-anchor="middle">inside the segment</text>
+        <rect x="691" y="260" width="64" height="24" rx="7" fill="#fff" stroke="#C6D6D3"></rect>
+        <text class="p7bP" x="723" y="277" text-anchor="middle">-10.0</text>
+        <rect x="775" y="260" width="64" height="24" rx="7" fill="#fff" stroke="#C6D6D3"></rect>
+        <text class="p7bP" x="807" y="277" text-anchor="middle">-7.0</text>
+        <text class="p7bL" x="765" y="300" text-anchor="middle">a 3.0 coin flip apart</text>
+
+        <text class="p7bB" x="14" y="330">The four segment effects average to 6.23, and 6.23 is not one of them.</text>
+        <rect x="14" y="340" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="p7bN" x="38" y="352">A model can say which card a customer is on. It cannot say which of the two numbers on it is hers.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - four recoverable segments, and one irreducible coin flip inside each of them.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>A function, not a number<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Write the estimand out and the change is obvious: instead of one difference of means over the whole list, there is a difference of means inside every covariate cell, and the collection of those differences is the object. Averaging the function over the population returns the 6.23 from the bench, which is the first and cheapest check any CATE model should pass.</p>
+        <ul>
+          <li><strong>The covariates that define the cells are a choice.</strong> Condition on season alone and you get two numbers. Condition on <code class="mono">recency</code> alone and you get the four that matter here. The finer the conditioning, the closer to an individual and the noisier every cell.</li>
+          <li><strong>The rule is not "only what you adjusted for".</strong> It is "nothing that was forbidden". Colliders, mediators and anything downstream of the treatment stay out, for exactly the reasons session 2 gave. A pre-treatment variable that does not cause the treatment was never forbidden, and here it turns out to be the whole story.</li>
+          <li><strong>The function can be flat, and it is worth knowing that in advance.</strong> A finding that the effect does not vary with anything you measured is a result, not a failed project. On this data it is emphatically not flat: the widest gap between two segments is 29.09 against -8.87.</li>
+        </ul>
+        <div class="callout tip">
+          <p><strong>Check the mean before looking at anything else.</strong> If the average of your predicted effects is far from the average effect you already trust, the per-person numbers are not going to rescue it. That check costs one line and it catches most wiring mistakes.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>An effect modifier is not a confounder<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>This is the point that decides what goes into the feature list, and it is the one most often got wrong in both directions. <code class="mono">recency</code> shifts a customer's baseline spend and it sets how much the email is worth to her. What it does not do is influence whether she was sent the email. No arrow runs from <code class="mono">recency</code> into the treatment, so it opens no back door, and the adjustment set defended in session 3 is unchanged: <code class="mono">{season, tenure}</code>.</p>
+        <p>That is the difference between the two jobs a covariate can hold. Closing a back door is about identification and the set is forced on you. Describing how the effect varies is about the estimand you chose, and the set there is a modelling decision. A variable can hold the second job without the first.</p>
+      </div>
+    </details>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two small causal diagrams side by side, contrasting a confounder with an effect modifier. On the left, season has an arrow into the email and an arrow into spend, and the email has an arrow into spend: because season causes both, it opens a back door and must be in the adjustment set. On the right, recency has an arrow into spend only, and a dashed line marks it as sizing the arrow from the email to spend rather than causing the email. Because no arrow runs from recency into the email, it is not a confounder, the back-door set stays as season and tenure, and recency instead goes into the model as the variable the effect varies with.">
+        <style>
+          .p7cT { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .p7cK { font: 700 11px Inter, sans-serif; fill: #134E4A; }
+          .p7cW { font: 700 11px Inter, sans-serif; fill: #fff; }
+          .p7cD { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p7cB { font: 400 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p7cR { font: 700 10px Inter, sans-serif; fill: #9A3412; }
+          .p7cN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+        <defs>
+          <marker id="p7cAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5A6B68"></path></marker>
+        </defs>
+
+        <rect x="14" y="14" width="852" height="30" rx="8" fill="#0F6F66"></rect>
+        <text class="p7cT" x="30" y="34">Two different jobs: season closes a back door, recency sizes the effect</text>
+
+        <rect x="14" y="56" width="418" height="160" rx="9" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p7cK" x="30" y="76">CONFOUNDER · season, tenure</text>
+        <rect x="190" y="88" width="76" height="24" rx="7" fill="#134E4A"></rect>
+        <text class="p7cW" x="228" y="105" text-anchor="middle">season</text>
+        <rect x="60" y="146" width="76" height="24" rx="7" fill="#0F6F66"></rect>
+        <text class="p7cW" x="98" y="163" text-anchor="middle">email</text>
+        <rect x="320" y="146" width="76" height="24" rx="7" fill="#5EEAD4"></rect>
+        <text class="p7cD" x="358" y="163" text-anchor="middle">spend</text>
+        <line x1="210" y1="113" x2="115" y2="143" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p7cAr)"></line>
+        <line x1="246" y1="113" x2="341" y2="143" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p7cAr)"></line>
+        <line x1="136" y1="158" x2="316" y2="158" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p7cAr)"></line>
+        <text class="p7cB" x="30" y="192">Causes both the email and spend, so it opens a back door.</text>
+        <text class="p7cB" x="30" y="206">It must be in the adjustment set, and session 3 says why.</text>
+
+        <rect x="448" y="56" width="418" height="160" rx="9" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p7cK" x="464" y="76">EFFECT MODIFIER · recency</text>
+        <rect x="624" y="88" width="76" height="24" rx="7" fill="#134E4A"></rect>
+        <text class="p7cW" x="662" y="105" text-anchor="middle">recency</text>
+        <rect x="494" y="146" width="76" height="24" rx="7" fill="#0F6F66"></rect>
+        <text class="p7cW" x="532" y="163" text-anchor="middle">email</text>
+        <rect x="754" y="146" width="76" height="24" rx="7" fill="#5EEAD4"></rect>
+        <text class="p7cD" x="792" y="163" text-anchor="middle">spend</text>
+        <line x1="680" y1="113" x2="775" y2="143" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p7cAr)"></line>
+        <line x1="570" y1="158" x2="750" y2="158" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p7cAr)"></line>
+        <line x1="662" y1="113" x2="662" y2="152" stroke="#9A3412" stroke-width="1.5" stroke-dasharray="4 4"></line>
+        <text class="p7cR" x="654" y="136" text-anchor="end">sizes this arrow</text>
+        <text class="p7cB" x="464" y="192">No arrow into the email, so it is not a confounder at all.</text>
+        <text class="p7cB" x="464" y="206">It sizes the effect, so the CATE model conditions on it.</text>
+
+        <rect x="14" y="226" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="p7cN" x="38" y="238">The back-door set is still season and tenure. Adding recency changes what the model can say, not what it may claim.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - one variable closes a path, the other sets a slope, and only the first is forced on you.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The target is never observed, for anybody<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>This is the property that makes the whole area strange, and it is worth saying slowly. In ordinary supervised learning every training row carries the answer: the price the house sold for, the class of the image. A model is fitted to that answer and scored against held-out copies of it.</p>
+        <p>There is no such column here. A row records what the customer spent under the treatment she received, and the treatment effect is a difference between that and what she would have spent under the other one. No row contains both. The quantity being modelled has never been observed for a single customer in the table, and it never will be.</p>
+        <ul>
+          <li><strong>So there is no loss function on the target.</strong> Every method builds an indirect construction: a difference of two fitted surfaces, a transformed outcome, a pseudo-effect. What gets minimised is always a proxy.</li>
+          <li><strong>And there is no honest held-out score.</strong> A validation set has the same missing column, so the usual habit of trusting the leaderboard does not transfer. Session 8 covers what can be done instead by ranking rather than by scoring.</li>
+          <li><strong>Which is why model comparison here is unusually hard</strong>, and why running three learners and comparing their disagreement is not a luxury. Disagreement is one of the few signals available.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>The most expensive version of this mistake is an uplift model reported with an R-squared on spend. The number is computed against observed outcomes, not against effects, so it describes how well the outcome was predicted and says nothing at all about the targeting. Models with excellent fit routinely rank customers no better than chance.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>How far the recovery goes, and exactly where it stops<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Because Kestrelmark is generated from a written model, the per-person effect can be computed rather than estimated, which is what session 6 did. Doing it for all 5,000 customers gives eight values and no others. Every one of them is a segment's own direct effect, plus 3.0 when the email is the thing that tipped that person into opening.</p>
+        <table class="clean">
+          <thead>
+            <tr><th>Individual effect</th><th>Customers</th><th>Segment</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>-10.0</td><td>245</td><td>sleeping dog</td></tr>
+            <tr><td>-7.0</td><td>148</td><td>sleeping dog</td></tr>
+            <tr><td>0.0</td><td>1,614</td><td>lost cause</td></tr>
+            <tr><td>+1.0</td><td>709</td><td>sure thing</td></tr>
+            <tr><td>+3.0</td><td>851</td><td>lost cause</td></tr>
+            <tr><td>+4.0</td><td>411</td><td>sure thing</td></tr>
+            <tr><td>+28.0</td><td>650</td><td>persuadable</td></tr>
+            <tr><td>+31.0</td><td>372</td><td>persuadable</td></tr>
+          </tbody>
+        </table>
+        <p>Regress that column on <code class="mono">recency</code> alone and the R-squared is <strong>0.986</strong>. Almost all of the variation in who the email helps is one field in the warehouse, which is unusually kind and is the reason a CATE model has anything to find here at all. What is left over is the part no feature can reach.</p>
+        <ul>
+          <li><strong>The segment effect is the ceiling.</strong> A perfect model, given every observed column, converges on +2.10, +29.09, +1.04 and -8.87. That is the best any of tonight's three learners could possibly do, and it is enough for every decision session 8 makes.</li>
+          <li><strong>The individual effect is out of reach, and not for want of data.</strong> Two persuadables with identical covariates get identical predictions, while one of them truly gets 28.0 and the other 31.0. What separates them is whether the email happened to be the thing that made them open it, and that is an unobserved draw rather than a missing column.</li>
+          <li><strong>So the right unit of a targeting promise is a group.</strong> "Customers who lapsed 30 to 90 days ago respond at 29.09" is defensible. "This customer will respond at 29.09" is not, and the second sentence is what a ranked file with a name against every score invites people to say.</li>
+        </ul>
+        <div class="callout tip">
+          <p><strong>Say the ceiling out loud before you build.</strong> Ask what mechanism in the world would make the effect vary, and whether any column you hold could capture it. Here the answer was a field the business already understood. When the answer is "nothing obvious", a flat function is the likely finding and a beautiful predicted spread would be the model describing itself.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>What the four numbers are worth, and where that argument goes<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Estimating the effect per person is tonight. Turning it into a send list is session 8. It is still worth seeing why the estimate matters, because the gap is not marginal.</p>
+        <p>Leader session 5 puts Kestrelmark's fully loaded cost at <strong>7.00</strong> per send, in the same units as spend. Against that bar, only the persuadable segment clears: 29.09 against 7.00. Sure things at 2.10, lost causes at 1.04 and sleeping dogs at -8.87 all lose money, the last group twice over. A blanket send to the whole file is worth <strong>-3,848</strong>; sending only to the 20.4 percent persuadable segment is worth <strong>+22,578</strong>.</p>
+        <p>That comparison is the payoff of estimating a function instead of a number, and it is the reason to get the segments right rather than merely to get a ranking. How to choose the depth of the send, how to score one ranking against another, and how to read the curve that finds the stopping point, all belong to session 8, which consumes the per-customer predictions this session produces.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2 ============ -->
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers the three meta-learners and their published weaknesses</span>
+      <h2>Three meta-learners and their documented weaknesses</h2>
+      <span class="tag concept">10 min live</span>
+    </div>
+    <p class="lede">The three below are the standard family (Künzel and co-authors, 2019). They are recipes rather than algorithms: each one says how to arrange the data and what to fit on it, and any ordinary regression can sit inside. Each also comes with a weakness that is documented rather than folklore, and the weaknesses do not overlap, which is exactly why running all three is informative.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three meta-learners drawn as wiring diagrams with their documented weaknesses underneath. The S-learner fits one model on the covariates plus the treatment and scores each row at one and at zero, and its weakness is that regularisation biases the treatment effect toward zero and a weak treatment can be ignored entirely. The T-learner fits a separate model per arm and differences them, avoiding a missed weak effect but still regularised and now fitting two models on smaller samples. The X-learner imputes the missing arm, fits on the resulting pseudo-effects and weights the two fits by propensity, which suits treated and control imbalance but adds two more things that can be wrong. A footnote records that all three inherit the identification assumptions, so a bad adjustment set personalises a wrong answer.">
+        <style>
+          .p7aT { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .p7aL { font: 700 11px Inter, sans-serif; fill: #fff; }
+          .p7aI { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p7aB { font: 400 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p7aM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .p7aH { font: 800 11px Inter, sans-serif; fill: #9A3412; }
+          .p7aN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+        <defs>
+          <marker id="p7aAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5A6B68"></path></marker>
+        </defs>
+
+        <rect x="14" y="14" width="268" height="34" rx="9" fill="#0F6F66"></rect>
+        <text class="p7aT" x="30" y="36">S-learner · one model</text>
+        <rect x="28" y="66" width="104" height="26" rx="7" fill="#134E4A"></rect>
+        <text class="p7aL" x="80" y="84" text-anchor="middle">features + T</text>
+        <rect x="164" y="66" width="104" height="26" rx="7" fill="#0F6F66"></rect>
+        <text class="p7aL" x="216" y="84" text-anchor="middle">one model</text>
+        <line x1="136" y1="79" x2="160" y2="79" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p7aAr)"></line>
+        <line x1="216" y1="94" x2="216" y2="118" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p7aAr)"></line>
+        <rect x="42" y="122" width="212" height="28" rx="7" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p7aI" x="148" y="140" text-anchor="middle">score at T=1, then at T=0</text>
+        <text class="p7aM" x="148" y="168" text-anchor="middle">the difference is the CATE</text>
+        <rect x="14" y="184" width="268" height="86" rx="8" fill="#F0FDFA" stroke="#9A3412"></rect>
+        <text class="p7aH" x="30" y="204">Documented weakness</text>
+        <text class="p7aB" x="30" y="224">regularisation biases the effect</text>
+        <text class="p7aB" x="30" y="242">toward zero; a treatment that is</text>
+        <text class="p7aB" x="30" y="260">weak against the rest is dropped</text>
+
+        <rect x="306" y="14" width="268" height="34" rx="9" fill="#134E4A"></rect>
+        <text class="p7aT" x="322" y="36">T-learner · two models</text>
+        <rect x="320" y="66" width="112" height="26" rx="7" fill="#0F6F66"></rect>
+        <text class="p7aL" x="376" y="84" text-anchor="middle">treated model</text>
+        <rect x="448" y="66" width="112" height="26" rx="7" fill="#0F6F66"></rect>
+        <text class="p7aL" x="504" y="84" text-anchor="middle">control model</text>
+        <line x1="376" y1="94" x2="410" y2="118" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p7aAr)"></line>
+        <line x1="504" y1="94" x2="470" y2="118" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p7aAr)"></line>
+        <rect x="334" y="122" width="212" height="28" rx="7" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p7aI" x="440" y="140" text-anchor="middle">subtract one from the other</text>
+        <text class="p7aM" x="440" y="168" text-anchor="middle">each arm fitted on its own rows</text>
+        <rect x="306" y="184" width="268" height="86" rx="8" fill="#F0FDFA" stroke="#9A3412"></rect>
+        <text class="p7aH" x="322" y="204">Documented weakness</text>
+        <text class="p7aB" x="322" y="224">cannot miss a weak effect, but</text>
+        <text class="p7aB" x="322" y="242">is still regularised and now fits</text>
+        <text class="p7aB" x="322" y="260">two models on smaller samples</text>
+
+        <rect x="598" y="14" width="268" height="34" rx="9" fill="#0F6F66"></rect>
+        <text class="p7aT" x="614" y="36">X-learner · impute and weight</text>
+        <rect x="612" y="62" width="240" height="24" rx="7" fill="#134E4A"></rect>
+        <text class="p7aL" x="626" y="79">1 · impute the missing arm</text>
+        <rect x="612" y="92" width="240" height="24" rx="7" fill="#0F6F66"></rect>
+        <text class="p7aL" x="626" y="109">2 · fit on the pseudo-effects</text>
+        <rect x="612" y="122" width="240" height="24" rx="7" fill="#5EEAD4"></rect>
+        <text class="p7aI" x="626" y="139">3 · weight the two by propensity</text>
+        <text class="p7aM" x="732" y="168" text-anchor="middle">built for imbalanced arms</text>
+        <rect x="598" y="184" width="268" height="86" rx="8" fill="#F0FDFA" stroke="#9A3412"></rect>
+        <text class="p7aH" x="614" y="204">Documented weakness</text>
+        <text class="p7aB" x="614" y="224">leans on an imputation step and</text>
+        <text class="p7aB" x="614" y="242">a weighting model, so there are</text>
+        <text class="p7aB" x="614" y="260">two more things to get wrong</text>
+
+        <rect x="14" y="288" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="p7aN" x="38" y="300">All three inherit the identification assumptions. A bad adjustment set personalises a wrong answer.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - one model, two models, two models plus imputation and weighting.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The S-learner, and the effect it can lose entirely<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Fit one model on the covariates with the treatment included as an extra feature, then score every row twice, once with that feature set to 1 and once with it set to 0. The difference is the predicted effect. It is the simplest recipe, it uses all the rows for one fit, and it is usually the first thing anybody writes.</p>
+        <ul>
+          <li><strong>The documented weakness is regularisation.</strong> Because the base learner is normally regularised, the estimated treatment effect is biased toward zero, and the treatment column is just one feature competing with all the others for a share of the penalty budget.</li>
+          <li><strong>If the treatment is weak relative to the other features, it can be ignored entirely.</strong> A tree-based learner may never split on it; a penalised linear one may shrink its coefficient to nothing. The output is then a predicted effect of zero everywhere, which looks like a clean finding of no heterogeneity.</li>
+          <li><strong>It is worst exactly where it matters.</strong> A strong treatment survives the penalty; a marginal one, which is the case where targeting could actually help, is the one that disappears.</li>
+        </ul>
+        <p>The failure is silent in the same way a mediator is silent in session 2. Nothing errors, the outcome fit looks respectable, and the targeting recommendation is "it makes no difference who you send to".</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The T-learner, and what it trades for that safety<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Fit one model on the treated rows only and another on the control rows only, then difference their predictions for every customer. The treatment can no longer be shrunk away, because it is never a feature: it is the reason there are two models.</p>
+        <ul>
+          <li><strong>It avoids missing a weak effect</strong>, which is the specific fault it exists to fix, and that is enough reason to always run it alongside an S-learner.</li>
+          <li><strong>It still suffers regularisation</strong>, now in both fits at once, and the two penalties do not cancel. Their difference can wander in ways neither surface would on its own.</li>
+          <li><strong>And it fits two models on smaller samples.</strong> Each learner sees only its own arm, so where one arm is thin the surface there is poorly estimated and the difference inherits that noise directly.</li>
+        </ul>
+        <div class="callout tip">
+          <p><strong>Look at the arm sizes before choosing, segment by segment.</strong> A campaign sent to 15 percent of the list gives the treated model a seventh of the rows, and the T-learner's predictions will be worst precisely in the covariate regions the campaign has rarely reached, which are the regions a targeting exercise is about to expand into. Sleeping dogs are 7.9 percent of Kestrelmark's file to begin with, so their cells are thin in both arms.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The X-learner, built for the imbalance that is normal outside experiments<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Three moves. First, impute the counterfactual outcome for every row using the other arm's model: for a treated customer, what the control surface says she would have spent. Second, take the difference between her observed outcome and that imputed one, which gives a pseudo-effect for every row, and regress on those. Third, combine the two resulting fits, weighting them by propensity so that each region leans on the arm that has more data there.</p>
+        <ul>
+          <li><strong>It is particularly suited to treated and control imbalance</strong>, which is the norm outside experiments. Observational campaign data is almost never balanced, and this is the recipe that was designed around that fact.</li>
+          <li><strong>The propensity model here is a component, not a topic.</strong> It appears as a weight between two fits. Fitting one as an estimator in its own right, with inverse probability weighting or doubly robust estimation on top, belongs to <code class="mono">learn-experimentation-with-phoebe</code> and is deliberately not done here.</li>
+          <li><strong>The cost is two extra moving parts.</strong> The imputation is a model, the weighting is a model, and an error in either propagates into every per-person number. More structure buys more places to be wrong.</li>
+        </ul>
+        <p>Fitting any of these three well, choosing base learners, tuning them without a validation target, and getting honest variance out of them, is a modelling exercise with its own substantial literature; what matters here is knowing which recipe fails in which direction.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>All three inherit every assumption from sessions 2 and 3<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Nothing in any of these recipes revisits identification. They take an adjustment set as given and produce a function on top of it, which means the covariate set on the inside is the same object that sessions 2 and 3 spent their time defending. Put the wrong columns in and the model does not fail loudly; it personalises the failure.</p>
+        <ul>
+          <li><strong>A collider in the feature set is still a collider.</strong> Adding the loyalty score moves the average from 6.56 to 5.26, and there is no reason it improves per segment. It biases every cell and the biases need not point the same way.</li>
+          <li><strong>A mediator changes the estimand at every level of granularity.</strong> Including the open flag drops the average to 5.48, close to the mean direct effect of 5.16, so every predicted number becomes a conditional direct effect and the whole surface answers the subject-line question rather than the campaign question.</li>
+          <li><strong>A confounder left out is left out everywhere.</strong> The naive comparison reads 10.54 against a truth of 6.23, and that +4.31 of leakage does not distribute itself evenly; it lands in whichever segments are most affected by season and tenure, which is the shape of a targeting rule built on nothing.</li>
+          <li><strong>Anything downstream of the treatment is the worst of them.</strong> Adding the support ticket takes the average to 2.59. A post-treatment column in a feature list is a targeting model conditioning on the future.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>The reason this is worth insisting on is that per-person output looks far more authoritative than an average. A single lift figure invites the question "compared with what". A ranked list of 5,000 customers with a score against each name invites action, and the assumption set that produced it never travels with the file.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>What a negative predicted segment does and does not mean<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Every learner will produce some customers with negative predicted effects, and the two available mistakes are equal and opposite: naming a harmed segment that is only variance, and dismissing a real one as variance. Kestrelmark punishes the second. The sleeping dogs are <strong>7.9 percent</strong> of the file at <strong>-8.87</strong> each, and their individual effects are -10.0 or -7.0. A negative region here is a finding, and a model that smooths it away has lost the most valuable thing in the data.</p>
+        <ul>
+          <li><strong>The first check is whether the negative region survives a change of learner.</strong> If the S-, T- and X-learners nominate different customers, there is no segment, only variance. If all three land on the same covariate values, that is about as much validation as this problem allows.</li>
+          <li><strong>The second check is whether a mechanism exists.</strong> Harm needs a story: an unsubscribe, an irritation, a cannibalised purchase. Here the story is in the segment definition itself, since these are customers who have already cancelled once and are being reminded of it.</li>
+          <li><strong>The third is sample size in the cell.</strong> Small cells produce extreme predictions in both directions, and the most extreme predictions in any uplift model are usually its least reliable ones. The smallest true segment is also the harmed one, which is the awkward combination.</li>
+        </ul>
+        <p>So the discipline is not scepticism about negatives, it is the same discipline as everywhere else: a named group, a stated mechanism, and a number that holds up when the recipe changes.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>Three meta-learners on the same table</h2>
+      <span class="tag demo">★ 18 min · everyone builds</span>
+    </div>
+    <p class="lede">All three learners, on the back-door set plus the effect modifier, checked against the known average of 6.23 before anything else happens. Then the segment recovery against the four true values, then the two segments where the learners disagree.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Fix the feature set first, in writing, and say why each column is there.</strong> Season and tenure because they close the back doors. Recency because the effect varies with it and nothing forbids it. Loyalty, opened and ticket stay out for the same reasons they stayed out of the average, and writing that line before any code prevents the feature-selection habit from quietly reopening session 2.</p>
+      </div>
+      <div class="step">
+        <p><strong>Hold out 1,500 rows and do not touch them.</strong> Session 8 scores a ranking on those rows and every learner tonight must be blind to them, or the curve next session is measuring memory.</p>
+      </div>
+      <div class="step">
+        <p><strong>Build the S-learner.</strong> One base learner on the covariates plus the treatment column, scored twice per row. Keep the fit ordinary; the point is not a good model, it is a comparable one.</p>
+      </div>
+      <div class="step">
+        <p><strong>Build the T-learner.</strong> Two fits, one per arm, differenced over the whole table. Note how many rows each arm actually has, because that number explains most of what you see later.</p>
+      </div>
+      <div class="step">
+        <p><strong>Build the X-learner.</strong> Impute the other arm for every row, form the pseudo-effects, fit on them, then weight the two fits by propensity. Three more lines than the T-learner and two more chances to be wrong.</p>
+      </div>
+      <div class="step">
+        <p><strong>Sanity check every one against 6.23 before looking at any individual number.</strong> The mean of the predicted effects should land near the average effect you already trust. A learner that fails this has a wiring problem, not a heterogeneity finding.</p>
+      </div>
+      <div class="step">
+        <p><strong>Score the segments, not the customers.</strong> Group the predictions by <code class="mono">recency</code> and compare the four means against +2.10, +29.09, +1.04 and -8.87. That is the only honest scoreboard available tonight, and it is available only because this data is generated.</p>
+      </div>
+      <div class="step">
+        <p><strong>Make the S-learner's documented weakness visible.</strong> Add noise columns, turn the regularisation up, and watch the S-learner's mean slide toward zero while the T-learner's holds. That drift is the published failure mode reproduced on your own screen.</p>
+      </div>
+      <div class="step">
+        <p><strong>Find the disagreement segment and say what you would do about it.</strong> Write it into the record with the covariate values that define it. A disagreement segment is a request for more data, not a targeting list.</p>
+      </div>
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - the three learners, on the back-door set plus the effect modifier</span>
+import numpy as np, pandas as pd
+from sklearn.ensemble import GradientBoostingRegressor as GBR
+from sklearn.linear_model import LogisticRegression
+
+df    = pd.read_csv("kestrelmark.csv")   # 5,000 rows, one per customer
+TRUTH = 6.23                             # the population average, known by construction
+
+# season and tenure close the back doors. recency is an EFFECT MODIFIER: it does
+# not cause the email, so it was never needed for identification, and the effect
+# varies with it, so the CATE model needs it. loyalty is a pre-treatment collider,
+# opened is a mediator, ticket is a post-treatment collider: none of the three
+# become safe by being used to describe a segment.
+FEATURES = ["season", "tenure", "recency"]
+
+held  = df.iloc[-1500:]                  # session 8 scores on these. nothing below sees them.
+train = df.iloc[: -len(held)]
+X = train[FEATURES].to_numpy(float)
+t = train["email"].to_numpy(int)
+y = train["spend"].to_numpy(float)
+print("treated rows", t.sum(), "control rows", len(t) - t.sum())
+
+def s_learner(X, t, y, base=GBR):
+    """One model with the treatment as a feature. Score each row at 1 and at 0."""
+    m = base(random_state=0).fit(np.column_stack([X, t]), y)
+    one, zero = np.ones(len(X)), np.zeros(len(X))
+    return m, m.predict(np.column_stack([X, one])) - m.predict(np.column_stack([X, zero]))
+
+def t_learner(X, t, y, base=GBR):
+    """Separate models per arm, differenced. The treatment cannot be shrunk away."""
+    m1 = base(random_state=0).fit(X[t == 1], y[t == 1])
+    m0 = base(random_state=0).fit(X[t == 0], y[t == 0])
+    return (m1, m0), m1.predict(X) - m0.predict(X)
+
+def x_learner(X, t, y, base=GBR):
+    """Impute the missing arm, fit on the pseudo-effects, weight by propensity.
+       The propensity model is a component here, not a topic of its own."""
+    m1 = base(random_state=0).fit(X[t == 1], y[t == 1])
+    m0 = base(random_state=0).fit(X[t == 0], y[t == 0])
+    d1 = y[t == 1] - m0.predict(X[t == 1])       # treated: observed minus imputed control
+    d0 = m1.predict(X[t == 0]) - y[t == 0]       # control: imputed treated minus observed
+    g1 = base(random_state=0).fit(X[t == 1], d1)
+    g0 = base(random_state=0).fit(X[t == 0], d0)
+    ps = LogisticRegression(max_iter=1000).fit(X, t).predict_proba(X)[:, 1]
+    return (g1, g0, ps), ps * g0.predict(X) + (1.0 - ps) * g1.predict(X)
+
+_, s_hat        = s_learner(X, t, y)
+_, t_hat        = t_learner(X, t, y)
+xlearner, x_hat = x_learner(X, t, y)
+cate = {"S": s_hat, "T": t_hat, "X": x_hat}
+
+# the first check, before any per-person number is looked at
+for name, c in cate.items():
+    print(f"{name}-learner  mean {c.mean():6.2f}   against a truth of {TRUTH}")
+    </div>
+
+    <div class="callout tip">
+      <p><strong>The mean is a wiring check, not a result.</strong> Landing near 6.23 says the plumbing is right and says nothing about whether the per-customer spread is real. Landing far from it says stop, because no amount of segment analysis repairs a learner that cannot recover the number you already know.</p>
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - the only honest scoreboard: the four segments</span>
+# the four true segment effects, from the model the data was generated by
+CATE_TRUE = {0: 2.10, 1: 29.09, 2: 1.04, 3: -8.87}
+NAMES     = {0: "sure thing", 1: "persuadable", 2: "lost cause", 3: "sleeping dog"}
+
+seg = train["recency"].to_numpy(int)
+for r in [0, 1, 2, 3]:
+    row = " ".join(f"{k} {cate[k][seg == r].mean():7.2f}" for k in ["S", "T", "X"])
+    print(f"recency {r} {NAMES[r]:<13} true {CATE_TRUE[r]:7.2f}   {row}")
+
+# and the ceiling on all of it. the per-person effect is computable only because
+# kestrelmark is generated: session 6 built it from the structural equations.
+tau = df["true_effect"].to_numpy(float)          # eight distinct values, no others
+d   = pd.get_dummies(df["recency"], drop_first=True).to_numpy(float)
+d   = np.column_stack([np.ones(len(d)), d])
+fit = d @ np.linalg.lstsq(d, tau, rcond=None)[0]
+print("R-squared of recency on the individual effect:",
+      round(1 - ((tau - fit) ** 2).sum() / ((tau - tau.mean()) ** 2).sum(), 3))   # 0.986
+
+# 0.986, and what is left over is not a missing column. within every segment the
+# effect is still two values 3.0 apart, decided by whether the email was the thing
+# that made that person open it. no feature in any warehouse predicts that draw.
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Report the segment, promise the segment.</strong> The four means above are what a learner can be held to. The per-row numbers underneath them are the same four means with noise on top, and the moment they are exported with a customer id beside each one, somebody downstream will read them as a prediction about a person.</p>
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - reproduce the S-learner's regularisation weakness</span>
+from sklearn.linear_model import Ridge
+
+# give the treatment 40 competitors and a penalty to compete against. this is
+# the documented failure: the treatment is one feature among many, and a
+# regularised fit is happy to shrink it toward zero. the T-learner never puts
+# the treatment in a penalty, so it cannot lose it the same way.
+rng   = np.random.default_rng(0)
+noise = rng.normal(size=(len(X), 40))
+X_big = np.column_stack([X, noise])
+
+for alpha in [1.0, 100.0, 10000.0]:
+    ridge = lambda random_state=0: Ridge(alpha=alpha)
+    s  = s_learner(X_big, t, y, base=ridge)[1].mean()
+    tt = t_learner(X_big, t, y, base=ridge)[1].mean()
+    print(f"alpha {alpha:>8}   S {s:6.2f}   T {tt:6.2f}")
+
+# watch the S column slide toward zero as the penalty rises while the T column
+# holds. a predicted effect of zero everywhere is not a finding of no
+# heterogeneity; here it would be the penalty eating the treatment column, on
+# data where the true segments run from -8.87 to +29.09.
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - the distributions, and where the three disagree</span>
+import matplotlib.pyplot as plt
+
+P = np.column_stack([cate["S"], cate["T"], cate["X"]])
+
+fig, ax = plt.subplots(figsize=(7, 4), dpi=300)
+for i, name in enumerate(["S", "T", "X"]):
+    ax.hist(P[:, i], bins=40, histtype="step", label=f"{name}-learner")
+ax.axvline(TRUTH, linestyle="--", label="average 6.23")
+for r, v in CATE_TRUE.items():
+    ax.axvline(v, linestyle=":", label=f"{NAMES[r]} {v}")
+ax.set_xlabel("predicted individual effect"); ax.legend()
+fig.savefig("cate-distributions.png", bbox_inches="tight")
+
+# the truth is four spikes, and the learners should show four clumps. a single
+# smooth hill centred near 6.23 means the model never found the segments.
+spread = P.max(axis=1) - P.min(axis=1)
+messy  = spread &gt;= np.quantile(spread, 0.90)
+print("where the three disagree most:", train.loc[messy, FEATURES].mean().round(2).to_dict())
+
+# hand the held-out rows and the fitted x-learner to session 8, which turns a
+# per-customer number into a treat or do-not-treat decision.
+held.to_csv("kestrelmark_holdout.csv", index=False)
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Write the segments down by their covariate values, not by customer id.</strong> A list of ids is a snapshot that ages out within a quarter and cannot be argued with. "Lapsed 30 to 90 days" is a rule, it can be checked next quarter, and somebody can disagree with it in a review, which is the only thing a written rule is for.</p>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before session 8</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li>List the covariates you would put in a CATE model for one intervention you own, and split the list in two: the ones that are there because they close a back door, and the ones that are there because you believe the effect varies with them. Anything that fits neither column comes out.</li>
+      <li>For each variable in the second list, write the one sentence of mechanism that says why the effect would be larger or smaller there. A variable with no sentence is a variable you are hoping about.</li>
+      <li>Run all three learners with the adjustment set you defended in session 3, and record each one's mean predicted effect beside the average effect you already trust.</li>
+      <li>Reproduce the S-learner drift on your own data: raise the regularisation in three steps and record what happens to the S mean and the T mean.</li>
+      <li>Count the rows in each arm, within each candidate segment rather than overall. The segment with the thinnest treated cell is where all three learners will be least trustworthy, and it is often the small harmed group that matters most.</li>
+      <li>Name one segment your model puts below zero. Say whether you believe it, and give the mechanism or the reason you do not. Bring it to session 8, where the targeting rule gets scored against sending at random.</li>
+    </ol>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">An S-learner with a heavily regularised base learner returns a predicted effect of almost exactly zero for every customer, while the T-learner on the same covariates returns a mean near 6.23. What is the most likely explanation?</p>
+      <button class="qopt" type="button">A · The effect genuinely does not vary, and the S-learner is the more trustworthy of the two because it uses all rows in one fit</button>
+      <button class="qopt" type="button">B · The T-learner is overfitting, since two models on split samples always produce a larger mean</button>
+      <button class="qopt" type="button">C · The penalty shrank the treatment feature toward zero, which is the S-learner's documented weakness: the treatment competes with every other feature and a weak one can be ignored entirely</button>
+      <p class="qwhy">The treatment is one column among many inside an S-learner, so regularisation biases the effect toward zero. The T-learner never puts the treatment in a penalty because it is the reason there are two models, which is exactly the fault it exists to avoid. On this data a flat zero would be badly wrong: the true segments run from -8.87 to +29.09.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">A learner recovers Kestrelmark's four segment effects almost exactly. Two persuadable customers with identical covariates get the same prediction, but one truly gains 28.0 and the other 31.0. What should be concluded?</p>
+      <button class="qopt" type="button">A · The model is underfitted, and a richer base learner or a finer conditioning set would separate the two</button>
+      <button class="qopt" type="button">B · Nothing is missing: the segment is recoverable at an R-squared of 0.986 and the individual is not, because what separates the two is an unobserved draw rather than a column</button>
+      <button class="qopt" type="button">C · The 3.0 gap is measurement error in the outcome and should be removed before the model is fitted</button>
+      <p class="qwhy">Inside every segment the effect takes one of two values 3.0 apart, according to whether the email is what tipped that person into opening. No observed feature predicts that draw, so identical covariates must give identical predictions. The group is the unit a targeting promise can be made about; the person is not.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">A team adds the loyalty score to the covariate set of an X-learner, reasoning that a segment description can use any column since nothing is being adjusted away. What follows?</p>
+      <button class="qopt" type="button">A · Nothing, because conditioning for description is a different operation from conditioning for adjustment</button>
+      <button class="qopt" type="button">B · The same M-bias that moved the average from 6.56 to 5.26 now lands inside every cell, and the output is a confidently personalised wrong answer</button>
+      <button class="qopt" type="button">C · The predictions become noisier but stay unbiased, since the collider is uncorrelated with the treatment</button>
+      <p class="qwhy">A meta-learner takes the adjustment set as given and builds a function on top of it. Every identification assumption from sessions 2 and 3 is inherited, and a bad set does not fail loudly here; it distributes the failure across a ranked list of names. Note the contrast with recency, which is safe precisely because it causes nothing about the treatment.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ COVERAGE ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What tonight maps to</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">CATE as a function rather than a number</span>
+        <span class="note">The effect conditional on covariates, with the average effect of 6.23 as its mean over the population, and that mean as the first wiring check.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Effect modification against confounding</span>
+        <span class="note">Recency sizes the effect and shifts baseline spend but does not cause the email, so the back-door set stays as season and tenure while the CATE model conditions on recency as well.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">How far recovery goes, and where it stops</span>
+        <span class="note">Recency alone explains the individual effect at an R-squared of 0.986. Inside every segment the effect is still two values 3.0 apart that nothing observed predicts.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">The fundamental difficulty</span>
+        <span class="note">The target is never observed for anybody, so there is no label to fit against and no honest held-out score. Every method is an indirect construction.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">S-, T- and X-learners with their documented weaknesses</span>
+        <span class="note">Künzel and co-authors, 2019. Regularisation toward zero and a lost weak effect; two fits on smaller samples; imputation plus propensity weighting for imbalanced arms.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Inherited identification assumptions</span>
+        <span class="note">A CATE model built on a bad adjustment set personalises the bias. Adding the loyalty score moves the average from 6.56 to 5.26 and does not improve per segment.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">Qini curves, AUUC and who to treat</span>
+        <span class="note">Session 8. Tonight produces the per-customer numbers and the held-out rows; scoring a ranking, choosing how deep to send, and the cost arithmetic at 7.00 all happen there.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">Individual counterfactuals</span>
+        <span class="note">Session 6. The eight true per-person effects come from the structural model, which is why the R-squared ceiling can be measured here at all.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">Base learner choice, tuning and honest variance</span>
+        <span class="note">A modelling exercise with its own literature. What is fixed here is which recipe fails in which direction, not how to fit any of them well.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill inkpill">·</span>
+        <span class="name">Propensity scores as an estimator, IPW, doubly robust, difference-in-differences, synthetic control, DoWhy</span>
+        <span class="note">Not covered by design, in any session. Propensity appears tonight only as the weight inside the X-learner; estimating effects from observational data belongs to learn-experimentation-with-phoebe.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Session 7 cheat sheet</h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>A function, not a number</b><span>The effect conditional on covariates. 6.23 is its mean, and none of the four segments is 6.23.</span></div>
+      <div class="cheat-item"><b>The segment is recoverable</b><span>Recency alone explains the individual effect at an R-squared of 0.986. +2.10, +29.09, +1.04, -8.87.</span></div>
+      <div class="cheat-item"><b>The person is not</b><span>Inside every segment the effect is two values 3.0 apart, decided by an unobserved draw. No feature reaches it.</span></div>
+      <div class="cheat-item"><b>Effect modifier, not confounder</b><span>Recency sizes the effect without causing the email, so it enters the model and not the back-door set.</span></div>
+      <div class="cheat-item"><b>S-learner</b><span>One model, treatment as a feature. Regularisation biases it toward zero and can drop a weak effect entirely.</span></div>
+      <div class="cheat-item"><b>T-learner</b><span>Two models differenced. Cannot lose a weak effect, still regularised, two fits on smaller samples.</span></div>
+      <div class="cheat-item"><b>X-learner</b><span>Impute, fit on pseudo-effects, weight by propensity. Built for the arm imbalance that is normal outside experiments.</span></div>
+      <div class="cheat-item"><b>Assumptions are inherited</b><span>A collider in the covariate set personalises the bias: loyalty moves the average from 6.56 to 5.26.</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pagefoot">
+  <div class="wrap">
+    <p>Practitioner session 7 of 10 · learn-causal-inference-with-phoebe · by Phoebe Fu</p>
+    <nav class="pagenav">
+      <a href="p6-counterfactuals.html">← Practitioner session 6 · Counterfactuals</a>
+      <a href="p8-qini-and-who-to-treat.html">Practitioner session 8 · Qini curves and who to treat →</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

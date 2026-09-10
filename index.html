@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Sixteen sessions on the causal model rather than the estimator: the ladder of causation, whether a question is answerable at all, what must never be conditioned on, counterfactuals, and who to treat. A bench scores your adjustment set against a truth known by construction. Free, by Phoebe Fu.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="Learn Causal Inference with Phoebe">
+<meta property="og:description" content="The right adjustment set leaves only noise. Every column in the table misses the true effect by 5.25.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Learn Causal Inference with Phoebe">
+<meta name="twitter:description" content="The right adjustment set leaves only noise. Every column in the table misses the true effect by 5.25.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Learn Causal Inference with Phoebe</title>
+<link rel="stylesheet" href="assets/style.css?v=1">
+<style>
+
+  .stats-row { display: flex; gap: 2.4rem; margin-top: 1.5rem; flex-wrap: wrap; }
+  .stat b { display: block; font-size: 2.1rem; font-weight: 800; line-height: 1.05; font-variant-numeric: tabular-nums; }
+  .stat span { font-size: .72rem; opacity: .85; text-transform: uppercase; letter-spacing: .09em; font-weight: 600; }
+
+  .course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+  .course-card {
+    border: 1px solid var(--hairline);
+    border-top: 4px solid var(--diff, var(--indigo));
+    border-radius: var(--radius);
+    padding: 1.2rem 1.3rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    text-decoration: none;
+    color: var(--ink);
+    background: #fff;
+    transition: box-shadow .15s ease, border-color .15s ease, transform .15s ease;
+    position: relative;
+  }
+  .course-card:hover { border-color: var(--indigo-soft); border-top-color: var(--diff, var(--indigo)); box-shadow: 0 8px 28px rgba(15,111,102,.16); transform: translateY(-3px); }
+  .course-card .cicon { font-size: 1.7rem; line-height: 1; }
+  .course-card .cnum { font-size: .72rem; font-weight: 700; color: var(--indigo); text-transform: uppercase; letter-spacing: .1em; }
+  .course-card h3 { font-size: 1.05rem; font-weight: 800; line-height: 1.3; }
+  .course-card p { font-size: .85rem; color: var(--muted); flex: 1; }
+  .course-card .meta { display: flex; gap: .4rem; flex-wrap: wrap; }
+
+  .diff-legend { display: flex; gap: 1rem; margin-top: 1.6rem; font-size: .74rem; color: var(--muted); font-weight: 600; flex-wrap: wrap; }
+  .diff-legend i { display: inline-block; width: .85rem; height: .35rem; border-radius: 999px; margin-right: .35rem; vertical-align: middle; }
+
+  .paths { margin-top: 2.6rem; }
+  .paths h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: .3rem; }
+  .paths .plede { color: var(--muted); font-size: .92rem; margin-bottom: .8rem; }
+  .path { display: flex; gap: .55rem; align-items: center; padding: .75rem 0; border-bottom: .5px solid var(--hairline); flex-wrap: wrap; }
+  .path:last-child { border-bottom: none; }
+  .path b { min-width: 15.5rem; font-size: .9rem; }
+  .path .pstep { background: var(--indigo-50); color: var(--indigo); border-radius: 999px; padding: .16rem .68rem; font-weight: 700; font-size: .8rem; text-decoration: none; transition: all .12s ease; }
+  .path .pstep:hover { background: var(--indigo); color: #fff; }
+  .path .parr { color: var(--faint); font-weight: 700; }
+
+  .mm-section { margin-top: 1.6rem; }
+  .mm-section h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: .2rem; }
+  .mm-section .mm-lede { color: var(--muted); font-size: .92rem; margin-bottom: .4rem; }
+  .mm-wrap { border: 1px solid var(--hairline); border-radius: var(--radius); background: linear-gradient(180deg,#fff,#F0FDFA); padding: .6rem; overflow-x: auto; }
+  .mm-svg { width: 100%; height: auto; display: block; max-width: 60rem; margin: 0 auto; min-width: 34rem; }
+  .mm-link { cursor: pointer; text-decoration: none; }
+  .mm-node rect { transition: opacity .15s ease, filter .15s ease; }
+  .mm-node text { pointer-events: none; }
+  .mm-link:hover .mm-node rect { filter: brightness(1.06); }
+  .mm-edge { transition: opacity .15s ease; }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn with Phoebe · Data Science</div>
+    <h1>Learn <span class="accent">Causal Inference</span> with Phoebe</h1>
+    <p class="sub">Kestrelmark sent a re-engagement email and the customers who received it spent 10.54 more than the customers who did not. The number is real, reproducible, and not the effect of the email, which is 6.23. Everything between those two figures is made of variables nobody wrote down. This course is about the part of causal work that happens before any estimator: which question is being asked, whether the data can answer it at all, and which of the columns in your table will make the answer worse if you control for them. Six leader sessions on reading and commissioning a causal claim, ten practitioner sessions on the graph, and a bench where the true effect is known by construction so your adjustment set can finally be scored.</p>
+    <div class="stats-row">
+      <div class="stat"><b data-count="16">16</b><span>sessions, two tracks</span></div>
+      <div class="stat"><b data-count="3">3</b><span>rungs on the ladder</span></div>
+      <div class="stat"><b data-count="5000">5000</b><span>customers from a written causal model</span></div>
+      <div class="stat"><b data-count="42">42</b><span>times worse: every column against the right ones</span></div>
+      <div class="stat"><b data-count="45">45</b><span>min per session</span></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="section">
+    <div class="paths" style="margin-top:0">
+      <h2>Leader track 🪜 <span style="font-size:.85rem;font-weight:600;color:var(--muted)">· six sessions, no code</span></h2>
+      <p class="plede">For whoever approves the spend and reads the lift number. Which rung a claim is on, what to audit, what to refuse to sign, and the four options when the question turns out to be unanswerable.</p>
+    </div>
+    <div class="course-grid">
+      <a class="course-card" href="courses/a1-three-questions-three-rungs.html" style="--diff:#FBBF24">
+        <span class="cicon">🪜</span>
+        <span class="cnum">Leader session 1 · start here</span>
+        <h3>Three questions, three rungs</h3>
+        <p>Association, intervention, counterfactual. A rung-two question cannot be answered with rung-one data, which is why a dashboard cannot tell you whether the email worked.</p>
+        <span class="meta"><span class="pill amber">▶ Start here</span></span>
+      </a>
+      <a class="course-card" href="courses/a2-the-claim-audit.html" style="--diff:#FBBF24">
+        <span class="cicon">🔬</span>
+        <span class="cnum">Leader session 2</span>
+        <h3>The claim audit</h3>
+        <p>Five questions for any causal claim that crosses your desk, and the vocabulary that signals an observational study wearing experimental clothes.</p>
+      </a>
+      <a class="course-card" href="courses/a3-what-not-to-adjust-for.html" style="--diff:#FB923C">
+        <span class="cicon">🚫</span>
+        <span class="cnum">Leader session 3</span>
+        <h3>What not to adjust for</h3>
+        <p>Mediators, colliders and the pre-treatment collider that looks safe because it was measured first. Each one priced on the same data.</p>
+      </a>
+      <a class="course-card" href="courses/a4-identifiable-or-not.html" style="--diff:#F87171">
+        <span class="cicon">🔎</span>
+        <span class="cnum">Leader session 4</span>
+        <h3>Identifiable or not</h3>
+        <p>Whether the question can be answered from this data at all, checkable on paper in ten minutes, and the four honest options when the answer is no.</p>
+      </a>
+      <a class="course-card" href="courses/a5-not-everyone-responds.html" style="--diff:#FB923C">
+        <span class="cicon">👥</span>
+        <span class="cnum">Leader session 5</span>
+        <h3>Not everyone responds</h3>
+        <p>Average effects hide who they help and who they cost. Why a positive average can still be the wrong policy.</p>
+      </a>
+      <a class="course-card" href="courses/a6-commissioning-a-causal-claim.html" style="--diff:#FB923C">
+        <span class="cicon">📋</span>
+        <span class="cnum">Leader session 6</span>
+        <h3>Commissioning and reading a causal claim</h3>
+        <p>What to require in the brief, above the method, and what to refuse to sign.</p>
+        <span class="meta"><span class="pill amber">the board version</span></span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="paths" style="margin-top:0">
+      <h2>Practitioner track 🔧 <span style="font-size:.85rem;font-weight:600;color:var(--muted)">· ten sessions, one defensible claim</span></h2>
+      <p class="plede">One intervention, Kestrelmark's re-engagement email, taken from a blank page to a claim you can defend in review. Session 10 scores it against a truth the engine computes rather than estimates.</p>
+    </div>
+    <div class="course-grid">
+      <a class="course-card" href="courses/p1-draw-the-dag-first.html" style="--diff:#FBBF24">
+        <span class="cicon">✏️</span>
+        <span class="cnum">Practitioner session 1 · start here</span>
+        <h3>Draw the DAG before touching the data</h3>
+        <p>An arrow is a claim and a missing arrow is a stronger one. Kestrelmark's naive lift is 10.54 against a truth of 6.23, and the gap has two names.</p>
+        <span class="meta"><span class="pill amber">▶ Start here</span></span>
+      </a>
+      <a class="course-card" href="courses/p2-confounder-collider-mediator.html" style="--diff:#FB923C">
+        <span class="cicon">🔀</span>
+        <span class="cnum">Practitioner session 2</span>
+        <h3>Confounder, collider, mediator</h3>
+        <p>Three shapes, three fates. Conditioning closes one path, removes real effect from another, and creates association out of nothing in the third.</p>
+      </a>
+      <a class="course-card" href="courses/p3-identification-before-estimation.html" style="--diff:#F87171">
+        <span class="cicon">🚪</span>
+        <span class="cnum">Practitioner session 3</span>
+        <h3>Identification before estimation</h3>
+        <p>The back-door criterion stated properly, its two conditions, and what to do when no valid adjustment set exists in your data.</p>
+      </a>
+      <a class="course-card" href="courses/p4-the-front-door.html" style="--diff:#F87171">
+        <span class="cicon">🚪</span>
+        <span class="cnum">Practitioner session 4</span>
+        <h3>The front door</h3>
+        <p>When an unmeasured confounder shuts the back door and a mediator rescues the estimate. Three conditions, and why Kestrelmark fails the first.</p>
+      </a>
+      <a class="course-card" href="courses/p5-simpsons-paradox.html" style="--diff:#FB923C">
+        <span class="cicon">🔄</span>
+        <span class="cnum">Practitioner session 5</span>
+        <h3>Simpson's paradox</h3>
+        <p>The same numbers, two opposite conclusions, and a graph rather than a table deciding which one to act on.</p>
+      </a>
+      <a class="course-card" href="courses/p6-counterfactuals.html" style="--diff:#F87171">
+        <span class="cicon">🌗</span>
+        <span class="cnum">Practitioner session 6</span>
+        <h3>Counterfactuals</h3>
+        <p>Rung three: would this particular customer have churned anyway? Two worlds at once, and what a fully specified model buys you.</p>
+      </a>
+      <a class="course-card" href="courses/p7-cate-and-uplift.html" style="--diff:#F87171">
+        <span class="cicon">📈</span>
+        <span class="cnum">Practitioner session 7</span>
+        <h3>CATE and uplift</h3>
+        <p>The average effect is a summary of a distribution. S-, T- and X-learners, and the documented weakness of each.</p>
+      </a>
+      <a class="course-card" href="courses/p8-qini-and-who-to-treat.html" style="--diff:#F87171">
+        <span class="cicon">🎯</span>
+        <span class="cnum">Practitioner session 8</span>
+        <h3>Qini curves and who to treat</h3>
+        <p>Targeting by predicted uplift against targeting at random, and the customers a campaign actively costs you.</p>
+      </a>
+      <a class="course-card" href="courses/p9-sensitivity-analysis.html" style="--diff:#F87171">
+        <span class="cicon">⚖️</span>
+        <span class="cnum">Practitioner session 9</span>
+        <h3>Sensitivity analysis</h3>
+        <p>How strong would an unmeasured confounder have to be to overturn this? The honest answer to the objection you cannot rule out.</p>
+      </a>
+      <a class="course-card" href="courses/p10-the-adjustment-bench.html" style="--diff:#F87171">
+        <span class="cicon">🎛️</span>
+        <span class="cnum">Practitioner session 10</span>
+        <h3>The adjustment bench</h3>
+        <p>Six adjustment sets scored against a truth known by construction. The right one leaves noise; every column in the table misses by 5.25.</p>
+        <span class="meta"><span class="pill amber">🔒 the capstone</span></span>
+      </a>
+    </div>
+    <div class="diff-legend">
+      <span><i style="background:#34D399"></i>start here</span>
+      <span><i style="background:#FBBF24"></i>foundations</span>
+      <span><i style="background:#FB923C"></i>hands-on</span>
+      <span><i style="background:#F87171"></i>advanced and capstone</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="paths">
+      <h2>Choose your path 🗺️</h2>
+      <p class="plede">Three doors into the same discipline. Both tracks start at their own session 1.</p>
+      <div class="path"><b>💼 I approve the spend and read the lift</b>
+        <a class="pstep" href="courses/a1-three-questions-three-rungs.html">L1</a>
+        <span class="parr">→</span>
+        <a class="pstep" href="courses/a2-the-claim-audit.html">L2</a>
+        <span class="parr">→</span>
+        <a class="pstep" href="courses/a3-what-not-to-adjust-for.html">L3</a>
+        <span class="parr">→</span>
+        <a class="pstep" href="courses/a6-commissioning-a-causal-claim.html">L6</a>
+        <span style="font-size:.82rem;color:var(--muted)">the ladder, the audit, the covariate list, the brief</span>
+      </div>
+      <div class="path"><b>🔧 I build the model</b>
+        <a class="pstep" href="courses/p1-draw-the-dag-first.html">P1</a>
+        <span class="parr">→</span>
+        <a class="pstep" href="courses/p2-confounder-collider-mediator.html">P2</a>
+        <span class="parr">→</span>
+        <a class="pstep" href="courses/p3-identification-before-estimation.html">P3</a>
+        <span class="parr">→</span>
+        <a class="pstep" href="courses/p9-sensitivity-analysis.html">P9</a>
+        <span class="parr">→</span>
+        <a class="pstep" href="courses/p10-the-adjustment-bench.html">P10</a>
+        <span style="font-size:.82rem;color:var(--muted)">the graph, the three shapes, identification, the objection, then score it</span>
+      </div>
+      <div class="path"><b>🎯 Everything, in order</b>
+        <a class="pstep" href="courses/a1-three-questions-three-rungs.html">L1</a>
+        <span class="parr">→</span>
+        <a class="pstep" href="courses/a4-identifiable-or-not.html">L4</a>
+        <span class="parr">→</span>
+        <a class="pstep" href="courses/p1-draw-the-dag-first.html">P1</a>
+        <span class="parr">→</span>
+        <a class="pstep" href="courses/p4-the-front-door.html">P4</a>
+        <span class="parr">→</span>
+        <a class="pstep" href="courses/p5-simpsons-paradox.html">P5</a>
+        <span class="parr">→</span>
+        <a class="pstep" href="courses/p6-counterfactuals.html">P6</a>
+        <span class="parr">→</span>
+        <a class="pstep" href="courses/p7-cate-and-uplift.html">P7</a>
+        <span class="parr">→</span>
+        <a class="pstep" href="courses/p10-the-adjustment-bench.html">P10</a>
+        <span style="font-size:.82rem;color:var(--muted)">from a lift number nobody can defend to an adjustment set you can</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="paths" style="margin-top:0">
+      <h2>Your passport 🎫</h2>
+      <p class="plede">Clear all three quiz questions in a session and it gets stamped. Sixteen stamps across both tracks, and they live in this browser only.</p>
+    </div>
+    <div class="pp-strip"></div>
+  </section>
+
+  <section class="section">
+    <div class="paths" style="margin-top:0">
+      <h2>What is real here 🧾</h2>
+      <p class="plede">A course about defensible claims should be exact about its own.</p>
+    </div>
+    <table class="clean">
+      <tr><th>Claim</th><th>Status</th></tr>
+      <tr><td>The 5,000 Kestrelmark customers</td><td>Generated from a structural causal model written out in the source file, one fixed seed, identical for every learner. Every coefficient is visible</td></tr>
+      <tr><td>The true effect of 6.23</td><td>Computed, not estimated: the model is run twice with the email forced on for everyone and then forced off, and the mean spend differenced. That is the do-operator by brute force</td></tr>
+      <tr><td>The engine agrees with the algebra</td><td>Worked out by hand the effect should be the mean direct effect of 5.16 plus 3.0 times the change in open rate, which is 6.22. The simulation gives 6.23. A simulation checked only against itself would prove nothing</td></tr>
+      <tr><td>Every estimate on the bench</td><td>A real least-squares fit of spend on the email plus the ticked covariates, solved in the page. The coefficient on the email is the estimate</td></tr>
+      <tr><td>The ladder: 10.54, 6.56, 5.26, 5.48, 2.59, 0.98</td><td>Arithmetic on that data. Nothing on this bench is modelled and no result is written down in advance</td></tr>
+      <tr><td>Noise is not bias, and the bench separates them</td><td>The correct set's residual of +0.33 changes sign across five seeds and averages +0.06. Every contaminated set keeps its sign every time</td></tr>
+      <tr><td>The bystander is genuinely harmless</td><td>Adding the device variable changes the estimate by nothing to two decimal places, which is exactly why a covariate list cannot be read by eye</td></tr>
+      <tr><td>No estimator is taught anywhere</td><td>Propensity scores, inverse probability weighting, doubly robust methods, difference-in-differences and synthetic control all belong to the experimentation course, which is named on every page that reaches for one</td></tr>
+      <tr><td>Kestrelmark</td><td>A fictional subscription retailer. The confounding is ordinary; the company is not real</td></tr>
+    </table>
+  </section>
+
+  <section class="section mm-section">
+    <h2>The knowledge map 🧠</h2>
+    <p class="mm-lede">Both tracks at a glance - hover a session to spotlight its concepts, click any node to jump in.</p>
+    <div class="mm-wrap"><div id="mindmap"></div></div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>learn-causal-inference-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span>Pairs with <a href="https://phoebefu6.github.io/learn-experimentation-with-phoebe/">Experimentation ↗</a>, which owns every estimator this course deliberately leaves alone · source map: <span class="mono">materials/official-course-map.md</span></span>
+  </footer>
+
+</main>
+
+<script>
+window.MINDMAP_DATA = {
+  "title": "Causal\\nInference",
+  "centerColor": "#134E4A",
+  "sessions": [
+    {
+      "label": "The ladder",
+      "href": "courses/a1-three-questions-three-rungs.html",
+      "concepts": [
+        {
+          "label": "Association",
+          "href": "courses/a1-three-questions-three-rungs.html"
+        },
+        {
+          "label": "Intervention",
+          "href": "courses/a1-three-questions-three-rungs.html"
+        },
+        {
+          "label": "Counterfactual",
+          "href": "courses/p6-counterfactuals.html"
+        }
+      ]
+    },
+    {
+      "label": "The claim audit",
+      "href": "courses/a2-the-claim-audit.html",
+      "concepts": [
+        {
+          "label": "Five questions",
+          "href": "courses/a2-the-claim-audit.html"
+        },
+        {
+          "label": "The tells",
+          "href": "courses/a2-the-claim-audit.html"
+        }
+      ]
+    },
+    {
+      "label": "What not to adjust for",
+      "href": "courses/a3-what-not-to-adjust-for.html",
+      "concepts": [
+        {
+          "label": "Mediator",
+          "href": "courses/p2-confounder-collider-mediator.html"
+        },
+        {
+          "label": "Collider",
+          "href": "courses/p2-confounder-collider-mediator.html"
+        },
+        {
+          "label": "M-bias",
+          "href": "courses/p2-confounder-collider-mediator.html"
+        }
+      ]
+    },
+    {
+      "label": "Identification",
+      "href": "courses/a4-identifiable-or-not.html",
+      "concepts": [
+        {
+          "label": "Back-door criterion",
+          "href": "courses/p3-identification-before-estimation.html"
+        },
+        {
+          "label": "Front door",
+          "href": "courses/p4-the-front-door.html"
+        },
+        {
+          "label": "Not identified",
+          "href": "courses/p3-identification-before-estimation.html"
+        }
+      ]
+    },
+    {
+      "label": "Heterogeneity",
+      "href": "courses/a5-not-everyone-responds.html",
+      "concepts": [
+        {
+          "label": "CATE",
+          "href": "courses/p7-cate-and-uplift.html"
+        },
+        {
+          "label": "Uplift",
+          "href": "courses/p7-cate-and-uplift.html"
+        },
+        {
+          "label": "Qini",
+          "href": "courses/p8-qini-and-who-to-treat.html"
+        }
+      ]
+    },
+    {
+      "label": "Commissioning",
+      "href": "courses/a6-commissioning-a-causal-claim.html",
+      "concepts": [
+        {
+          "label": "The brief",
+          "href": "courses/a6-commissioning-a-causal-claim.html"
+        }
+      ]
+    },
+    {
+      "label": "The graph",
+      "href": "courses/p1-draw-the-dag-first.html",
+      "concepts": [
+        {
+          "label": "An arrow is a claim",
+          "href": "courses/p1-draw-the-dag-first.html"
+        },
+        {
+          "label": "Back-door path",
+          "href": "courses/p1-draw-the-dag-first.html"
+        },
+        {
+          "label": "Total vs direct",
+          "href": "courses/p1-draw-the-dag-first.html"
+        }
+      ]
+    },
+    {
+      "label": "Simpson",
+      "href": "courses/p5-simpsons-paradox.html",
+      "concepts": [
+        {
+          "label": "The reversal",
+          "href": "courses/p5-simpsons-paradox.html"
+        },
+        {
+          "label": "Berkson",
+          "href": "courses/p2-confounder-collider-mediator.html"
+        }
+      ]
+    },
+    {
+      "label": "Sensitivity",
+      "href": "courses/p9-sensitivity-analysis.html",
+      "concepts": [
+        {
+          "label": "How strong is strong",
+          "href": "courses/p9-sensitivity-analysis.html"
+        }
+      ]
+    },
+    {
+      "label": "The bench",
+      "href": "courses/p10-the-adjustment-bench.html",
+      "concepts": [
+        {
+          "label": "Truth 6.23",
+          "href": "courses/p10-the-adjustment-bench.html"
+        },
+        {
+          "label": "noise vs bias",
+          "href": "courses/p10-the-adjustment-bench.html"
+        },
+        {
+          "label": "Harms compound",
+          "href": "courses/p10-the-adjustment-bench.html"
+        }
+      ]
+    }
+  ]
+};
+</script>
+<script src="assets/app.js?v=1"></script>
+<script src="assets/mindmap.js?v=1"></script>
+</body>
+</html>

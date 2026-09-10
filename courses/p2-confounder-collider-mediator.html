@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Practitioner session 2 of 10. Three shapes decide whether a variable belongs in the adjustment set: a confounder must go in, a mediator changes the question, and a collider must stay out. On Kestrelmark the three wrong choices cost 0.97, 0.75 and 3.64 against a correct set that misses by 0.33.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="Confounder, collider, mediator - learn causal inference with phoebe">
+<meta property="og:description" content="Practitioner session 2 of 10. Same triangle three times. Only the arrow directions differ, and they decide everything.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/courses/p2-confounder-collider-mediator.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Confounder, collider, mediator - learn causal inference with phoebe">
+<meta name="twitter:description" content="Conditioning closes a confounder, removes a mediator, and opens a collider. Timing is not a safety argument.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Practitioner session 2 · Confounder, collider, mediator - learn causal inference with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-causal-inference-with-phoebe</a> / Practitioner session 2 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Causal Inference with Phoebe · Practitioner session 2 of 10</div>
+    <h1>Confounder, collider, <span class="accent">mediator</span></h1>
+    <p class="sub">The Kestrelmark graph from session 1 has six observable columns and there is no way to tell by looking at them which ones belong in the adjustment set. Season and tenure must go in. The loyalty score, the open flag and the ticket flag must stay out, and each one is out for a different reason. Device can go either way and costs nothing. Tonight is the three shapes those distinctions come from, and what the word "conditioning" actually does to each of them.</p>
+    <div class="chip-row">
+      <span class="chip level">🟠 Advanced</span>
+      <span class="chip audience">Data scientists and analysts</span>
+      <span class="chip audience">Anyone who has added a column because it improved the fit</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:5">3-22 · Three shapes, three fates</span>
+      <span class="a3" style="flex:4">22-40 · Build-along: classify every column</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>What conditioning is, before anything is classified</h2>
+    </div>
+    <p class="lede">Conditioning on a variable means comparing only within groups that share its value: within winter, within a tenure band, within the customers who raised a ticket. Every adjustment method does this, including plain regression, and it is a strong operation. Held-fixed variables stop transmitting association along some paths and start transmitting it along others, and which of those two happens is decided entirely by the arrow directions around the variable.</p>
+
+    <div class="legend">
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">🔍 Every diagram zooms</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> A rule you can apply in ten seconds to any column in any table: name the shape, then act. The reason "it was measured before the treatment" does not make a variable safe, with the price tag on that mistake at Kestrelmark. And a classified column list for one real model, written into a text file beside the graph, so that the next review argues about the shapes rather than about the fit.</p>
+    </div>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Three shapes and nothing else<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A variable sitting between the treatment and the outcome can be arranged in exactly three ways, and there is no fourth. It can be a common cause of both, in which case arrows point out of it into each. It can be a link in the chain, with an arrow in from the treatment and out to the outcome. Or it can be a common effect, with arrows pointing into it from both sides.</p>
+        <p>That exhaustiveness is what makes the classification practical. You are not searching an open-ended space of ways a variable could misbehave; you are asking three yes-or-no questions about arrow directions on a graph you already drew. The graph does the hard part, which is why session 1 came first.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>The Kestrelmark covariate list arrived in a pull request as six column names in alphabetical order. Sorted that way, device sits next to email and loyalty next to opened, and the ordering carries no information about which of them is free and which is the most expensive mistake on the list. Sorted by shape, the review takes four minutes.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The six Kestrelmark columns and their verdicts<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>season</strong> - confounder. Winter sends more email and sells more. Adjust.</li>
+          <li><strong>tenure</strong> - confounder. Long accounts get more email and buy more anyway. Adjust.</li>
+          <li><strong>loyalty</strong> - collider, and a pre-treatment one. A common effect of two unobserved causes. Do not adjust.</li>
+          <li><strong>opened</strong> - mediator. Carries part of the real effect. Adjust only if the direct effect is the question.</li>
+          <li><strong>ticket</strong> - collider, post-treatment. A common effect of the email and the spend. Do not adjust.</li>
+          <li><strong>device</strong> - bystander. No arrows at all. Free either way, and worth knowing that it is free.</li>
+        </ul>
+        <p>Two adjust, three do not, one does not matter. Nothing about the column names, the data types or the correlations with spend would have produced that split.</p>
+        <p>The file carries a seventh column, <code class="mono">recency</code>, and it is deliberately not on that list because it is not one of the three shapes. It is an <strong>effect modifier</strong>: it sets how much the email is worth to each customer and it shifts their baseline spend, but it does not cause the email, so it opens no back door and needs no adjustment either way. The back-door set is still season and tenure and every graph on this page stands. Sessions 7 and 8 are where it earns its hour.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers the three shapes and the effect of conditioning on each</span>
+      <h2>Three shapes, and what conditioning does to each</h2>
+      <span class="tag concept">11 min live</span>
+    </div>
+    <p class="lede">Draw the same triangle three times and change only which way the arrows point. The three pictures below are that triangle, with the treatment bottom left and the outcome bottom right in all three. The verdict under each one is the whole of the practical rule.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The same triangle drawn three times with email bottom left and spend bottom right. In the confounder, season points into both, the path is open and conditioning closes it. In the mediator, email points into opened which points into spend, and conditioning removes real effect. In the collider, email and spend both point into ticket, the path is closed and conditioning creates association.">
+        <style>
+          .p2aT { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .p2aH { font: 800 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p2aB { font: 400 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p2aM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .p2aN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+        <defs>
+          <marker id="p2aAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5A6B68"></path></marker>
+          <marker id="p2aRd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9A3412"></path></marker>
+        </defs>
+
+        <rect x="14" y="22" width="268" height="34" rx="9" fill="#0F6F66"></rect>
+        <text class="p2aT" x="30" y="44">Confounder · adjust for it</text>
+        <rect x="108" y="76" width="80" height="26" rx="7" fill="#134E4A"></rect>
+        <text class="p2aT" x="148" y="94" text-anchor="middle">Season</text>
+        <rect x="26" y="140" width="80" height="26" rx="7" fill="#0F6F66"></rect>
+        <text class="p2aT" x="66" y="158" text-anchor="middle">Email</text>
+        <rect x="190" y="140" width="80" height="26" rx="7" fill="#0F6F66"></rect>
+        <text class="p2aT" x="230" y="158" text-anchor="middle">Spend</text>
+        <line x1="128" y1="104" x2="80" y2="136" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p2aAr)"></line>
+        <line x1="168" y1="104" x2="216" y2="136" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p2aAr)"></line>
+        <line x1="108" y1="153" x2="186" y2="153" stroke="#C6D6D3" stroke-width="1.5" marker-end="url(#p2aAr)"></line>
+        <rect x="14" y="186" width="268" height="70" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p2aH" x="30" y="206">A common cause of both</text>
+        <text class="p2aB" x="30" y="224">it opens a back-door path</text>
+        <text class="p2aB" x="30" y="242">conditioning CLOSES it</text>
+
+        <rect x="306" y="22" width="268" height="34" rx="9" fill="#134E4A"></rect>
+        <text class="p2aT" x="322" y="44">Mediator · only if you must</text>
+        <rect x="400" y="76" width="80" height="26" rx="7" fill="#5EEAD4"></rect>
+        <text class="p2aH" x="440" y="94" text-anchor="middle">Opened</text>
+        <rect x="318" y="140" width="80" height="26" rx="7" fill="#0F6F66"></rect>
+        <text class="p2aT" x="358" y="158" text-anchor="middle">Email</text>
+        <rect x="482" y="140" width="80" height="26" rx="7" fill="#0F6F66"></rect>
+        <text class="p2aT" x="522" y="158" text-anchor="middle">Spend</text>
+        <line x1="372" y1="136" x2="418" y2="106" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p2aAr)"></line>
+        <line x1="462" y1="106" x2="508" y2="136" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p2aAr)"></line>
+        <rect x="306" y="186" width="268" height="70" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p2aH" x="322" y="206">A link in the real chain</text>
+        <text class="p2aB" x="322" y="224">it carries part of the effect</text>
+        <text class="p2aB" x="322" y="242">conditioning REMOVES that part</text>
+
+        <rect x="598" y="22" width="268" height="34" rx="9" fill="#9A3412"></rect>
+        <text class="p2aT" x="614" y="44">Collider · never adjust for it</text>
+        <rect x="692" y="76" width="80" height="26" rx="7" fill="#99F6E4"></rect>
+        <text class="p2aH" x="732" y="94" text-anchor="middle">Ticket</text>
+        <rect x="610" y="140" width="80" height="26" rx="7" fill="#0F6F66"></rect>
+        <text class="p2aT" x="650" y="158" text-anchor="middle">Email</text>
+        <rect x="774" y="140" width="80" height="26" rx="7" fill="#0F6F66"></rect>
+        <text class="p2aT" x="814" y="158" text-anchor="middle">Spend</text>
+        <line x1="664" y1="136" x2="710" y2="106" stroke="#9A3412" stroke-width="1.5" marker-end="url(#p2aRd)"></line>
+        <line x1="800" y1="136" x2="754" y2="106" stroke="#9A3412" stroke-width="1.5" marker-end="url(#p2aRd)"></line>
+        <rect x="598" y="186" width="268" height="70" rx="8" fill="#F0FDFA" stroke="#9A3412"></rect>
+        <text class="p2aH" x="614" y="206">A common effect of both</text>
+        <text class="p2aB" x="614" y="224">left alone it carries nothing</text>
+        <text class="p2aB" x="614" y="242">conditioning CREATES a link</text>
+
+        <rect x="14" y="286" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="p2aN" x="38" y="298">The same triangle three times. Only the arrow directions differ, and they decide everything.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - one triangle, three arrow patterns, three opposite instructions.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Confounder: conditioning closes a path that was open<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The shape is <code class="mono">X &lt;- Z -&gt; Y</code>. Season causes the email to be sent and independently causes spend to rise, so emailed customers and non-emailed customers differ in more than the email. Association flows from the treatment up the incoming arrow, across the fork and down into the outcome, and that flow is not the effect of anything the campaign did.</p>
+        <ul>
+          <li><strong>Left alone, the path is open</strong> and its contribution is added to whatever the treatment really does. At Kestrelmark the two open back doors add 4.31 on a true effect of 6.23.</li>
+          <li><strong>Conditioning closes it.</strong> Inside a single season the season cannot vary, so it cannot explain any of the remaining difference in spend. Same for a tenure band.</li>
+          <li><strong>This is the only shape where conditioning is unambiguously the right move</strong>, and it is the shape most people have in mind when they say "control for it". The trouble starts when the phrase is applied to the other two.</li>
+        </ul>
+        <div class="callout tip">
+          <p><strong>The test is two questions, not one.</strong> Does it affect who gets treated, and does it also affect the outcome through some route other than the treatment? A variable that only predicts the outcome is not a confounder, and a variable that only predicts treatment is not one either.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Mediator: conditioning removes real effect<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The shape is <code class="mono">X -&gt; M -&gt; Y</code>. Opening the email is not a nuisance sitting between the treatment and the outcome; it is one of the two routes by which the treatment does its work. Holding it fixed compares emailed and non-emailed customers who ended up with the same open status, which subtracts the mechanism from the answer.</p>
+        <ul>
+          <li><strong>The path carries real effect</strong>, which makes this the opposite case from a confounder. Closing it is not cleaning, it is deleting.</li>
+          <li><strong>What remains is the direct effect</strong>: whatever the treatment does by routes that do not run through the mediator. At Kestrelmark that is the sender name in the inbox.</li>
+          <li><strong>So the verdict is conditional on the question.</strong> Total effect, leave it out. Direct effect, put it in and say so in the write-up. There is no default that is right for both.</li>
+        </ul>
+        <p>The failure mode is silent. Nothing errors, the fit improves, and the number that comes back is a perfectly good estimate of a quantity nobody asked for.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Collider: conditioning creates association out of nothing<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The shape is <code class="mono">X -&gt; C &lt;- Y</code>, and it is the one that reverses every intuition built on the first two. Formally: in a structure <code class="mono">i -&gt; m &lt;- j</code>, conditioning on m makes i and j dependent when they were independent, a result known in epidemiology as Berkson's paradox.</p>
+        <ul>
+          <li><strong>A collider path is closed to begin with.</strong> Two arrows meeting head to head do not transmit association. Nothing needs to be done to it.</li>
+          <li><strong>Conditioning opens it.</strong> Restricting to a value of the common effect forces its two causes to trade off against each other inside that group.</li>
+          <li><strong>The association it creates is entirely manufactured</strong> by the analyst. It was not in the population and it will not replicate under a different selection rule.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Why a collider manufactures a link, in Kestrelmark terms<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Take the ticket flag. Two things push a customer toward raising one: getting the email, which prompts questions, and spending a lot, which also prompts questions. Now look only at the customers who raised a ticket.</p>
+        <p>Among those customers, learning that somebody did <em>not</em> get the email tells you they probably spent a lot, because something had to have caused the ticket and the email was not it. Learning that somebody did get the email removes the need for the other explanation, so their spend looks ordinary. Inside the ticket group, email and spend now appear negatively related, and that appearance was created by the decision to look inside the group.</p>
+        <ul>
+          <li><strong>Neither variable changed.</strong> The population is exactly as it was; only the window has narrowed.</li>
+          <li><strong>Adjustment does this by construction.</strong> Putting ticket on the right-hand side of a regression is the same operation as looking within ticket groups, done for every value at once.</li>
+          <li><strong>It also happens without a regression.</strong> Any filter that removes rows on a common effect does it: analysing only customers who contacted support, only accounts that survived, only applications that were approved.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>The selection version is more common than the adjustment version and much harder to see, because it happens in the <code class="mono">WHERE</code> clause rather than the covariate list. A cohort defined as "customers who raised a ticket in the period" is a conditioned collider whether or not anybody typed the word ticket into a model.</p>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2 ============ -->
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers the two cases that survive a careful review</span>
+      <h2>The two that fool people</h2>
+      <span class="tag concept">8 min live</span>
+    </div>
+    <p class="lede">A post-treatment collider like the ticket flag is the costliest column here, at -3.64, and it is at least suspicious on sight: it happened after the campaign. The two cases below pass that check and still do damage, which is why they are the ones that end up in shipped models.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The M-bias structure. Email is caused by u1, spend is caused by u2, and both u1 and u2 cause the loyalty score. In the first row loyalty is left alone and the collider blocks the path, so email and spend are not connected through it. In the second row loyalty is boxed as conditioned, the collider opens, and a back-door path now runs from email through u1, loyalty and u2 to spend, costing a bias of 0.97.">
+        <style>
+          .p2bT { font: 700 11px Inter, sans-serif; fill: #fff; }
+          .p2bH { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .p2bI { font: 800 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p2bM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .p2bG { font: 800 11px Inter, sans-serif; fill: #134E4A; }
+          .p2bR { font: 800 11px Inter, sans-serif; fill: #9A3412; }
+          .p2bN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+        <defs>
+          <marker id="p2bAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5A6B68"></path></marker>
+          <marker id="p2bRd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9A3412"></path></marker>
+        </defs>
+
+        <rect x="14" y="14" width="852" height="30" rx="8" fill="#0F6F66"></rect>
+        <text class="p2bH" x="30" y="34">Loyalty left alone: the collider blocks the path by default</text>
+
+        <rect x="60" y="110" width="100" height="30" rx="8" fill="#0F6F66"></rect>
+        <text class="p2bT" x="110" y="130" text-anchor="middle">Email</text>
+        <ellipse cx="240" cy="70" rx="26" ry="17" fill="none" stroke="#5A6B68" stroke-dasharray="3 3"></ellipse>
+        <text class="p2bI" x="240" y="74" text-anchor="middle">u1</text>
+        <rect x="370" y="102" width="110" height="32" rx="8" fill="#5EEAD4"></rect>
+        <text class="p2bI" x="425" y="122" text-anchor="middle">Loyalty</text>
+        <ellipse cx="610" cy="70" rx="26" ry="17" fill="none" stroke="#5A6B68" stroke-dasharray="3 3"></ellipse>
+        <text class="p2bI" x="610" y="74" text-anchor="middle">u2</text>
+        <rect x="700" y="110" width="100" height="30" rx="8" fill="#0F6F66"></rect>
+        <text class="p2bT" x="750" y="130" text-anchor="middle">Spend</text>
+        <line x1="222" y1="62" x2="140" y2="106" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p2bAr)"></line>
+        <line x1="258" y1="62" x2="378" y2="100" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p2bAr)"></line>
+        <line x1="592" y1="62" x2="472" y2="100" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p2bAr)"></line>
+        <line x1="628" y1="62" x2="712" y2="106" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p2bAr)"></line>
+        <text class="p2bG" x="425" y="158" text-anchor="middle">two arrows in: path blocked here</text>
+        <text class="p2bM" x="14" y="180">No conditioning. Email and spend share no open route through loyalty, so the set works.</text>
+
+        <rect x="14" y="198" width="852" height="30" rx="8" fill="#9A3412"></rect>
+        <text class="p2bH" x="30" y="218">Conditioning on loyalty: the collider opens and a back door appears</text>
+
+        <rect x="60" y="294" width="100" height="30" rx="8" fill="#0F6F66"></rect>
+        <text class="p2bT" x="110" y="314" text-anchor="middle">Email</text>
+        <ellipse cx="240" cy="254" rx="26" ry="17" fill="none" stroke="#9A3412" stroke-dasharray="3 3"></ellipse>
+        <text class="p2bI" x="240" y="258" text-anchor="middle">u1</text>
+        <rect x="362" y="278" width="126" height="48" rx="7" fill="none" stroke="#9A3412" stroke-width="2.5"></rect>
+        <rect x="370" y="286" width="110" height="32" rx="8" fill="#5EEAD4"></rect>
+        <text class="p2bI" x="425" y="306" text-anchor="middle">Loyalty</text>
+        <ellipse cx="610" cy="254" rx="26" ry="17" fill="none" stroke="#9A3412" stroke-dasharray="3 3"></ellipse>
+        <text class="p2bI" x="610" y="258" text-anchor="middle">u2</text>
+        <rect x="700" y="294" width="100" height="30" rx="8" fill="#0F6F66"></rect>
+        <text class="p2bT" x="750" y="314" text-anchor="middle">Spend</text>
+        <line x1="222" y1="246" x2="140" y2="290" stroke="#9A3412" stroke-width="1.8" marker-end="url(#p2bRd)"></line>
+        <line x1="258" y1="246" x2="378" y2="276" stroke="#9A3412" stroke-width="1.8" marker-end="url(#p2bRd)"></line>
+        <line x1="592" y1="246" x2="472" y2="276" stroke="#9A3412" stroke-width="1.8" marker-end="url(#p2bRd)"></line>
+        <line x1="628" y1="246" x2="712" y2="290" stroke="#9A3412" stroke-width="1.8" marker-end="url(#p2bRd)"></line>
+        <text class="p2bR" x="425" y="348" text-anchor="middle">boxed = conditioned: path OPEN</text>
+        <text class="p2bM" x="14" y="368">Now open: email &lt;- u1 -&gt; loyalty &lt;- u2 -&gt; spend. On the bench the estimate falls to 5.26.</text>
+
+        <rect x="14" y="378" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="p2bN" x="38" y="390">Loyalty was measured before the email. Timing is not a safety argument; shape is.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the M shape, closed on top and opened underneath by a single tick box.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The pre-treatment collider, and why timing proves nothing<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Kestrelmark's loyalty score is computed from behaviour that all happened before the campaign went out. Every reviewer who has ever been burned by a leaked post-treatment feature will wave it through on that basis, and every one of them is wrong here.</p>
+        <p>The score is a common effect of two things nobody measured. Call them u1 and u2: u1 is the disposition that makes somebody both a campaign target and a certain kind of loyal, and u2 is whatever makes somebody both loyal and a spender. So <code class="mono">u1 -&gt; loyalty &lt;- u2</code>, while <code class="mono">u1 -&gt; email</code> and <code class="mono">u2 -&gt; spend</code>. The path <code class="mono">email &lt;- u1 -&gt; loyalty &lt;- u2 -&gt; spend</code> contains a collider in the middle and is therefore closed while nobody touches it.</p>
+        <ul>
+          <li><strong>Conditioning on loyalty opens that path</strong>, connecting the email to spend through two variables that are not in the warehouse and cannot be adjusted away.</li>
+          <li><strong>It happens despite loyalty preceding the treatment.</strong> The shape is <code class="mono">A &lt;- U1 -&gt; C &lt;- U2 -&gt; Y</code> and the middle of an M has nothing to do with when C was recorded.</li>
+          <li><strong>The price is measured.</strong> Adding loyalty to the correct set moves the estimate from 6.56 to 5.26, a bias of -0.97 against a true effect of 6.23. Timing says nothing about the size either: the post-treatment collider on the same graph costs -3.64, the biggest single harm of the four additions.</li>
+        </ul>
+        <div class="callout tip">
+          <p><strong>Replace the timing check with a shape check.</strong> "Was it measured before the treatment" is a useful screen for leakage and tells you nothing about bias. The question that matters is whether two arrows point into the variable, and that is answered on the graph.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Descendants: a proxy for a collider is still a collider<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The formal statement includes it explicitly: conditioning on m <em>or any descendant of m</em> makes i and j dependent. Anything caused by a collider inherits most of its information, and conditioning on the child partially conditions on the parent.</p>
+        <ul>
+          <li><strong>"We used a proxy instead" is not a fix.</strong> A support-contact rate, a satisfaction survey sent to ticket raisers, a churn-risk flag built partly from ticket volume: all of them are downstream of the ticket and all of them leak the same association.</li>
+          <li><strong>Nor is a coarser version.</strong> Bucketing a collider into three bands weakens the effect rather than removing it, and the residual bias is unknown without the graph.</li>
+          <li><strong>Nor is a composite score.</strong> If any input to an engineered feature is a collider or a descendant of one, the feature is contaminated, and this is how the problem gets into models that never mention the offending column.</li>
+        </ul>
+        <p>The practical consequence is that classification has to run on the lineage, not on the column name. A feature is safe when everything feeding it is safe.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The mediator is not a mistake, it is a different question<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Adding the open flag to the correct set moves the estimate from 6.56 to 5.48. That looks like the same kind of failure as the loyalty score, and at -0.75 against that column's -0.97 it is even about the same size. It is not the same thing at all.</p>
+        <p>The model that generated the data has a mean direct effect of 5.16 written into it: the part of the email's work that does not run through opening. Conditioning on the open removes the mediated part and leaves that direct effect, and 5.48 is a good estimate of 5.16. The arithmetic did what it was asked. The specification asked the wrong thing.</p>
+        <ul>
+          <li><strong>Total effect, 6.23</strong> - what happens if the email is sent. This answers "should we run the campaign", and it is the estimand for almost every business decision.</li>
+          <li><strong>Direct effect, mean 5.16</strong> - what happens if the email is sent and nobody opens it. This answers "how much of the lift survives a bad subject line", which is a genuine question for a different team.</li>
+          <li><strong>The bench cannot tell which you wanted.</strong> Nor can a reviewer, unless the estimand is written down before the covariate list.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>The commonest route to this is an engagement feature added for accuracy. Open rate, session count, page views: all downstream of the treatment, all improve the fit, all quietly convert a campaign lift number into a direct-effect number that nobody labels as such.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The bystander, and why it matters that it is harmless<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Device has no arrows in the Kestrelmark graph. Adding it to the correct set leaves the estimate at 6.56 and the bias at +0.33, matching the back-door set to 0.01.</p>
+        <p>That result is worth as much as the harmful ones, because it removes the escape route of treating every extra covariate as risky. If all additions cost something, "keep the list short" would be sufficient advice and no graph would be needed. They do not. One of the four additions is free, three are expensive, and the four look identical in a schema browser. The classification is what separates them and there is no cheaper substitute.</p>
+        <ul>
+          <li><strong>In finite samples a bystander is not quite free</strong> - it spends a degree of freedom and can move the estimate. At 5,000 rows here it moves it by 0.01.</li>
+          <li><strong>A variable that predicts the outcome and not the treatment</strong> is also generally safe and can tighten things up. The recency segment is exactly that: it moves spend, it does not move who gets the email, and so it carries no adjustment duty. Precision is a different topic from bias, and the bench measures only bias.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>Classify every column, then price the mistakes</h2>
+      <span class="tag demo">★ 18 min · everyone builds</span>
+    </div>
+    <p class="lede">Kestrelmark's table is one row per customer with the six observable columns plus the outcome. Work through it in whichever of the two languages you live in; the arithmetic is the same and neither one needs a library beyond numpy.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Write the six roles down before running anything.</strong> For each column ask the three questions in order: does it cause the email, does it cause spend, is it caused by either. Two causes out means confounder, one in and one out means mediator, two causes in means collider, nothing means bystander.</p>
+      </div>
+      <div class="step">
+        <p><strong>Get the naive gap in SQL.</strong> One query, no model, and it should give 10.54. This is the number a dashboard reports.</p>
+      </div>
+      <div class="step">
+        <p><strong>Run the back-door regression</strong> with season and tenure only. The estimate moves from 10.54 to 6.56, and the bias from +4.31 to +0.33. The +0.33 left over is noise rather than bias, and the way to tell is to change the seed: across five of them the back-door bias comes out +0.33, +0.17, -0.38, +0.19, -0.01, mean +0.06, changing sign. Every contaminated set below keeps its sign in all five.</p>
+      </div>
+      <div class="step">
+        <p><strong>Add loyalty on its own and record it.</strong> 5.26, bias -0.97. Say out loud that this variable was measured before the treatment, because that is the sentence you are unlearning.</p>
+      </div>
+      <div class="step">
+        <p><strong>Untick loyalty, add opened.</strong> 5.48, bias -0.75. Write beside it "direct effect, mean 5.16 by construction" so that the record distinguishes a wrong answer from a different question.</p>
+      </div>
+      <div class="step">
+        <p><strong>Untick opened, add ticket.</strong> 2.59, bias -3.64. Same shape as loyalty, later in time, the most expensive of the four by a wide margin, and the one a reviewer would actually catch.</p>
+      </div>
+      <div class="step">
+        <p><strong>Add device.</strong> 6.56, unchanged. Sit with the fact that the four additions cost 0.97, 0.75, 3.64 and nothing, that the worst of them is the one that arrived last, and that the schema gives no hint which is which.</p>
+      </div>
+      <div class="step">
+        <p><strong>Write the classification into a text file beside the DAG from session 1</strong>, one line per column, role and verdict and a reason. That file is the artifact reviewers should be reading instead of the covariate list.</p>
+      </div>
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - the naive gap, and a first look at each column's shape</span>
+-- 1. the naive comparison: emailed against not emailed. expect 10.54
+SELECT AVG(CASE WHEN email = 1 THEN spend END)
+     - AVG(CASE WHEN email = 0 THEN spend END) AS naive_gap
+FROM   kestrelmark.customers;
+
+-- 2. a confounder shows up on BOTH sides: it predicts treatment AND outcome
+SELECT season,
+       COUNT(*)                        AS customers,
+       AVG(email)                      AS email_rate,   -- season -&gt; email
+       AVG(CASE WHEN email = 0 THEN spend END) AS spend_untreated  -- season -&gt; spend
+FROM   kestrelmark.customers
+GROUP  BY season;
+
+-- 3. the collider, seen directly. inside the ticket group the sign flips,
+--    and the flip is manufactured by the WHERE clause, not by the world
+SELECT ticket,
+       AVG(CASE WHEN email = 1 THEN spend END)
+     - AVG(CASE WHEN email = 0 THEN spend END) AS gap_within_group
+FROM   kestrelmark.customers
+GROUP  BY ticket;
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Query 3 is the whole collider lesson in six lines.</strong> Splitting by ticket is not an analysis choice that happens to be inconvenient; it is the same operation a regression performs when ticket is on the right-hand side. If the gap inside the groups disagrees with the gap overall, ask which shape you just conditioned on before deciding which number to believe.</p>
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - price every adjustment set with plain least squares</span>
+import numpy as np, pandas as pd
+
+df = pd.read_csv("kestrelmark.csv")   # 5,000 rows, one per customer
+TRUTH = 6.23                          # known by construction, not estimated
+
+def effect(adjust):
+    """OLS coefficient on email. No inference, no standard errors:
+       this is arithmetic, and the seam is deliberate."""
+    cols = ["email"] + [c for c in adjust if c != "email"]
+    X = np.column_stack([np.ones(len(df))] + [df[c].to_numpy(float) for c in cols])
+    y = df["spend"].to_numpy(float)
+    beta, *_ = np.linalg.lstsq(X, y, rcond=None)
+    return beta[1]                    # email is always the first covariate
+
+BACKDOOR = ["season", "tenure"]
+sets = {
+    "nothing":            [],
+    "back-door set":      BACKDOOR,
+    "+ loyalty (collider, pre-treatment)": BACKDOOR + ["loyalty"],
+    "+ opened  (mediator)":                BACKDOOR + ["opened"],
+    "+ ticket  (collider, post-treatment)": BACKDOOR + ["ticket"],
+    "+ device  (bystander)":               BACKDOOR + ["device"],
+}
+for name, adj in sets.items():
+    est = effect(adj)
+    print(f"{name:&lt;40} {est:6.2f}   bias {est - TRUTH:+.2f}")
+
+# nothing                                   10.54   bias +4.31
+# back-door set                              6.56   bias +0.33
+# + loyalty (collider, pre-treatment)        5.26   bias -0.97
+# + opened  (mediator)                       5.48   bias -0.75
+# + ticket  (collider, post-treatment)       2.59   bias -3.64
+# + device  (bystander)                      6.56   bias +0.33
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - the classification file, saved beside the graph</span>
+# kestrelmark-roles.txt - one line per observable column
+# format: column | shape | verdict | reason
+# estimand: TOTAL effect of email on spend. lives beside kestrelmark-email.dag
+
+season  | confounder          | ADJUST     | winter sends more mail and sells more
+tenure  | confounder          | ADJUST     | old accounts get more mail and buy more
+loyalty | collider, pre-treat | DO NOT     | common effect of u1 and u2; opens an M path
+opened  | mediator            | DO NOT     | carries real effect; adjusting gives 5.16 direct
+ticket  | collider, post-treat| DO NOT     | common effect of email and spend
+device  | bystander           | EITHER     | no arrows; measured at no cost
+recency | effect modifier     | NO NEED    | sets what the email is worth; does not cause it
+
+# derived features: check the lineage, not the name. any feature built from
+# loyalty, opened or ticket inherits the same problem.
+# measured on 5,000 rows against a truth of 6.23:
+#   season, tenure           -&gt; 6.56  (+0.33)
+#   + loyalty                -&gt; 5.26  (-0.97)
+#   + opened                 -&gt; 5.48  (-0.75)
+#   + ticket                 -&gt; 2.59  (-3.64)
+#   + device                 -&gt; 6.56  (+0.33)
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Keep the roles file in version control next to the DAG.</strong> A covariate list changes in a diff that shows one added line and no reason. A roles file forces whoever adds the line to name a shape, and naming a shape is the point at which most bad additions stop.</p>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before session 3</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li>Take the covariate list from a model your team ships and write a roles file for it: column, shape, verdict, reason. Count how many rows you had to mark unknown.</li>
+      <li>Find one variable in that list that is caused by the treatment. There is usually one and it is usually there because it improved the fit.</li>
+      <li>Check the lineage of every engineered feature. If any input is a collider or a descendant of one, mark the feature contaminated and note which input did it.</li>
+      <li>Look at the cohort definition, not just the model. Any filter on a variable caused by both the treatment and the outcome is a conditioned collider hiding in a <code class="mono">WHERE</code> clause.</li>
+      <li>Write one sentence saying whether the estimand is the total effect or the direct effect, and bring it to session 3, where the question becomes whether any set at all can deliver it.</li>
+    </ol>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">A reviewer approves the loyalty score for the adjustment set because it was computed weeks before the campaign went out. Adding it moves the estimate from 6.56 to 5.26. What did the timing argument miss?</p>
+      <button class="qopt" type="button">A · Nothing about the shape; the drop is sampling noise on 5,000 rows</button>
+      <button class="qopt" type="button">B · That the score was measured with error, which attenuates the coefficient</button>
+      <button class="qopt" type="button">C · That loyalty is a common effect of two unobserved causes, one feeding the email and one feeding spend, so conditioning on it opens a path that was closed regardless of when it was recorded</button>
+      <p class="qwhy">The damaging shape is two arrows pointing in, and an arrival timestamp says nothing about arrow directions. The pre-treatment collider costs 0.97 here and the post-treatment one costs 3.64, so timing predicts neither the presence of the damage nor its size.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">Adjusting for whether the customer opened the email returns 5.48 against a true total effect of 6.23 and a mean direct effect of 5.16 written into the model. How should that be reported?</p>
+      <button class="qopt" type="button">A · As a good estimate of the direct effect, which is a different estimand from the one the campaign decision needs</button>
+      <button class="qopt" type="button">B · As collider bias of about 0.75 units, to be removed by dropping the variable</button>
+      <button class="qopt" type="button">C · As an arithmetic error, since any correct adjustment set must return 6.23</button>
+      <p class="qwhy">The mediator carries real effect, so removing it subtracts a genuine part of the answer rather than contaminating it. The number is right; the question changed, and only a written estimand catches that.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">A team drops the ticket flag from the model but keeps a support-contact score built from ticket volume. What happens?</p>
+      <button class="qopt" type="button">A · The problem is solved, because the collider itself is no longer in the covariate list</button>
+      <button class="qopt" type="button">B · Most of the same damage remains, because conditioning on a descendant of a collider partially conditions on the collider</button>
+      <button class="qopt" type="button">C · The bias reverses sign, because a proxy carries the opposite information</button>
+      <p class="qwhy">The formal statement covers m or any descendant of m. Classification runs on lineage, not on column names, and a feature is safe only when everything feeding it is safe.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ COVERAGE ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What tonight maps to</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">The three shapes and what conditioning does to each</span>
+        <span class="note">Confounder closed by conditioning, mediator emptied by it, collider opened by it, on the bench's own six columns.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Colliders and Berkson's paradox</span>
+        <span class="note">In a structure i into m out of j, conditioning on m or any descendant of m makes i and j dependent when they were independent.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">M-bias and the pre-treatment collider</span>
+        <span class="note">The shape A from U1 into C from U2 into Y, measured at -0.97 against the post-treatment collider's -3.64, with the timing argument shown to be worthless.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Total against direct effect</span>
+        <span class="note">5.48 recovered against a mean direct effect of 5.16 written into the model, and why the estimand goes in writing first.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">The back-door criterion, stated formally</span>
+        <span class="note">Session 3. Tonight classifies variables one at a time; the criterion decides whether a whole set is sufficient.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">Simpson's paradox</span>
+        <span class="note">Session 5. The within-group flip in query 3 is the same machinery seen from the aggregation side.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill inkpill">·</span>
+        <span class="name">Propensity scores, IPW, doubly robust, difference-in-differences, synthetic control, DoWhy</span>
+        <span class="note">Not covered by design, in any session. Deciding what belongs in the adjustment set is this track; fitting an estimator with that set belongs to learn-experimentation-with-phoebe.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Session 2 cheat sheet</h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Three shapes, no fourth</b><span>Common cause, link in the chain, common effect. Name the shape, then act.</span></div>
+      <div class="cheat-item"><b>Confounder: adjust</b><span>Arrows out into both. The path is open and conditioning closes it.</span></div>
+      <div class="cheat-item"><b>Mediator: only for direct</b><span>Carries real effect. Conditioning removes it and returns 5.48 against a mean direct 5.16.</span></div>
+      <div class="cheat-item"><b>Collider: never</b><span>Arrows in from both. Closed by default, opened by conditioning. Berkson's paradox. The ticket flag costs -3.64, the worst column here.</span></div>
+      <div class="cheat-item"><b>Pre-treatment is not safe</b><span>The loyalty M path costs -0.97 despite being measured before the email.</span></div>
+      <div class="cheat-item"><b>Descendants count</b><span>A proxy for a collider does most of the same damage. Check lineage, not names.</span></div>
+      <div class="cheat-item"><b>Bystanders are free</b><span>Device leaves 6.56 and +0.33 untouched, which is why feel cannot sort the list.</span></div>
+      <div class="cheat-item"><b>Colliders hide in WHERE</b><span>A cohort filtered on a common effect is conditioned whether or not a model saw it.</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pagefoot">
+  <div class="wrap">
+    <p>Practitioner session 2 of 10 · learn-causal-inference-with-phoebe · by Phoebe Fu</p>
+    <nav class="pagenav">
+      <a href="p1-draw-the-dag-first.html">← Practitioner session 1 · Draw the DAG before touching the data</a>
+      <a href="p3-identification-before-estimation.html">Practitioner session 3 · Identification before estimation →</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

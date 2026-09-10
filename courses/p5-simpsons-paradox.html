@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Practitioner session 5 of 10. An association that holds in every subgroup and reverses in the aggregate. The arithmetic is never in dispute; which number to act on is a causal question, and the graph decides it. Kestrelmark's aggregate says 10.54 against 6.56 with season and tenure held fixed.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="Simpson's paradox - learn causal inference with phoebe">
+<meta property="og:description" content="Practitioner session 5 of 10. Both numbers are correct. Only the graph says which one to act on.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/courses/p5-simpsons-paradox.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Simpson's paradox - learn causal inference with phoebe">
+<meta name="twitter:description" content="Always segment and never segment are both wrong. The stratifier's role decides.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Practitioner session 5 · Simpson's paradox - learn causal inference with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-causal-inference-with-phoebe</a> / Practitioner session 5 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Causal Inference with Phoebe · Practitioner session 5 of 10</div>
+    <h1>Simpson's <span class="accent">paradox</span></h1>
+    <p class="sub">A renewal offer beats no offer among routine renewals. It beats no offer among at-risk renewals too. Put the two groups together and it loses, badly, 35.6 percent against 69.4 percent. Every one of those four numbers is correct and any spreadsheet will reproduce them. What no spreadsheet will tell you is which of the two conclusions to act on, because that depends on why the groups have different sizes, and the answer to that is a claim about causes rather than a fact in the table.</p>
+    <div class="chip-row">
+      <span class="chip level">🟠 Advanced</span>
+      <span class="chip audience">Data scientists and analysts</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:5">3-22 · A sign that flips</span>
+      <span class="a3" style="flex:4">22-40 · Build-along: reproduce it, then resolve it</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>What is actually strange here</h2>
+    </div>
+    <p class="lede">Nothing about the arithmetic. Sums of fractions are allowed to behave this way and there is no error to find, no rounding to blame, no bug in the query. What is strange is that two correct summaries of the same rows recommend opposite actions, and that the information needed to choose between them is not present anywhere in the rows.</p>
+
+    <div class="legend">
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">🔍 Every diagram zooms</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> A reversal you built by hand from nine hundred rows a side, so it stops feeling like a trick. The rule that decides which number to act on: the stratifier's role in the graph, confounder against mediator against collider. And the reason the two most common pieces of advice in analytics, "always segment" and "never trust the aggregate", are each wrong about half the time.</p>
+    </div>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The same numbers, two opposite conclusions<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The shape has a precise definition. An association between two variables holds in every level of a third variable, and reverses when that third variable is ignored. It also runs the other way round: no association in the aggregate, a strong one in every subgroup. Both are the same phenomenon and both are ordinary arithmetic.</p>
+        <p>What makes it worth a session is the frequency. Any time a treatment is allocated unevenly across groups that differ in baseline outcome, the ingredients are present. Uneven allocation is the normal state of affairs outside an experiment, because somebody chose who to treat and they chose for a reason.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>The famous instance is the 1973 Berkeley graduate admissions figures, where the university-wide rate favoured men and almost every individual department favoured women. No department was doing what the aggregate suggested. Women applied in larger numbers to departments that admitted fewer of everybody.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The vocabulary for tonight<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Stratum</strong> - one level of the variable you split on. Two strata tonight; the effect is identical with twenty.</li>
+          <li><strong>Aggregate</strong> - the comparison with the stratifier ignored, which is the same thing as pooling the strata weighted by their own row counts.</li>
+          <li><strong>Reversal</strong> - the sign of the comparison differs between every stratum and the pool.</li>
+          <li><strong>Unequal allocation</strong> - the treated and untreated groups have different proportions in each stratum. This is the engine of the reversal; with equal allocation it cannot happen.</li>
+          <li><strong>Berkson's paradox</strong> - the collider-driven cousin, where selecting on a common effect creates an association between two unrelated things. Session 2.</li>
+          <li><strong>Stratifier role</strong> - confounder, mediator, collider, or bystander. The whole resolution turns on this one word, and the word comes from the graph.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers the shape and why it is not a paradox</span>
+      <h2>The same numbers, two opposite conclusions</h2>
+      <span class="tag concept">10 min live</span>
+    </div>
+    <p class="lede">Here is a reversal small enough to check on paper. A subscription business offers a renewal discount to 900 of its 1,800 accounts due for renewal, and afterwards counts who renewed. Two strata: routine accounts, and accounts the churn model had already flagged as at risk.</p>
+
+    <table class="clean">
+      <thead><tr><th>Stratum</th><th>Group</th><th>Accounts</th><th>Renewed</th><th>Renewal rate</th></tr></thead>
+      <tbody>
+        <tr><td>Routine</td><td><strong>Offer</strong></td><td>100</td><td>80</td><td><strong>80.0%</strong></td></tr>
+        <tr><td>Routine</td><td>No offer</td><td>800</td><td>600</td><td>75.0%</td></tr>
+        <tr><td>At risk</td><td><strong>Offer</strong></td><td>800</td><td>240</td><td><strong>30.0%</strong></td></tr>
+        <tr><td>At risk</td><td>No offer</td><td>100</td><td>25</td><td>25.0%</td></tr>
+        <tr><td>Both</td><td><strong>Offer</strong></td><td>900</td><td>320</td><td><strong>35.6%</strong></td></tr>
+        <tr><td>Both</td><td>No offer</td><td>900</td><td>625</td><td>69.4%</td></tr>
+      </tbody>
+    </table>
+
+    <p>The offer wins by five points among routine accounts and by five points among at-risk accounts. Pooled, it loses by nearly thirty-four. The row counts are where the reversal lives: 800 of the 900 offers went to at-risk accounts, whose renewal rate is low whatever you do to them, while the no-offer group is mostly made of routine accounts, whose renewal rate is high whatever you do to them.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The reversal drawn as three panels. Among routine renewals the offer wins, 80 percent against 75 percent. Among at-risk renewals the offer wins, 30 percent against 25 percent. Pooling both strata the offer loses, 35.6 percent against 69.4 percent. The cause is unequal allocation: 800 of the 900 offers went to at-risk accounts.">
+        <style>
+          .p5aT { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .p5aH { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .p5aB { font: 400 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p5aM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .p5aN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+
+        <text class="p5aH" x="14" y="26">1,800 renewals, 900 offers, three correct summaries</text>
+
+        <rect x="14" y="40" width="276" height="32" rx="8" fill="#0F6F66"></rect>
+        <text class="p5aT" x="30" y="61">Routine renewals</text>
+        <rect x="14" y="72" width="276" height="140" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p5aB" x="30" y="100">Offer: 80 of 100 = 80.0%</text>
+        <text class="p5aB" x="30" y="124">No offer: 600 of 800 = 75.0%</text>
+        <rect x="30" y="140" width="150" height="30" rx="8" fill="#0F6F66"></rect>
+        <text class="p5aT" x="105" y="160" text-anchor="middle">Offer wins</text>
+        <text class="p5aM" x="30" y="196">gap: 5.0 points up</text>
+
+        <rect x="302" y="40" width="276" height="32" rx="8" fill="#0F6F66"></rect>
+        <text class="p5aT" x="318" y="61">At-risk renewals</text>
+        <rect x="302" y="72" width="276" height="140" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p5aB" x="318" y="100">Offer: 240 of 800 = 30.0%</text>
+        <text class="p5aB" x="318" y="124">No offer: 25 of 100 = 25.0%</text>
+        <rect x="318" y="140" width="150" height="30" rx="8" fill="#0F6F66"></rect>
+        <text class="p5aT" x="393" y="160" text-anchor="middle">Offer wins</text>
+        <text class="p5aM" x="318" y="196">gap: 5.0 points up</text>
+
+        <rect x="590" y="40" width="276" height="32" rx="8" fill="#9A3412"></rect>
+        <text class="p5aT" x="606" y="61">Both strata pooled</text>
+        <rect x="590" y="72" width="276" height="140" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p5aB" x="606" y="100">Offer: 320 of 900 = 35.6%</text>
+        <text class="p5aB" x="606" y="124">No offer: 625 of 900 = 69.4%</text>
+        <rect x="606" y="140" width="150" height="30" rx="8" fill="#9A3412"></rect>
+        <text class="p5aT" x="681" y="160" text-anchor="middle">Offer loses</text>
+        <text class="p5aM" x="606" y="196">gap: 33.8 points down</text>
+
+        <rect x="14" y="228" width="852" height="44" rx="9" fill="#99F6E4"></rect>
+        <text class="p5aH" x="30" y="255">Why it flips: 800 of the 900 offers went to at-risk accounts, and only 100 to routine ones.</text>
+
+        <rect x="14" y="290" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="p5aN" x="38" y="302">Every figure is correct. Which one to act on is not a question the table can answer.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the offer wins twice and loses once, on the same 1,800 rows.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Check the arithmetic by hand, because it is the point<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Four divisions, each exact. Routine offers, 80 of 100, is 80.0 percent. Routine no-offers, 600 of 800, is 75.0 percent. At-risk offers, 240 of 800, is 30.0 percent. At-risk no-offers, 25 of 100, is 25.0 percent. The offer is ahead by exactly five points in both strata.</p>
+        <p>Now pool. The offer column: 80 plus 240 renewals is 320, out of 100 plus 800 accounts, which is 900. That is 35.6 percent. The no-offer column: 600 plus 25 renewals is 625, out of 800 plus 100 accounts, also 900. That is 69.4 percent. Same 1,800 accounts, same 945 renewals, and the winner has changed.</p>
+        <p>The reason is visible in the counts and nowhere else. The offer group is 89 percent at-risk accounts, whose ceiling is low. The no-offer group is 89 percent routine accounts, whose floor is high. Pooling compares a mostly-hard sample against a mostly-easy one, and the five-point advantage inside each stratum is buried by a forty-five-point difference in stratum composition.</p>
+        <div class="callout tip">
+          <p><strong>Equal allocation kills the paradox.</strong> Had 450 offers gone to each stratum and 450 no-offers to each, the pooled rates would be the plain averages of the strata rates and the offer would win by five points overall. Reversal needs both a baseline difference and an allocation difference; remove either one and it cannot occur.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>It is not a paradox, and calling it one hides the real question<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A paradox is a contradiction. There is no contradiction here: two different quantities were computed and they came out different, which is what different quantities do. The stratified comparison answers "among accounts like this one, does the offer help". The pooled comparison answers "of the accounts that got the offer and the accounts that did not, which group renewed more". Those are separate questions with separate answers and both answers are right.</p>
+        <p>The surprise comes from an unstated assumption that one of them is the effect of the offer. Neither is, automatically. A comparison becomes an effect only when the groups being compared differ in nothing but the treatment, and whether that holds is a claim about how accounts came to be treated, which lives outside the table.</p>
+        <ul>
+          <li><strong>The arithmetic is never in dispute.</strong> Do not go looking for the bug. There is no bug, and hunting for one wastes the afternoon that should have been spent on the graph.</li>
+          <li><strong>The dispute is about which comparison is the causal one.</strong> That is a modelling question, and it has an answer, and the answer is not in the data.</li>
+          <li><strong>Both numbers can be reported honestly.</strong> What cannot be done honestly is reporting one of them as the effect without saying why the other was rejected.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Where the ingredients show up in ordinary work<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Any targeted campaign.</strong> Targeting is deliberate unequal allocation, so the ingredients are present by design in every campaign readout that was not randomised.</li>
+          <li><strong>Any triage.</strong> Treatments given preferentially to severe cases, support tickets routed by difficulty, remedial teaching given to struggling students. The treated group is worse off before anything happens.</li>
+          <li><strong>Any comparison across time.</strong> If the mix of customers changed between two periods, the aggregate can move in the opposite direction to every segment within it.</li>
+          <li><strong>Any weighted average that somebody unweighted.</strong> Pooling raw counts silently reweights by group size, and group size is rarely a quantity anybody chose on purpose.</li>
+          <li><strong>The tell is always the same.</strong> Look at the allocation, not the outcome. If the treated and untreated groups have very different compositions, the aggregate is a comparison of compositions wearing a treatment label.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2 ============ -->
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers the resolution and Kestrelmark's own version</span>
+      <h2>The graph decides, not the table</h2>
+      <span class="tag concept">8 min live</span>
+    </div>
+    <p class="lede">Take the identical table and hang it under two different graphs. Under the first, the stratified numbers are the ones to believe. Under the second, stratifying is the mistake and the aggregate is closer to right. Nothing in the rows changed. Everything about the recommendation did.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The same table under two different graphs. On the left the stratifier S is a common cause of the treatment X and the outcome Y, so the stratified numbers are the causal ones and the aggregate is confounded. On the right S sits on the causal path from X to Y, so stratifying blocks part of the real effect and the aggregate is closer to right.">
+        <style>
+          .p5bT { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .p5bH { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .p5bB { font: 400 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p5bM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .p5bN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+        <defs>
+          <marker id="p5bAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5A6B68"></path></marker>
+        </defs>
+
+        <text class="p5bH" x="14" y="26">One table, two possible graphs, two opposite verdicts</text>
+
+        <rect x="14" y="40" width="418" height="32" rx="8" fill="#0F6F66"></rect>
+        <text class="p5bT" x="30" y="61">Stratifier S is a confounder</text>
+        <rect x="14" y="72" width="418" height="132" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <rect x="181" y="92" width="70" height="28" rx="7" fill="#134E4A"></rect>
+        <text class="p5bT" x="216" y="111" text-anchor="middle">S</text>
+        <rect x="48" y="156" width="70" height="28" rx="7" fill="#0F6F66"></rect>
+        <text class="p5bT" x="83" y="175" text-anchor="middle">X</text>
+        <rect x="314" y="156" width="70" height="28" rx="7" fill="#0F6F66"></rect>
+        <text class="p5bT" x="349" y="175" text-anchor="middle">Y</text>
+        <line x1="200" y1="122" x2="97" y2="152" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p5bAr)"></line>
+        <line x1="232" y1="122" x2="335" y2="152" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p5bAr)"></line>
+        <line x1="122" y1="170" x2="308" y2="170" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p5bAr)"></line>
+        <text class="p5bM" x="30" y="198">common cause: hold it fixed</text>
+        <rect x="14" y="214" width="418" height="62" rx="9" fill="#99F6E4"></rect>
+        <text class="p5bB" x="30" y="238">Believe the strata: 80.0 against 75.0, 30.0 against 25.0.</text>
+        <text class="p5bB" x="30" y="258">The pooled figure compares two different populations.</text>
+
+        <rect x="448" y="40" width="418" height="32" rx="8" fill="#134E4A"></rect>
+        <text class="p5bT" x="464" y="61">Stratifier S is a mediator</text>
+        <rect x="448" y="72" width="418" height="132" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <rect x="615" y="92" width="70" height="28" rx="7" fill="#134E4A"></rect>
+        <text class="p5bT" x="650" y="111" text-anchor="middle">S</text>
+        <rect x="482" y="156" width="70" height="28" rx="7" fill="#0F6F66"></rect>
+        <text class="p5bT" x="517" y="175" text-anchor="middle">X</text>
+        <rect x="748" y="156" width="70" height="28" rx="7" fill="#0F6F66"></rect>
+        <text class="p5bT" x="783" y="175" text-anchor="middle">Y</text>
+        <line x1="540" y1="154" x2="632" y2="122" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p5bAr)"></line>
+        <line x1="668" y1="122" x2="760" y2="152" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p5bAr)"></line>
+        <line x1="556" y1="170" x2="742" y2="170" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p5bAr)"></line>
+        <text class="p5bM" x="464" y="198">on the causal path: leave it alone</text>
+        <rect x="448" y="214" width="418" height="62" rx="9" fill="#99F6E4"></rect>
+        <text class="p5bB" x="464" y="238">Believe the pool: 35.6 against 69.4 is nearer the total.</text>
+        <text class="p5bB" x="464" y="258">Splitting on S removes part of the real effect.</text>
+
+        <rect x="14" y="298" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="p5bN" x="38" y="310">Same rows, same arithmetic. The deciding fact sits in the graph and never in the data.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the stratifier's role, not the table, decides which number is the effect.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Three roles, three verdicts<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Session 2 named the shapes. Applied to a stratifier, each one gives a different answer to "should I split on this".</p>
+        <ul>
+          <li><strong>Confounder, a common cause of treatment and outcome.</strong> Split. The stratified numbers are the causal ones and the pooled figure is contaminated by the back-door path. In the renewal table, if the churn risk both determined who got the offer and predicted renewal on its own, this is the case: the offer helps, by five points, in both strata.</li>
+          <li><strong>Mediator, on the causal path from treatment to outcome.</strong> Do not split. Holding it fixed removes part of the effect you are trying to measure, so the stratified numbers understate and the pooled figure is closer to the total effect. Session 10 measures exactly this on Kestrelmark's <code class="mono">opened</code> variable, at 5.48 against a total of 6.23.</li>
+          <li><strong>Collider, a common effect of treatment and outcome or of their causes.</strong> Do not split. Conditioning on it manufactures an association that was not there, so the stratified numbers are worse than the pooled ones. Session 10 prices Kestrelmark's two colliders at 0.97 for the loyalty score, which precedes the email, and 3.64 for the ticket flag, which the email helps cause: the downstream one is by far the more expensive of the pair.</li>
+          <li><strong>Bystander, connected to neither.</strong> Splitting changes nothing at all. Kestrelmark's <code class="mono">device</code> variable moves the estimate by nothing to two decimal places, which is the cleanest possible reminder that harmful variables cannot be spotted by feel.</li>
+        </ul>
+        <p>The uncomfortable part is that the table looks identical in all four cases. There is no column of the data, no correlation, no fit statistic that distinguishes them. The distinguishing information is the direction of the arrows, and arrows come from knowing the business.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Kestrelmark's own version<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The re-engagement email has the same ingredients. The winter campaign calendar sends more email, and people buy more in winter regardless of email, so <code class="mono">season</code> both allocates the treatment and drives the outcome. Long-tenured accounts sit on more lists and spend more anyway, so <code class="mono">tenure</code> does the same. Two confounders, two back doors, unequal allocation across both.</p>
+        <p>The aggregate comparison of emailed against not emailed gives <strong>10.54</strong>. Holding <code class="mono">season</code> and <code class="mono">tenure</code> fixed gives <strong>6.56</strong>, against a true effect of <strong>6.23</strong> known by construction from the model that generated the customers. The aggregate overstates by 4.31 units, which is two thirds of the true effect again.</p>
+        <p>Both roles are confounders here, so the verdict is unambiguous: 6.56 is the number to act on and 10.54 is the number to explain. Note how little the size of the gap tells you on its own. A gap of that size under a mediator would have meant the opposite, and no amount of staring at 10.54 and 6.56 would reveal which case you were in.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>The board deck version reads "the campaign drove 10.54 units of incremental spend". Nobody in that room can check it, because checking it requires the graph and the graph was never written down. The analyst who asks "what did you hold fixed, and why those variables" converts a slide into a conversation.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Why "always segment" and "never segment" are both wrong<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Both rules of thumb are attempts to replace a causal judgement with a procedure, and neither can work, because the two cases they are trying to cover recommend opposite actions on identical tables.</p>
+        <ul>
+          <li><strong>"Always segment" fails on mediators and colliders.</strong> Segmenting by something the treatment caused answers a different question at best and manufactures bias at worst. The habit is popular because segmenting almost always produces an interesting-looking difference.</li>
+          <li><strong>"Never trust the aggregate" fails on mediators too,</strong> and on any case where the pooled figure was the total effect all along. It also has no stopping rule: there is always one more variable to segment by, and segmenting far enough reaches subgroups of one.</li>
+          <li><strong>The replacement rule is short.</strong> Name the role of the variable in the graph before splitting on it. If nobody can name the role, that is the finding, and the split waits.</li>
+          <li><strong>Berkson's paradox is the same lesson in the collider case.</strong> Selecting on a common effect creates an association between causes that were independent. Session 2 built it; here it is one of the four verdicts.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>Reproduce it, then resolve it</h2>
+      <span class="tag demo">★ 18 min · everyone builds</span>
+    </div>
+    <p class="lede">Build the small table in SQL first, because a reversal you typed yourself is a reversal you believe. Then run the same two comparisons on the Kestrelmark customers, write both numbers side by side, and classify the stratifier before saying which one is the effect.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Step 1. Type the four cells and let the database pool them.</strong> Two queries against the same rows: one grouped by stratum and offer, one grouped by offer alone. Nothing else. The reversal appears without any modelling at all.</p>
+      </div>
+      <div class="step">
+        <p><strong>Step 2. Check the pooled row counts against your own addition.</strong> 100 plus 800 is 900 on each side. If the two sides had come out unequal you would be looking at a different phenomenon and it would be worth stopping to find out which.</p>
+      </div>
+      <div class="step">
+        <p><strong>Step 3. Run the naive comparison on Kestrelmark and write down 10.54.</strong> This is the aggregate, and it is what a dashboard reports.</p>
+      </div>
+      <div class="step">
+        <p><strong>Step 4. Hold season and tenure fixed and write down 6.56 beside it.</strong> Two numbers, one line apart, from one dataset. Both correct as arithmetic.</p>
+      </div>
+      <div class="step">
+        <p><strong>Step 5. Classify the stratifier with the session 2 rules and commit to one number in writing.</strong> Season is a common cause of email and spend, so it is a confounder, so the held-fixed number is the causal one. Write the sentence, not just the figure.</p>
+      </div>
+      <div class="step">
+        <p><strong>Step 6. Now do it wrong on purpose.</strong> Hold <code class="mono">opened</code> fixed instead and watch the estimate fall to 5.48. Same procedure, same code, a stratifier with a different role, and a number that answers a question nobody asked.</p>
+      </div>
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - the reversal in SQL, checkable by hand</span>
+-- renewals.sql - four cells, two queries, one reversal
+
+with renewals as (
+  select 'routine' as stratum, 1 as offered, 100 as accounts,  80 as renewed
+  union all select 'routine', 0, 800, 600
+  union all select 'at_risk', 1, 800, 240
+  union all select 'at_risk', 0, 100,  25
+)
+
+-- stratified: the offer wins in both strata
+select stratum,
+       offered,
+       accounts,
+       renewed,
+       round(100.0 * renewed / accounts, 1) as renewal_pct
+from renewals
+order by stratum, offered desc;
+
+-- routine  1  100   80  80.0
+-- routine  0  800  600  75.0
+-- at_risk  1  800  240  30.0
+-- at_risk  0  100   25  25.0
+
+-- pooled: the offer loses by nearly 34 points
+select offered,
+       sum(accounts) as accounts,
+       sum(renewed)  as renewed,
+       round(100.0 * sum(renewed) / sum(accounts), 1) as renewal_pct
+from renewals
+group by offered
+order by offered desc;
+
+-- 1  900  320  35.6
+-- 0  900  625  69.4
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Keep the allocation column in the output.</strong> The reversal is invisible in the rates and obvious in the counts. An output that shows only percentages hides its own explanation, which is why a readout with rates and no denominators should always be sent back.</p>
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - the same two comparisons on Kestrelmark</span>
+# simpson_kestrelmark.py - the aggregate, then the strata, then the verdict
+
+import numpy as np
+import pandas as pd
+
+df = pd.read_csv("kestrelmark.csv")   # 5,000 customers from the session 10 model
+
+# the aggregate: emailed against not emailed, nothing held fixed
+naive = (df.loc[df.email == 1, "spend"].mean()
+         - df.loc[df.email == 0, "spend"].mean())
+
+# the same difference computed inside each season, for the shape of it
+by_season = df.groupby("season").apply(
+    lambda g: (g.loc[g.email == 1, "spend"].mean()
+               - g.loc[g.email == 0, "spend"].mean())
+)
+
+def held_fixed(frame, controls):
+    """the arithmetic the session 10 bench runs: least squares, no inference"""
+    design = np.column_stack([np.ones(len(frame)), frame.email] +
+                             [frame[c] for c in controls])
+    beta, *_ = np.linalg.lstsq(design, frame.spend, rcond=None)
+    return beta[1]
+
+adjusted = held_fixed(df, ["season", "tenure"])
+
+print(f"aggregate, nothing held fixed   {naive:.2f}")     # 10.54
+print(f"season and tenure held fixed    {adjusted:.2f}")  # 6.56
+print(by_season)                                          # read your own run
+
+# truth from the generating model: 6.23
+# season is a common cause of email and spend, so it is a CONFOUNDER,
+# so 6.56 is the causal number and 10.54 is the one to explain.
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - the same code with a stratifier whose role nobody checked</span>
+# opened is caused by the email. It is a MEDIATOR, not a confounder.
+mediator_split = held_fixed(df, ["season", "tenure", "opened"])
+print(f"opened held fixed too           {mediator_split:.2f}")   # 5.48
+
+# Nothing errored. Nothing looked wrong. The estimate now answers
+# "what does the email do for people who would not have opened it",
+# which is the direct effect and not the total the spec asked for.
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What just happened.</strong> Three numbers came out of one dataset with one line of difference between them: 10.54, 6.56, 5.48. All three are correct arithmetic and only one answers the question on the spec. The thing that separates them is a single word about each stratifier, and the word is not in the data.</p>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before session 6</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li>Find a reversal in your own data. Take any treated-against-untreated comparison your team reports and split it by the variable that most influenced who got treated. Record whether the sign flips, narrows, or holds.</li>
+      <li>For that stratifier, write one sentence naming its role: common cause, on the causal path, common effect, or unrelated. Bring the sentence, not the number.</li>
+      <li>Take one segmented readout your team publishes regularly and check whether any segmenting variable is caused by the thing being measured. Those splits are producing a different quantity every week.</li>
+      <li>Rewrite one dashboard tile so it shows denominators next to rates. Half of the reversals in a business are hiding behind a missing count.</li>
+    </ol>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">You have the renewal table and nothing else: 80.0 against 75.0 in one stratum, 30.0 against 25.0 in the other, 35.6 against 69.4 pooled. Which number is the effect of the offer?</p>
+      <button class="qopt" type="button">A · The stratified numbers, because a finer comparison is always the more careful one</button>
+      <button class="qopt" type="button">B · The pooled number, because it uses all 1,800 accounts and is therefore better powered</button>
+      <button class="qopt" type="button">C · Undecidable from the table: if the stratifier is a common cause of offer and renewal the strata are the causal numbers, and if it sits on the causal path the pool is nearer the total</button>
+      <p class="qwhy">The table is identical under both graphs, so no property of the data can separate them. The deciding information is the direction of the arrows, which comes from knowing how accounts were selected for the offer.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">Kestrelmark's aggregate gives 10.54 and holding season and tenure fixed gives 6.56, against a true effect of 6.23. What made the aggregate wrong?</p>
+      <button class="qopt" type="button">A · Season and tenure both influenced who got the email and also drove spend on their own, so the pooled comparison is partly a comparison of winters and of long-tenured accounts</button>
+      <button class="qopt" type="button">B · The sample was too small at 5,000 customers</button>
+      <button class="qopt" type="button">C · The aggregate was computed on the wrong column</button>
+      <p class="qwhy">Two confounders, two open back doors, and unequal allocation across both. Confounding is bias rather than noise, so more customers would have produced 10.54 with tighter error bars.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">A colleague proposes a standing rule: "always segment, because aggregates lie". What is wrong with it?</p>
+      <button class="qopt" type="button">A · Nothing, provided every segment has enough rows to be stable</button>
+      <button class="qopt" type="button">B · Segmenting on a mediator removes part of the real effect and segmenting on a collider manufactures an association, so the rule is wrong whenever the stratifier is caused by the treatment</button>
+      <button class="qopt" type="button">C · Nothing, since segmenting can only ever add information</button>
+      <p class="qwhy">"Never segment" fails the same way in the confounder case. Both rules of thumb try to replace a judgement about the graph with a procedure, and the two cases they cover recommend opposite actions on the same table.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ COVERAGE ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What tonight maps to</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Simpson's paradox reproduced from real numbers</span>
+        <span class="note">A reversal built by hand from 1,800 accounts, with the unequal allocation that produces it shown in the counts.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Why the aggregate and the strata disagree, and which to believe</span>
+        <span class="note">The stratifier's role decides: confounder means split, mediator and collider mean do not, bystander means it makes no difference.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Kestrelmark's own version</span>
+        <span class="note">10.54 aggregate against 6.56 with season and tenure held fixed, and a true effect of 6.23 known from the generating model.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">Berkson's paradox and the three shapes</span>
+        <span class="note">Session 2 built confounder, collider and mediator. Tonight applies them to the choice of which number to report.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">The cost of each wrong stratifier, measured</span>
+        <span class="note">Session 10 prices them on one dataset: 0.97 for the collider that precedes the email and 3.64 for the one downstream of it, 0.75 for the mediator, nothing for the bystander.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill inkpill">·</span>
+        <span class="name">Propensity scores, IPW, doubly robust, difference-in-differences, synthetic control, DoWhy</span>
+        <span class="note">Not covered by design, in any session. Choosing which comparison is causal is the question here; fitting an estimator to it belongs to <code class="mono">learn-experimentation-with-phoebe</code>.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Session 5 cheat sheet</h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>The shape</b><span>Holds in every stratum, reverses in the pool. Or the reverse of that.</span></div>
+      <div class="cheat-item"><b>No bug to find</b><span>80.0 and 30.0 beat 75.0 and 25.0, and 35.6 loses to 69.4. All correct.</span></div>
+      <div class="cheat-item"><b>Allocation is the engine</b><span>800 of 900 offers went to at-risk accounts. Equal allocation cannot reverse.</span></div>
+      <div class="cheat-item"><b>Stratifier is a confounder</b><span>Split. The strata are causal, the pool carries the back door.</span></div>
+      <div class="cheat-item"><b>Stratifier is a mediator</b><span>Do not split. Holding it fixed deletes part of the real effect.</span></div>
+      <div class="cheat-item"><b>Stratifier is a collider</b><span>Do not split. Conditioning manufactures an association that was not there.</span></div>
+      <div class="cheat-item"><b>Kestrelmark: 10.54 or 6.56</b><span>Season and tenure are confounders, so 6.56 against a truth of 6.23.</span></div>
+      <div class="cheat-item"><b>Both slogans are wrong</b><span>Always segment and never segment. Name the role first, then split or do not.</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pagefoot">
+  <div class="wrap">
+    <p>Practitioner session 5 of 10 · learn-causal-inference-with-phoebe · by Phoebe Fu</p>
+    <nav class="pagenav">
+      <a href="p4-the-front-door.html">← Practitioner session 4 · The front door</a>
+      <a href="p6-counterfactuals.html">Practitioner session 6 · Counterfactuals →</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

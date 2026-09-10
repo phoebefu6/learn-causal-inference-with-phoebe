@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Leader session 5 of 6. An average effect is a summary of a distribution, and the rollout decision needs the distribution. Kestrelmark's measured 6.23 is one segment gaining 29.09 each, two that barely move, and 7.9 percent the email drives away at 8.87 each.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="Not everyone responds - learn causal inference with phoebe">
+<meta property="og:description" content="Leader session 5 of 6. A measured average effect of 6.23 and a rollout worth -3,848, at the same time.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/courses/a5-not-everyone-responds.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Not everyone responds - learn causal inference with phoebe">
+<meta name="twitter:description" content="6.23 is a number no segment experienced. The rollout was sized on it anyway.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Leader session 5 · Not everyone responds - learn causal inference with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-causal-inference-with-phoebe</a> / Leader session 5 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Causal Inference with Phoebe · Leader session 5 of 6</div>
+    <h1>Not everyone <span class="accent">responds</span></h1>
+    <p class="sub">Kestrelmark's re-engagement email truly lifts spend by 6.23 units on average, and that number was enough to send it to the entire base. It should not have been. An average is one summary of a distribution, and this one comes apart into four measured groups the moment the file is split by how recently the customer was active: one group gains 29.09 per person, two barely move at 2.10 and 1.04, and one loses 8.87. At a fully loaded 7.00 per send, only the first clears the cost. Tonight is about asking for the distribution before signing the rollout, and about the arithmetic that decides who is worth paying to reach.</p>
+    <div class="chip-row">
+      <span class="chip level">🟠 Advanced</span>
+      <span class="chip audience">Data and product leaders</span>
+      <span class="chip audience">Anyone who has rolled something out to everybody</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:5">3-22 · An average is a summary of a distribution</span>
+      <span class="a3" style="flex:4">22-40 · Build-along: find the segments</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where tonight sits</h2>
+    </div>
+    <p class="lede">Six sessions, 45 minutes each, no code and no query boxes. Session 1 was the three rungs, session 2 the claim audit, session 3 the covariate list, session 4 whether the question is answerable at all. Tonight is the last conceptual gap between a correct number and a correct decision: the number is an average, and the decision is about people. Session 6 turns all five into a brief you can hand to an analyst. The example throughout is <strong>Kestrelmark</strong>, a subscription retailer whose re-engagement email appears to lift spend by 10.54 units and truly lifts it by 6.23.</p>
+
+    <div class="legend">
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">🔍 Every diagram zooms</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> The four groups any yes-or-no intervention splits a population into, measured on Kestrelmark's own file: 20.4 percent persuadable at +29.09 each, 22.4 percent sure things at +2.10, 49.3 percent lost causes at +1.04, and 7.9 percent sleeping dogs at -8.87. At a fully loaded 7.00 per send, only the persuadables clear the bar. The programme as run is a blanket send to all 5,000 and it is worth <strong>-3,848</strong>; sending only to the 20.4 percent persuadable segment is worth <strong>+22,578</strong>. So a campaign with a healthy, correctly identified, positive average effect of 6.23 destroys value as it stands, and the average is the thing that hid it. And the honest limit: per-person effects are far harder to estimate than averages, so the right ask is a few large interpretable segments rather than a score nobody can audit.</p>
+    </div>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Why the average is the wrong unit for a rollout<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The number that comes back from a causal analysis is almost always an average across everybody in the study. It answers a question of the form "if we had done this to all of them instead of none of them, how much more spend would there have been". That is a real question and it is worth answering carefully, which is what the first four sessions were about.</p>
+        <p>A rollout is a different question. It asks who to send the thing to, at what cost, and the answer depends on how the effect is spread across the population rather than on where its centre sits. A campaign can have a solidly positive average and still be the wrong campaign, because the average is silent on whether the gain sits in a tenth of the base or in all of it, and silent on whether anybody was made worse off.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Kestrelmark's rollout paper had one number in it. The effect was measured on the 5,000 customers who had been in the pilot, it came out positive, and the recommendation was to send the email to the whole file every month. Nobody asked which customers the 6.23 came from. The answer was one field away: split the same pilot by recency and almost all of the value sits in a fifth of the base, with another 7.9 percent going backwards. The question was not suppressed; it simply was not on the form.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Four words for the four groups<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Persuadables</strong> - they act because the treatment reached them, and would not have otherwise. This is the entire source of value in the campaign, and every unit of budget that lands anywhere else is waste.</li>
+          <li><strong>Sure things</strong> - they were going to act either way. Reaching them costs money and produces nothing, though it produces a very healthy-looking response rate, which is why response rate is the metric that keeps bad campaigns alive.</li>
+          <li><strong>Lost causes</strong> - they were never going to act, treated or not. Cheap to be wrong about, since the only loss is the cost of the send.</li>
+          <li><strong>Sleeping dogs</strong> - the treatment makes them less likely to act. They unsubscribe, they mark the sender as spam, they remember they were meaning to cancel. Reaching them costs money and destroys value on top.</li>
+        </ul>
+        <p>These names come from marketing practice and they are not technical terms, but the split behind them is exact: for a yes-or-no treatment and a yes-or-no outcome, every person falls in one of those four boxes and no other. A leader who can ask "what share of the file is in each box" has asked the only targeting question that matters.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers the four groups and the arithmetic of an average</span>
+      <h2>The average effect is a number nobody experienced</h2>
+      <span class="tag concept">10 min live</span>
+    </div>
+    <p class="lede">The effect of a treatment on one particular person is the difference between what happened to them and what would have happened to them otherwise. Only one of those two ever occurs, so no individual effect is ever observed directly. What a study recovers is the average of that difference across a group, and averaging is the step where the interesting structure disappears.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 290" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The measured split of five thousand Kestrelmark customers into four recency segments. Persuadables, lapsed thirty to ninety days, are 20.4 percent, 1,022 people, gaining 29.09 units each, and are highlighted as the only group worth paying for. Sure things, still active, are 22.4 percent, 1,120 people, gaining 2.10 each. Lost causes, dormant twelve months, are 49.3 percent, 2,465 people, gaining 1.04 each. Sleeping dogs, who cancelled once already, are 7.9 percent, 393 people, losing 8.87 units each, and are marked as harmful. All four average to the true effect of 6.23.">
+        <style>
+          .a5aH { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .a5aT { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .a5aW { font: 400 11px Inter, sans-serif; fill: #fff; }
+          .a5aK { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .a5aB { font: 400 11px Inter, sans-serif; fill: #0F1C1A; }
+          .a5aN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+
+        <text class="a5aH" x="14" y="24">The measured split of 5,000 customers, by recency. Only one group creates value.</text>
+
+        <rect x="14" y="44" width="174" height="34" rx="8" fill="#0F6F66"></rect>
+        <text class="a5aT" x="101" y="66" text-anchor="middle">Persuadables 20.4%</text>
+        <rect x="188" y="44" width="191" height="34" fill="#99F6E4"></rect>
+        <text class="a5aK" x="283" y="66" text-anchor="middle">Sure things 22.4%</text>
+        <rect x="379" y="44" width="420" height="34" fill="#5EEAD4"></rect>
+        <text class="a5aK" x="589" y="66" text-anchor="middle">Lost causes 49.3%</text>
+        <rect x="799" y="44" width="67" height="34" rx="8" fill="#9A3412"></rect>
+        <text class="a5aT" x="832" y="66" text-anchor="middle">7.9%</text>
+
+        <rect x="14" y="110" width="207" height="120" rx="10" fill="#0F6F66" stroke="#134E4A" stroke-width="2"></rect>
+        <text class="a5aT" x="30" y="136">★ Persuadables</text>
+        <text class="a5aW" x="30" y="157">1,022 people</text>
+        <text class="a5aT" x="30" y="180">+29.09 each</text>
+        <text class="a5aW" x="30" y="201">lapsed 30-90 days,</text>
+        <text class="a5aW" x="30" y="218">the only group that pays</text>
+
+        <rect x="229" y="110" width="207" height="120" rx="10" fill="#99F6E4"></rect>
+        <text class="a5aK" x="245" y="136">Sure things</text>
+        <text class="a5aB" x="245" y="157">1,120 people</text>
+        <text class="a5aK" x="245" y="180">+2.10 each</text>
+        <text class="a5aB" x="245" y="201">active now, buying</text>
+        <text class="a5aB" x="245" y="218">either way</text>
+
+        <rect x="444" y="110" width="207" height="120" rx="10" fill="#5EEAD4"></rect>
+        <text class="a5aK" x="460" y="136">Lost causes</text>
+        <text class="a5aB" x="460" y="157">2,465 people</text>
+        <text class="a5aK" x="460" y="180">+1.04 each</text>
+        <text class="a5aB" x="460" y="201">dormant 12 months,</text>
+        <text class="a5aB" x="460" y="218">they barely move</text>
+
+        <rect x="659" y="110" width="207" height="120" rx="10" fill="#9A3412"></rect>
+        <text class="a5aT" x="675" y="136">✗ Sleeping dogs</text>
+        <text class="a5aW" x="675" y="157">393 people</text>
+        <text class="a5aT" x="675" y="180">-8.87 each</text>
+        <text class="a5aW" x="675" y="201">cancelled once, the</text>
+        <text class="a5aW" x="675" y="218">email costs them</text>
+
+        <rect x="14" y="254" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="a5aN" x="38" y="266">Measured, not assumed: +29.09 and -8.87 both vanish into an average of 6.23.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - four groups, one of them worth budget, one of them worth avoiding, and both invisible in the average.</figcaption>
+    </figure>
+
+    <div class="callout tip">
+      <p><strong>These four numbers are a measurement, not an illustration.</strong> Kestrelmark's file already carries a recency segment, and splitting the same pilot by it produces the four groups directly: 20.4 percent lapsed 30-90 days gaining 29.09 each, 22.4 percent still active gaining 2.10, 49.3 percent dormant a year gaining 1.04, and 7.9 percent who have cancelled once losing 8.87. Nobody had to guess the shape and nobody had to build anything new. The rollout memo reported the 6.23 and none of the four.</p>
+    </div>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The average effect and the effect on one person are different objects<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>For each customer there are two possible spend figures: the one that follows from receiving the email and the one that follows from not receiving it. Their difference is that customer's own effect. Exactly one of the two ever happens, so no person's effect is ever measured. This is not a data-collection failure that a better warehouse would fix; it is the shape of the problem.</p>
+        <p>What a well-identified analysis recovers is the average of those unobserved differences over a group. It is a genuine quantity, it is the right answer to the question "does this work", and it has one property worth stating out loud in every readout: <strong>the average need not equal any individual value.</strong> A household with 2.4 children does not exist either, and nobody has ever tried to design a car seat for one.</p>
+        <ul>
+          <li><strong>An average over everybody answers a rollout-to-everybody question.</strong> If the plan is to treat the whole base, the average really is the number you want, and the cost side below is what decides it.</li>
+          <li><strong>An average over a segment answers a segment question.</strong> Which is why the useful ask is not "the effect", but "the effect for whom".</li>
+          <li><strong>An average hides its own composition.</strong> Two campaigns with identical averages can differ in every way that a budget owner cares about.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The four groups, and why only one of them earns anything<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Take a treatment that is either applied or not, and an outcome that either happens or does not. Every person in the file is in one of four boxes: they act only if treated, they act either way, they act neither way, or they act only if left alone. That exhausts the possibilities, and the four boxes behave completely differently under a budget.</p>
+        <ul>
+          <li><strong>Persuadables are the whole business case.</strong> The incremental revenue of the campaign is created here and nowhere else. At Kestrelmark they are 20.4 percent of the file, gaining 29.09 each, so the large majority of the send budget lands somewhere that produces nothing or worse.</li>
+          <li><strong>Sure things are the flattering group.</strong> They open, they click, they buy, and they would have bought regardless. At Kestrelmark they are 22.4 percent of the file and the email is worth 2.10 to them. Every response-rate dashboard rewards reaching more of them, and every one of those responses is a cost with no return behind it.</li>
+          <li><strong>Lost causes are cheap mistakes.</strong> The loss is the send cost, nothing more. They are the largest group here, 49.3 percent, at 1.04 each. In an email programme the send is close to free, which is precisely why email programmes grow until the persuadable share is tiny.</li>
+          <li><strong>Sleeping dogs are the expensive mistake.</strong> Contact triggers the unsubscribe, the spam complaint, the cancellation the customer had been putting off. Kestrelmark's are the 7.9 percent who have cancelled once already, and the email costs them 8.87 each. The cost is the send plus the destroyed value plus a channel that no longer reaches them.</li>
+        </ul>
+        <p>The uncomfortable consequence: two campaigns can post the same average effect while one of them is mostly persuadables at a modest gain and the other is a large persuadable gain partly cancelled by a group being driven away. Kestrelmark is the second kind, and now measurably so. That is a better campaign badly aimed, and no summary metric tells it apart from the first kind until somebody splits the file.</p>
+      </div>
+    </details>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 372" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The measured average of 6.23 drawn as a distribution of segment effects. 7.9 percent of customers sit at minus 8.87 units, 49.3 percent at plus 1.04, 22.4 percent at plus 2.10, and 20.4 percent far out at plus 29.09. A dashed vertical line marks the average at 6.23, sitting in an empty gap between the near-zero groups and the persuadable group, where no segment is.">
+        <style>
+          .a5bH { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .a5bM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .a5bK { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .a5bG { font: 800 12px Inter, sans-serif; fill: #134E4A; }
+          .a5bR { font: 800 11px Inter, sans-serif; fill: #9A3412; }
+          .a5bN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+
+        <text class="a5bH" x="14" y="24">The same 6.23, drawn as a distribution instead of a single number.</text>
+
+        <line x1="380" y1="56" x2="380" y2="252" stroke="#134E4A" stroke-width="2" stroke-dasharray="5 4"></line>
+        <text class="a5bG" x="390" y="52">the average, 6.23</text>
+        <text class="a5bM" x="390" y="70">no segment sits here</text>
+
+        <rect x="225" y="223" width="20" height="27" rx="3" fill="#9A3412"></rect>
+        <text class="a5bR" x="235" y="216" text-anchor="middle">-8.87 each</text>
+        <text class="a5bM" x="235" y="200" text-anchor="middle">7.9% of the file</text>
+
+        <rect x="325" y="82" width="10" height="168" rx="2" fill="#5EEAD4"></rect>
+        <text class="a5bK" x="330" y="74" text-anchor="middle">+1.04</text>
+        <text class="a5bM" x="330" y="58" text-anchor="middle">49.3%</text>
+
+        <rect x="335" y="174" width="10" height="76" rx="2" fill="#99F6E4"></rect>
+        <line x1="346" y1="178" x2="388" y2="170" stroke="#5A6B68" stroke-width="1"></line>
+        <text class="a5bK" x="392" y="174">+2.10</text>
+        <text class="a5bM" x="392" y="158">22.4%</text>
+
+        <rect x="589" y="181" width="20" height="69" rx="3" fill="#0F6F66"></rect>
+        <text class="a5bK" x="599" y="173" text-anchor="middle">+29.09 each</text>
+        <text class="a5bM" x="599" y="157" text-anchor="middle">20.4% of the file</text>
+
+        <line x1="60" y1="250" x2="820" y2="250" stroke="#C6D6D3" stroke-width="1.5"></line>
+        <text class="a5bM" x="80" y="268" text-anchor="middle">-25</text>
+        <text class="a5bM" x="320" y="268" text-anchor="middle">0</text>
+        <text class="a5bM" x="560" y="268" text-anchor="middle">+25</text>
+        <text class="a5bM" x="800" y="268" text-anchor="middle">+50</text>
+        <text class="a5bM" x="60" y="288">Effect of the email on 90-day spend, in units. Bar height is the share of the file.</text>
+
+        <rect x="14" y="306" width="14" height="14" rx="3" fill="#0F6F66"></rect>
+        <text class="a5bN" x="38" y="318">20.4% persuadable, +29.09 each, lapsed 30-90 days</text>
+        <rect x="450" y="306" width="14" height="14" rx="3" fill="#99F6E4"></rect>
+        <text class="a5bN" x="474" y="318">22.4% sure things, +2.10 each, active either way</text>
+        <rect x="14" y="330" width="14" height="14" rx="3" fill="#5EEAD4"></rect>
+        <text class="a5bN" x="38" y="342">49.3% lost causes, +1.04 each, dormant 12 months</text>
+        <rect x="450" y="330" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="a5bN" x="474" y="342">7.9% sleeping dogs, -8.87 each, cancelled once</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the average lands in the empty gap between the segments that barely move and the one that gains a great deal. An average is a property of a group, and here it names a value no segment has.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>What the 6.23 is actually made of, and who it costs<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Work this one slowly, because the composition is the argument. 5,000 customers, a true average effect of 6.23, and four segments that the file can already tell apart.</p>
+        <ul>
+          <li><strong>The gain is concentrated.</strong> 20.4 percent of the file, 1,022 people, gain <strong>29.09</strong> each. Essentially all of the value the campaign creates is created here.</li>
+          <li><strong>Two segments barely move.</strong> 22.4 percent gain 2.10 each and 49.3 percent gain 1.04 each. Between them they are most of the base, and the email is close to a rounding error for all of them.</li>
+          <li><strong>One segment is harmed.</strong> 7.9 percent, 393 people, lose <strong>8.87</strong> each. These are accounts that cancelled once and were won back, and the monthly reminder that a subscription exists is doing them measurable damage.</li>
+        </ul>
+        <p>Now read the headline again. A campaign that reached only the 1,022 would be worth 29.09 per head instead of 6.23, and would stop paying to damage 393 customers a month. Nothing in the average distinguishes this world from one where nearly everybody gains a little and nobody is harmed at all, and nothing in the standard readout would surface the difference. The average is not wrong. It is silent, and silence was read as reassurance.</p>
+        <div class="callout tip">
+          <p><strong>The one-line version for a review.</strong> A positive average is fully compatible with a substantial group being harmed. It is not a claim that nobody was hurt, and reading it as one is the most consequential misreading of a causal estimate in commercial work.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Kestrelmark's own case: a true 6.23 and a rollout to everybody<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The Kestrelmark work is unusually clean by the time it reaches this point. The naive comparison of emailed against not emailed gives 10.54. Holding season and tenure fixed brings it to 6.56, against a truth of 6.23, so the identification work has done its job and the gap left over is 0.33. That is a good analysis by any standard the first four sessions set.</p>
+        <p>And on the strength of that single number the email went to the entire subscriber file, monthly. The step from 6.23 to "send it to everybody" was never argued; it was assumed, because the number was positive and there was only one number. Three separate questions were skipped in that step, and all three have since been answered from the pilot data that was already sitting there.</p>
+        <ul>
+          <li><strong>Who produced the 6.23.</strong> Customers who lapsed 30 to 90 days ago, 20.4 percent of the file, at 29.09 each. The rollout to the whole file spends the large majority of its budget outside the only group that earns.</li>
+          <li><strong>Whether anybody was moved the other way.</strong> Yes: the 7.9 percent who have cancelled once already lose 8.87 each. They were the textbook sleeping-dog population, and the campaign was aimed at exactly them.</li>
+          <li><strong>What the send costs.</strong> 7.00 fully loaded, against segment effects of 29.09, 2.10, 1.04 and -8.87. One of those four clears the cost. Part 2 walks the arithmetic.</li>
+        </ul>
+        <p>None of the three required a new dataset. Two were a segment split of an analysis that already existed, and the third was one number from finance.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2 ============ -->
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers the policy question, the cost side and the honest limit</span>
+      <h2>Why this changes the decision, not just the number</h2>
+      <span class="tag concept">9 min live</span>
+    </div>
+    <p class="lede">The distinction is not academic tidiness. "Does it work" and "who should get it" are answered by different objects, and the second is almost always the question that was actually asked while the first is the one that was commissioned. Add a cost per treated unit and the two can point in opposite directions.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The policy question was asked, the effect question was commissioned<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Listen to how the request arrives. "Should we roll the email out?" "Is this worth the budget next year?" "Do we keep doing this?" Every one of those is a policy question: it asks for a rule about who gets treated. What gets written on the analysis ticket is "measure the incremental effect of the email", which is an effect question and returns a single average.</p>
+        <p>The gap is invisible because the average answers the policy question in one special case: when the policy under consideration is "treat everybody or treat nobody" and there is no cost per unit. That case is rare, and it is nobody's actual choice, because the real menu always includes "treat this segment" and there is always a cost.</p>
+        <ul>
+          <li><strong>"Does it work" needs a centre.</strong> One number, one interval, one comparison against zero.</li>
+          <li><strong>"Who should get it" needs a spread.</strong> Which groups gain, by how much, and which lose. A ranking, not a point.</li>
+          <li><strong>The second cannot be derived from the first.</strong> No amount of precision on the average recovers the distribution behind it, which is why asking for a tighter confidence interval is answering the wrong request more carefully.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>The commonest form of this in a quarterly review is a leader asking "so should we expand it" and receiving the average effect with an interval, twice, in slightly different words. Both parties leave believing the question was answered. It was not asked in a form the analysis could hear.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The cost side: a positive effect that loses money<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Every send has a cost: creative, deliverability, list health, the attention it spends, and in most channels a real cash number per unit. Kestrelmark's fully loaded cost per treated customer is 7.00 units against the same currency as spend. The campaign's average effect is 6.23. Put the two beside each other segment by segment and the programme stops looking like a modest success.</p>
+
+        <table class="clean">
+          <thead>
+            <tr><th>Segment</th><th>Share of the file</th><th>Effect of the email, each</th><th>Against a cost of 7.00</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Persuadable, lapsed 30-90 days</td><td>20.4%</td><td>+29.09</td><td>clears the bar, the only one that does</td></tr>
+            <tr><td>Sure thing, still active</td><td>22.4%</td><td>+2.10</td><td>loses money</td></tr>
+            <tr><td>Lost cause, dormant 12 months</td><td>49.3%</td><td>+1.04</td><td>loses money</td></tr>
+            <tr><td>Sleeping dog, cancelled once</td><td>7.9%</td><td>-8.87</td><td>loses money twice over</td></tr>
+          </tbody>
+        </table>
+
+        <p>One segment out of four earns its send. Everything else on the list is paid for and returns less than it cost, and the smallest group returns less than nothing. That turns into two numbers a budget owner can act on.</p>
+
+        <table class="clean">
+          <thead>
+            <tr><th>Decision</th><th>Who is treated</th><th>Net at 7.00 per send</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Send to everybody, the programme as run</td><td>all 5,000</td><td>-3,848</td></tr>
+            <tr><td>Send only to the persuadable segment</td><td>1,022, the 20.4%</td><td>+22,578</td></tr>
+            <tr><td>Send to nobody</td><td>0</td><td>0</td></tr>
+          </tbody>
+        </table>
+
+        <p>Same intervention, same true effect of 6.23, same correctly identified analysis. The difference between <strong>-3,848</strong> and <strong>+22,578</strong> is entirely a question of who was on the list. This is the sharpest form of tonight's argument: the programme as run destroys value, and the number that authorised it is a healthy-looking positive 6.23.</p>
+        <ul>
+          <li><strong>The rule is one line and nobody applies it.</strong> A segment is worth sending to when its own effect exceeds the cost per send. At 7.00, exactly one of Kestrelmark's four segments passes, and it is a fifth of the file. No model is needed to check this, only the effect per segment and a number from finance.</li>
+          <li><strong>Perfect targeting is not on the menu.</strong> The +22,578 row assumes the persuadable segment can be reached exactly. Recency is a real field in the warehouse rather than a score, so that row is closer to achievable here than it usually is, but a four-bucket segment is still coarse and every bucket contains people who do not behave like their label. Treat it as the ceiling and ask how much of the gap a crude segment closes.</li>
+          <li><strong>The cheaper the channel, the worse the discipline.</strong> When the per-unit cost rounds to nothing, the break-even share rounds to nothing too, and the programme expands until the sleeping dogs dominate. The cost that eventually bites is the channel itself.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The honest limit: per-person effects are noisy<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Having argued that the distribution is what matters, the fair thing to say next is that the distribution is much harder to recover than the average. An average pools the whole sample; an effect for a subgroup uses only that subgroup, and an effect for a person uses a sample of one, which is why individual effects are estimated rather than observed and are estimated badly.</p>
+        <p>This is a statistical fact and not a reason to give up, but it does set the shape of a sensible ask. A model that assigns every customer a personal uplift score will produce a beautifully ranked list, and much of that ranking will be noise that reverses when the model is refitted next month. A split into four or five segments defined by things the business already understands will be coarser and far more stable. Kestrelmark is the cheerful version of this: the split that mattered turned out to be a single field the business had all along, four recency buckets that anyone in the room can describe.</p>
+        <ul>
+          <li><strong>Ask for few, large, interpretable segments.</strong> Recency band, tenure band, plan tier, channel. If a segment cannot be described in a sentence, it cannot be reviewed, and an unreviewable targeting rule is a permanent unaudited policy.</li>
+          <li><strong>Ask whether the split was pre-specified.</strong> Segments discovered after seeing the results will always contain a spectacular one. Discovery is legitimate as a source of hypotheses and illegitimate as a source of conclusions.</li>
+          <li><strong>Ask what happens if the ranking is wrong.</strong> A targeting rule that loses little when the ranking is mediocre is worth having. One that only pays off when the ranking is excellent is a bet on the model, not on the campaign.</li>
+        </ul>
+        <div class="callout tip">
+          <p><strong>The stable version of the ask.</strong> "Give me the effect in four segments I can name, with the same adjustment set you used for the headline, and tell me which segments the analysis genuinely cannot separate." The last clause is the one that keeps the answer honest.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Where the machinery for this lives<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The methods that estimate effects conditional on customer characteristics, and that turn those estimates into a treat-or-not rule, are worked properly on the practitioner track rather than named vaguely here.</p>
+        <ul>
+          <li><strong>Practitioner session 7</strong> covers conditional average effects and the three standard meta-learners, each with the weakness its authors documented: the single-model approach whose regularisation pulls the effect toward zero and can drop a weak effect entirely, the two-model approach that avoids that and still pays a regularisation cost, and the approach built for the treated-to-control imbalance that is normal outside experiments.</li>
+          <li><strong>Practitioner session 8</strong> covers targeting: ranking by predicted uplift, reading the gain against a random-targeting baseline, and choosing where on that curve to stop sending. That is where the coarse-segment discipline above gets a number attached to it.</li>
+          <li><strong>Estimating any of this from observational data</strong> is a different course. Propensity scores, inverse probability weighting, doubly robust estimation, difference-in-differences, synthetic control and the DoWhy workflow all belong to <strong>learn-experimentation-with-phoebe</strong>, which teaches each of them properly. The work here stops at what the question is, whether it can be answered, and who the answer is about.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ BUILD-ALONG ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>Find the segments</h2>
+      <span class="tag demo">★ 18 min · everyone builds</span>
+    </div>
+    <p class="lede">No code and no model. Bring one intervention your team has rolled out to everybody: a campaign, a discount, a nudge, a mandatory onboarding step, a notification. If you have nothing to hand, use Kestrelmark's monthly re-engagement email to the whole subscriber file.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Write the intervention and who currently receives it.</strong> One sentence each. If the answer to the second is "everybody", write "everybody" rather than softening it, because that is the policy under review and it should be stated as plainly as any other.</p>
+      </div>
+      <div class="step">
+        <p><strong>Name the four groups for this intervention in your own language.</strong> Who acts only because they were reached. Who was going to act anyway. Who never acts. Who is pushed away by being reached. Use the words your team uses for customers, not the words on this page.</p>
+      </div>
+      <div class="step">
+        <p><strong>Guess which segments sit in each group, and commit to the guess.</strong> Recency, tenure, plan, channel, past response. You are not being asked to be right; you are producing hypotheses that can be tested against an analysis that mostly already exists. A guess written down before the data is worth ten guesses made after it.</p>
+      </div>
+      <div class="step">
+        <p><strong>Get the cost per treated unit from finance, fully loaded.</strong> Not the marginal send cost. Include creative, list management, the deliverability cost of a hard send, and any support contact the intervention generates. Most teams have never put a number here and the first attempt is usually an order of magnitude out, which is itself worth discovering.</p>
+      </div>
+      <div class="step">
+        <p><strong>Work out the break-even persuadable share.</strong> Divide the cost per unit by the gain per persuadable person, and that is the fraction of the file that must respond before the rollout pays. Then ask the honest question: is the group you never expect to respond larger than one minus that fraction? If it is, the rollout to everybody is losing money today.</p>
+      </div>
+      <div class="step">
+        <p><strong>Write down the single segment you would test first, and the one you would stop sending to.</strong> One of each, named, with the reason in a sentence. Two lines is a targeting proposal; a per-customer score is a project.</p>
+      </div>
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ The one-page segment worksheet, which is the whole artifact for tonight</span>
+Intervention:   monthly re-engagement email
+Currently sent: everybody on the subscriber file, 5,000 people
+Effect on hand: 6.23 average, correctly identified, season and tenure held fixed
+Split field:    recency, four buckets, already in the warehouse
+
+  group          the recency bucket it maps to      share    effect each
+  persuadable    lapsed 30-90 days                  20.4%      +29.09
+  sure thing     active, buying either way          22.4%       +2.10
+  lost cause     dormant over 12 months             49.3%       +1.04
+  sleeping dog   cancelled once already              7.9%       -8.87
+
+Cost per treated unit (finance, fully loaded): 7.00
+Clears that cost: the persuadable bucket only, 29.09 against 7.00
+Verdict at the current send: the blanket send to all 5,000 is worth -3,848,
+the persuadable bucket on its own is worth +22,578, so the rollout as run
+destroys value while the average effect stays genuinely positive.
+
+Test first: hold the send to lapsed 30-90 days for one cycle.
+Stop sending to: accounts that have cancelled once and been won back.
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Keep the worksheet beside the readout, not in a deck.</strong> Kestrelmark's four rows are measured, and they are still coarse: recency is four buckets rather than a score, and every bucket holds people who do not behave like their label. That is the trade a business actually faces, a segment it can name, run and audit against a per-customer score it cannot, and a coarse segment that clears the cost beats a precise one nobody will sign. Your own four rows start as guesses, which is fine: they turn an open-ended "find the segments" request into four named hypotheses with a cost threshold attached, and when the split comes back different, the gap between the guess and the measurement is the most useful thing anybody learns that quarter.</p>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before session 6</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li>Finish the segment worksheet for one intervention that currently goes to everybody, including the fully loaded cost per unit. Then list every segment whose effect you do not expect to clear that cost, and send the list to whoever owns the budget with no commentary. The list does the work.</li>
+      <li>Take one existing causal readout your team has produced and ask for the same estimate split by two or three segments that already exist in the warehouse. Note how long the request takes to fulfil; that duration is a fact about your team, not about the question.</li>
+      <li>Find the intervention in your organisation most likely to have a sleeping-dog population, and write one sentence on how you would know. Reactivation, price reminders, dormant-account outreach and win-back offers are the usual candidates.</li>
+      <li>Write down one targeting rule your organisation runs today that nobody can describe in a sentence. Bring it to session 6, where the question becomes what to require in writing before such a rule ships again.</li>
+    </ol>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">An analysis reports a correctly identified average effect of 6.23 and a tight interval around it. A colleague concludes that no customer was made worse off. What is wrong with that?</p>
+      <button class="qopt" type="button">A · Nothing, provided the interval excludes zero, since that rules out negative effects</button>
+      <button class="qopt" type="button">B · Nothing about the logic, but the interval would need to be tighter before the conclusion is safe</button>
+      <button class="qopt" type="button">C · The average is a summary of a distribution and says nothing about its shape: at Kestrelmark 20.4 percent gain 29.09 each while 7.9 percent lose 8.87 each, and the four segments still average to 6.23</button>
+      <p class="qwhy">393 of the 5,000 customers are worse off by 8.87 each, and none of that appears in the 6.23. Precision on the centre buys nothing at all about the spread, which is why a tighter interval answers the wrong question more carefully.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">The fully loaded cost of reaching one customer is 7.00 units and the true average effect is 6.23. What follows?</p>
+      <button class="qopt" type="button">A · Sending to everybody loses money even though the effect is real and positive, so the decision turns on which named segments have an effect above 7.00</button>
+      <button class="qopt" type="button">B · The effect must have been mis-estimated, since a real campaign would not be run at a loss</button>
+      <button class="qopt" type="button">C · The campaign should be stopped entirely, since the average is below the cost</button>
+      <p class="qwhy">A positive effect and a losing rollout are entirely compatible: the blanket send to all 5,000 is worth -3,848. Stopping altogether is also wrong, because the 20.4 percent persuadable segment gains 29.09 each and is worth +22,578 on its own. The answer is a list, not an on-off switch.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">A team offers to build a model scoring every customer with a personal predicted uplift, so targeting can be fully individualised. What is the reservation a leader should raise?</p>
+      <button class="qopt" type="button">A · Individual scores are always less accurate than the average, so the exercise cannot add value</button>
+      <button class="qopt" type="button">B · Effects for small groups are estimated from little data and are noisy, so much of the ranking will not reproduce; a few large segments that can be described in a sentence are coarser, more stable and reviewable</button>
+      <button class="qopt" type="button">C · Personal scores are fine as long as the model has a high enough accuracy on the outcome</button>
+      <p class="qwhy">Accuracy on the outcome is not accuracy on the effect, and a per-person score that nobody can describe becomes an unauditable standing policy. The reservation is not that individualisation is wrong in principle, only that the estimates get noisy exactly where the groups get small.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ COVERAGE ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What tonight maps to</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Average effects hide heterogeneity</span>
+        <span class="note">An individual effect is never observed; what a study recovers is an average, and the average need not equal any individual value. Kestrelmark's 6.23 is four measured segments at +29.09, +2.10, +1.04 and -8.87, and it matches none of them.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">The four groups a yes-or-no treatment creates</span>
+        <span class="note">Persuadables, sure things, lost causes, sleeping dogs, measured on the file at 20.4, 22.4, 49.3 and 7.9 percent. Only the first creates value, and response-rate metrics reward reaching the second.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Why a positive average can support the wrong policy</span>
+        <span class="note">"Does it work" needs a centre, "who should get it" needs a spread, and the second cannot be derived from the first. At 7.00 per send, a true effect of 6.23 is worth -3,848 across the whole file and +22,578 on the persuadable segment alone.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">The honest limit on heterogeneity</span>
+        <span class="note">Subgroup effects use only the subgroup, so they are noisy. Few large interpretable segments, pre-specified, over a per-person score nobody can audit.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">Conditional average effects and the meta-learners</span>
+        <span class="note">Practitioner session 7. The single-model, two-model and imbalance-oriented approaches, each with its documented weakness.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">Uplift ranking and who to treat</span>
+        <span class="note">Practitioner session 8. Targeting by predicted uplift against targeting at random, and where on the curve to stop.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill inkpill">·</span>
+        <span class="name">Propensity scores, IPW, doubly robust, difference-in-differences, synthetic control, DoWhy</span>
+        <span class="note">Not covered by design, in any session. Estimating an effect from observational data belongs to <strong>learn-experimentation-with-phoebe</strong>, which teaches every one of these. Naming who the effect is about is the work here.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Session 5 cheat sheet</h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>The average is a summary</b><span>An individual effect is never observed. 6.23 is a value no segment has.</span></div>
+      <div class="cheat-item"><b>Four groups, one of them earns</b><span>Persuadables, sure things, lost causes, sleeping dogs. Only the first creates value.</span></div>
+      <div class="cheat-item"><b>Response rate rewards the wrong group</b><span>Sure things open, click and buy, and would have bought anyway.</span></div>
+      <div class="cheat-item"><b>Positive average, harmed minority</b><span>Measured: 20.4% at +29.09, 22.4% at +2.10, 49.3% at +1.04, 7.9% at -8.87. Average 6.23.</span></div>
+      <div class="cheat-item"><b>Two different questions</b><span>"Does it work" needs a centre. "Who should get it" needs a spread.</span></div>
+      <div class="cheat-item"><b>Cost turns a win into a loss</b><span>At 7.00 per send the blanket rollout is worth -3,848; the persuadable segment alone is +22,578.</span></div>
+      <div class="cheat-item"><b>Send only where the segment clears the cost</b><span>At 7.00, only the 29.09 segment passes. The other three lose money.</span></div>
+      <div class="cheat-item"><b>Few segments, not per-person scores</b><span>Small groups give noisy effects. Ask for four segments you can name, pre-specified.</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pagefoot">
+  <div class="wrap">
+    <p>Leader session 5 of 6 · learn-causal-inference-with-phoebe · by Phoebe Fu</p>
+    <nav class="pagenav">
+      <a href="a4-identifiable-or-not.html">← Leader session 4 · Identifiable or not</a>
+      <a href="a6-commissioning-a-causal-claim.html">Leader session 6 · Commissioning and reading a causal claim →</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

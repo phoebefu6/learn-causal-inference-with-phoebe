@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Practitioner session 6 of 10. Rung three asks what would have happened to one named customer in a world that did not happen. Answering it needs the equations, not just the graph: recover her noise, flip the treatment, recompute. Her effect is 28.0 or 31.0, the population average of 6.23 is not one of the eight values anybody holds, and 393 customers are harmed by a campaign whose average is positive.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="Counterfactuals - learn causal inference with phoebe">
+<meta property="og:description" content="Practitioner session 6 of 10. Recover the background, flip the treatment, recompute. One person, two worlds.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/courses/p6-counterfactuals.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Counterfactuals - learn causal inference with phoebe">
+<meta name="twitter:description" content="A graph plus data answers rung two. Rung three needs every equation written down.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Practitioner session 6 · Counterfactuals - learn causal inference with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-causal-inference-with-phoebe</a> / Practitioner session 6 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Causal Inference with Phoebe · Practitioner session 6 of 10</div>
+    <h1>Counterfactuals: <span class="accent">the world that did not happen</span></h1>
+    <p class="sub">Sessions 1 to 5 answered a question about everybody: send the email to the whole list and spend rises by 6.23. Tonight the question is about Amara, a lapsed customer who did get the email, who did open it, and whose spend is one row in the table. What would she have spent if the email had never been sent to her? That number is not in her row, it is not in anybody's row, and no amount of data will put it there. Getting at it means owning the equations, not just the arrows.</p>
+    <div class="chip-row">
+      <span class="chip level">🔴 Hardest</span>
+      <span class="chip audience">Data scientists and analysts</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:5">3-22 · Two worlds at once</span>
+      <span class="a3" style="flex:4">22-40 · Build-along: compute one counterfactual</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where rung three sits</h2>
+    </div>
+    <p class="lede">The ladder has three rungs and each one asks a strictly harder question than the last. Rung 1 is association: what does seeing the email tell me about spend. Rung 2 is intervention: what happens to spend if the email is forced on. Rung 3 is the counterfactual: what would have happened to <em>this</em> customer, who did receive it, had she not. The first is about a joint distribution, the second is about a population under a change, and the third is about one individual and an alternative world that never existed.</p>
+
+    <div class="legend">
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">🔍 Every diagram zooms</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> One counterfactual computed by hand for one named customer, in three steps you can defend line by line. The reason a graph and a table are enough for rung 2 and not enough for rung 3. And the uncomfortable finding that Amara's individual effect is either 28.0 or 31.0, that the population average of 6.23 is not one of the eight values any Kestrelmark customer holds, and that which of her two numbers is hers depends on a coin flip no column records.</p>
+    </div>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>What rung 3 asks that rung 2 does not<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A rung-2 question fixes a variable by force and asks about the resulting distribution: send the email to all 5,000 customers, send it to none, difference the mean spend, and the answer is 6.23. Nothing in that question refers to a particular person. It is a statement about the population under a policy, and the whole of sessions 1 to 5 was about earning it.</p>
+        <p>A rung-3 question does refer to a particular person, and it refers to her twice. It says: take Amara exactly as she is, with the email she actually received and the spend she actually recorded, and hold everything about her fixed except the treatment. Now report her spend in the other world. Two worlds are being described at once, and one of them left no data behind, which is why the question cannot be phrased as a comparison between rows.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>The retention meeting asks both questions and never separates them. "Does the win-back email work" is rung 2 and the campaign owns the answer. "Would this account have churned anyway" is rung 3 about one logo, and it decides whether the save gets credited to the campaign or to the customer success manager. The second question is asked far more often and defended far less.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Three phrasings of the same Kestrelmark decision<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Rung 1.</strong> "Customers who got the email spent 10.54 more." True, reproducible, and mostly season and tenure. Session 1.</li>
+          <li><strong>Rung 2.</strong> "Sending the email to everyone raises mean spend by 6.23." Needs a graph, an adjustment set that closes the back doors, and the data to hold it fixed. Sessions 2 and 3.</li>
+          <li><strong>Rung 3.</strong> "Amara would have spent 31.0 less had we not sent it." Needs everything above, plus the functional form of every equation in the model.</li>
+        </ul>
+        <p>The three sentences use the same words and cost wildly different amounts to defend. A useful habit is to write the rung number in the margin of any claim before checking anything else about it, because a rung-3 sentence backed by a rung-2 analysis is the most common way a defensible number turns into an indefensible one.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers what a counterfactual is and what it demands</span>
+      <h2>Rung three asks about a world that did not happen</h2>
+      <span class="tag concept">10 min live</span>
+    </div>
+    <p class="lede">The recipe is three steps and it is the same three steps whether the model is four lines of arithmetic or a simulator with ten thousand parameters. Recover the individual's background factors from what was observed. Change the treatment by hand. Recompute the outcome. Everything difficult about rung 3 is hidden in the first step.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 310" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The three-step counterfactual recipe drawn as a strip of four panels. First the observed world with one treated customer's recorded values. Second, recovering her noise terms by solving each equation for its own error, exactly for spend and only as a range for the binary open flag. Third, setting the email to zero by hand while every recovered noise term stays fixed. Fourth, recomputing, where the open flag may flip and spend falls, giving Amara, who sits in the lapsed persuadable segment, an individual difference of either 31.0 or 28.0, against a population average of 6.23 that no customer holds.">
+        <style>
+          .p6aT { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .p6aB { font: 400 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p6aH { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .p6aM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .p6aN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+        <defs>
+          <marker id="p6aAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5A6B68"></path></marker>
+        </defs>
+
+        <rect x="14" y="14" width="852" height="30" rx="8" fill="#134E4A"></rect>
+        <text class="p6aT" x="30" y="34">Rung 3 in three steps: recover, flip, recompute</text>
+
+        <rect x="14" y="60" width="192" height="30" rx="8" fill="#0F6F66"></rect>
+        <text class="p6aT" x="28" y="80">Observed world</text>
+        <rect x="14" y="90" width="192" height="118" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p6aB" x="28" y="114">Amara, one treated row</text>
+        <text class="p6aB" x="28" y="132">recency = lapsed</text>
+        <text class="p6aB" x="28" y="150">the persuadable group</text>
+        <text class="p6aB" x="28" y="168">email = 1, opened = 1</text>
+        <text class="p6aB" x="28" y="186">spend = her actual row</text>
+
+        <rect x="234" y="60" width="192" height="30" rx="8" fill="#134E4A"></rect>
+        <text class="p6aT" x="248" y="80">1 · Recover the noise</text>
+        <rect x="234" y="90" width="192" height="118" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p6aB" x="248" y="114">solve each equation</text>
+        <text class="p6aB" x="248" y="132">for its own error term</text>
+        <text class="p6aB" x="248" y="150">u_spend comes out exact</text>
+        <text class="p6aB" x="248" y="168">u_open only as a range</text>
+        <text class="p6aM" x="248" y="192">this is the hard step</text>
+
+        <rect x="454" y="60" width="192" height="30" rx="8" fill="#134E4A"></rect>
+        <text class="p6aT" x="468" y="80">2 · Flip the treatment</text>
+        <rect x="454" y="90" width="192" height="118" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p6aB" x="468" y="114">set email = 0 by hand</text>
+        <text class="p6aB" x="468" y="132">every noise term stays</text>
+        <text class="p6aB" x="468" y="150">exactly as recovered</text>
+        <text class="p6aB" x="468" y="168">nothing else is touched</text>
+        <text class="p6aM" x="468" y="192">she stays herself</text>
+
+        <rect x="674" y="60" width="192" height="30" rx="8" fill="#0F6F66"></rect>
+        <text class="p6aT" x="688" y="80">3 · Recomputed world</text>
+        <rect x="674" y="90" width="192" height="118" rx="8" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p6aB" x="688" y="114">re-run the equations</text>
+        <text class="p6aB" x="688" y="132">opened may flip to 0</text>
+        <text class="p6aB" x="688" y="150">spend falls with it</text>
+        <text class="p6aH" x="688" y="170">her effect: 31.0 or 28.0</text>
+
+        <line x1="210" y1="149" x2="230" y2="149" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p6aAr)"></line>
+        <line x1="430" y1="149" x2="450" y2="149" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p6aAr)"></line>
+        <line x1="650" y1="149" x2="670" y2="149" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#p6aAr)"></line>
+
+        <text class="p6aH" x="14" y="240">Her difference is 31.0 if the email is what made her open, and 28.0 if it did not.</text>
+        <text class="p6aM" x="14" y="258">The population average of 6.23 is not one of the eight values anybody holds.</text>
+
+        <rect x="14" y="278" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="p6aN" x="38" y="290">Step 1 is where a graph stops being enough. Recovering noise needs the equations.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - observed row, recovered background, flipped treatment, recomputed world.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Why a graph plus data is not enough<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>For rung 2 the graph carries all the assumptions that matter. It tells you which paths are causal, which are back doors and which set closes them, and once a valid set exists the arithmetic can be anything: a group mean, a regression, a stratified average. The shape of the equations is not part of the question.</p>
+        <p>For rung 3 it is the entire question. To hold Amara fixed you have to know what "Amara" consists of beyond her observed columns, and what she consists of is the collection of error terms that made her row come out the way it did rather than at the average for her covariates. Those errors are only recoverable by inverting the equations that generated the row, so the equations have to exist and be written down.</p>
+        <ul>
+          <li><strong>The graph gives you the inputs to each equation.</strong> It says spend is a function of season, tenure, email, opened and something unmeasured. It does not say the function is linear, or additive, or monotone.</li>
+          <li><strong>The functional form gives you the residual.</strong> Subtracting the model's prediction for her covariates from her actual spend is what isolates the part of her that is hers.</li>
+          <li><strong>The flipped world is then a re-run, not an estimate.</strong> Once her errors are pinned, setting the email to 0 and recomputing is deterministic arithmetic with no sampling in it.</li>
+        </ul>
+        <p>This is exactly what the bench's engine does when it produces the number 6.23: it runs the written model twice over the same 5,000 draws, forcing the email on and then off, and differences the mean. The truth is available there only because the model is available. Outside a simulator it is not, and that gap is the honest cost of rung 3.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The three steps, said plainly<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Recover.</strong> Take the observed row and solve each structural equation for its own noise term. Kestrelmark's spend equation is additive, so her spend minus the model's prediction at her own values is her residual, exactly.</li>
+          <li><strong>Flip.</strong> Overwrite the treatment with the value you want to ask about, and change nothing else. Not her season, not her tenure, and above all not the noise you just recovered, because that noise is what makes this her rather than a customer like her.</li>
+          <li><strong>Recompute.</strong> Push the flipped row back through the equations in causal order. Downstream variables move: with the email off, her chance of opening drops from sigmoid(1.4) to sigmoid(-0.2), and if she stops opening then the mediated 3.0 goes with it, on top of whatever her segment's direct effect was worth.</li>
+        </ul>
+        <div class="callout tip">
+          <p><strong>The step everyone skips is the second half of "change nothing else".</strong> Recomputing her covariates from a fitted model, or replacing her residual with the group average, produces the answer for an average customer with her profile. That is a legitimate quantity and it is not a counterfactual. It has lost the individual.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Why her answer is 28.0 or 31.0, and why 6.23 is nobody's<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Kestrelmark's spend equation gives opening a coefficient of 3.0 for everybody, and gives the email a direct coefficient that depends on which recency segment the customer sits in: 1.0 for an active "sure thing", 28.0 for a lapsed "persuadable", 0.0 for a dormant "lost cause", and -10.0 for a "sleeping dog" who has cancelled once before. So flipping one customer's email off can still do exactly two things, and her segment decides what each of them is worth.</p>
+        <ul>
+          <li><strong>She would have opened anyway, or she never opens.</strong> The open flag is unchanged, only the direct term drops, and her individual effect is her segment's direct effect. Amara is a persuadable, so hers is 28.0.</li>
+          <li><strong>The email is what made her open.</strong> Both terms drop, and her individual effect is her segment's direct effect plus 3.0, which for Amara is 31.0.</li>
+        </ul>
+        <p>Four segments, two branches each, and the population holds exactly the eight values that fall out of it: -10.0 and -7.0 for the sleeping dogs, 0.0 and 3.0 for the lost causes, 1.0 and 4.0 for the sure things, 28.0 and 31.0 for the persuadables. The average of those eight is 6.23, and 6.23 is not among them.</p>
+        <p>Read the average the other way round and it decomposes cleanly: a mean direct effect of 5.16, plus 3.0 times the change in open rate the email causes, a mediated 1.056, giving an analytic 6.22 against the bench's brute-forced 6.23. The two agree, which is the engine checking itself against the algebra rather than against its own output.</p>
+        <p>That eight-point distribution is real heterogeneity rather than noise, and it is what session 7 tries to recover with a model instead of with the equations.</p>
+      </div>
+    </details>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 410" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A bar chart of every individual effect in the Kestrelmark population, ordered from most harmful to most helpful and coloured by recency segment. Two sleeping dog bars: minus ten holding 245 customers, and minus seven holding 148. Two lost cause bars: zero holding 1,614, the tallest in the chart, and plus three holding 851. Two sure thing bars: plus one holding 709 and plus four holding 411. Two persuadable bars: plus twenty-eight holding 650 and plus thirty-one holding 372. A dashed marker stands in the empty gap between plus four and plus twenty-eight, where the population average of 6.23 falls, so the average sits in a space no customer occupies.">
+        <style>
+          .p6cT { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .p6cB { font: 400 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p6cH { font: 800 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p6cM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .p6cV { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p6cN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+
+        <rect x="14" y="14" width="852" height="30" rx="8" fill="#134E4A"></rect>
+        <text class="p6cT" x="30" y="34">Eight individual effects, and the average is none of them</text>
+
+        <rect x="97" y="56" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="p6cM" x="117" y="68">Sleeping dog</text>
+        <rect x="225" y="56" width="14" height="14" rx="3" fill="#C6D6D3" stroke="#5A6B68"></rect>
+        <text class="p6cM" x="245" y="68">Lost cause</text>
+        <rect x="345" y="56" width="14" height="14" rx="3" fill="#5A6B68"></rect>
+        <text class="p6cM" x="365" y="68">Sure thing</text>
+        <rect x="460" y="56" width="14" height="14" rx="3" fill="#0F6F66"></rect>
+        <text class="p6cM" x="480" y="68">Persuadable</text>
+
+        <text class="p6cM" x="14" y="112">customers</text>
+        <text class="p6cM" x="14" y="318">effect</text>
+        <line x1="80" y1="300" x2="860" y2="300" stroke="#C6D6D3" stroke-width="1.5"></line>
+
+        <rect x="97"  y="273" width="62" height="27"  rx="3" fill="#9A3412"></rect>
+        <rect x="194" y="283" width="62" height="17"  rx="3" fill="#9A3412"></rect>
+        <rect x="291" y="120" width="62" height="180" rx="3" fill="#C6D6D3" stroke="#5A6B68"></rect>
+        <rect x="388" y="221" width="62" height="79"  rx="3" fill="#5A6B68"></rect>
+        <rect x="485" y="205" width="62" height="95"  rx="3" fill="#C6D6D3" stroke="#5A6B68"></rect>
+        <rect x="582" y="254" width="62" height="46"  rx="3" fill="#5A6B68"></rect>
+        <rect x="679" y="227" width="62" height="73"  rx="3" fill="#0F6F66"></rect>
+        <rect x="776" y="259" width="62" height="41"  rx="3" fill="#0F6F66"></rect>
+
+        <text class="p6cB" x="128" y="265" text-anchor="middle">245</text>
+        <text class="p6cB" x="225" y="275" text-anchor="middle">148</text>
+        <text class="p6cB" x="322" y="112" text-anchor="middle">1,614</text>
+        <text class="p6cB" x="419" y="213" text-anchor="middle">709</text>
+        <text class="p6cB" x="516" y="197" text-anchor="middle">851</text>
+        <text class="p6cB" x="613" y="246" text-anchor="middle">411</text>
+        <text class="p6cB" x="710" y="219" text-anchor="middle">650</text>
+        <text class="p6cB" x="807" y="251" text-anchor="middle">372</text>
+
+        <text class="p6cV" x="128" y="318" text-anchor="middle">-10.0</text>
+        <text class="p6cV" x="225" y="318" text-anchor="middle">-7.0</text>
+        <text class="p6cV" x="322" y="318" text-anchor="middle">0.0</text>
+        <text class="p6cV" x="419" y="318" text-anchor="middle">+1.0</text>
+        <text class="p6cV" x="516" y="318" text-anchor="middle">+3.0</text>
+        <text class="p6cV" x="613" y="318" text-anchor="middle">+4.0</text>
+        <text class="p6cV" x="710" y="318" text-anchor="middle">+28.0</text>
+        <text class="p6cV" x="807" y="318" text-anchor="middle">+31.0</text>
+
+        <line x1="661" y1="116" x2="661" y2="306" stroke="#9A3412" stroke-width="1.5" stroke-dasharray="4 4"></line>
+        <text class="p6cH" x="661" y="104" text-anchor="middle">average 6.23 falls here</text>
+
+        <text class="p6cH" x="14" y="344">Within every segment the two bars differ by exactly 3.0: whether the email is what tipped that person into opening.</text>
+        <text class="p6cM" x="14" y="362">1,614 customers get nothing at all, and 393 are actively harmed by a campaign whose average is positive.</text>
+
+        <rect x="14" y="378" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="p6cN" x="38" y="390">No feature separates a segment's two bars. A model can buy you the segment. It cannot buy you the person.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the eight effects the population actually holds, and the empty gap the average sits in.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ============ PART 2 ============ -->
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers what rung 3 buys and where it stops</span>
+      <h2>What it buys and what it cannot</h2>
+      <span class="tag concept">8 min live</span>
+    </div>
+    <p class="lede">Rung 3 is the only rung that answers a question about a named individual, and there is a short list of business questions that are genuinely of that kind. There is a much longer list of questions that get phrased that way out of habit, and reaching for rung 3 when rung 2 would do buys you an assumption you cannot defend in exchange for nothing.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two functional forms plotted over the same observed rows. Both pass through the scattered untreated observations equally well up to the point where the untreated rows stop. Beyond that point, at the tenure where the counterfactual is asked, a straight line and a curved form give two different answers for the same person. A panel on the right notes that the fit is identical, the counterfactual differs, and no data separates them.">
+        <style>
+          .p6bT { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .p6bS { font: 400 11px Inter, sans-serif; fill: #fff; }
+          .p6bB { font: 400 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p6bH { font: 800 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p6bM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .p6bN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+
+        <rect x="14" y="14" width="852" height="30" rx="8" fill="#0F6F66"></rect>
+        <text class="p6bT" x="30" y="34">Two forms that fit the same rows and answer differently</text>
+
+        <text class="p6bM" x="44" y="64">spend</text>
+        <line x1="60" y1="70" x2="60" y2="250" stroke="#C6D6D3" stroke-width="1.5"></line>
+        <line x1="60" y1="250" x2="560" y2="250" stroke="#C6D6D3" stroke-width="1.5"></line>
+
+        <circle cx="96" cy="228" r="3" fill="#5A6B68"></circle>
+        <circle cx="124" cy="222" r="3" fill="#5A6B68"></circle>
+        <circle cx="148" cy="230" r="3" fill="#5A6B68"></circle>
+        <circle cx="176" cy="212" r="3" fill="#5A6B68"></circle>
+        <circle cx="202" cy="206" r="3" fill="#5A6B68"></circle>
+        <circle cx="228" cy="214" r="3" fill="#5A6B68"></circle>
+        <circle cx="252" cy="196" r="3" fill="#5A6B68"></circle>
+        <circle cx="278" cy="188" r="3" fill="#5A6B68"></circle>
+        <circle cx="302" cy="194" r="3" fill="#5A6B68"></circle>
+        <circle cx="326" cy="172" r="3" fill="#5A6B68"></circle>
+        <circle cx="344" cy="166" r="3" fill="#5A6B68"></circle>
+
+        <line x1="80" y1="232" x2="540" y2="110" stroke="#0F6F66" stroke-width="2"></line>
+        <path d="M80,234 C200,202 290,182 350,160 C420,138 480,100 540,64" fill="none" stroke="#134E4A" stroke-width="2" stroke-dasharray="6 4"></path>
+
+        <line x1="350" y1="72" x2="350" y2="250" stroke="#C6D6D3" stroke-width="1.5" stroke-dasharray="4 4"></line>
+        <line x1="540" y1="60" x2="540" y2="250" stroke="#9A3412" stroke-width="1.5" stroke-dasharray="4 4"></line>
+
+        <circle cx="540" cy="110" r="5" fill="#0F6F66"></circle>
+        <circle cx="540" cy="64" r="5" fill="#134E4A"></circle>
+
+        <text class="p6bM" x="60" y="268">tenure</text>
+        <text class="p6bM" x="346" y="268" text-anchor="end">untreated rows stop here</text>
+        <text class="p6bM" x="540" y="268" text-anchor="middle">her tenure</text>
+
+        <rect x="590" y="60" width="276" height="48" rx="8" fill="#0F6F66"></rect>
+        <text class="p6bT" x="606" y="82">Form A: a straight line</text>
+        <text class="p6bS" x="606" y="100">fits the observed rows</text>
+
+        <rect x="590" y="118" width="276" height="48" rx="8" fill="#134E4A"></rect>
+        <text class="p6bT" x="606" y="140">Form B: one bend</text>
+        <text class="p6bS" x="606" y="158">fits them just as well</text>
+
+        <rect x="590" y="176" width="276" height="86" rx="8" fill="#F0FDFA" stroke="#9A3412"></rect>
+        <text class="p6bH" x="606" y="198">Same rows, same residuals</text>
+        <text class="p6bB" x="606" y="218">different answer for her</text>
+        <text class="p6bB" x="606" y="238">no test separates the two</text>
+        <text class="p6bM" x="606" y="256">so the choice is an assumption</text>
+
+        <text class="p6bH" x="14" y="300">Averaged over the population the two forms move in the second decimal.</text>
+        <text class="p6bM" x="14" y="318">For one customer they move by units, and her residual cannot tell you which is right.</text>
+
+        <rect x="14" y="332" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="p6bN" x="38" y="344">The average is stable because errors cancel across people. One person has nothing to cancel.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - identical fit inside the data, two different worlds outside it.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The questions only rung 3 can answer<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Three shapes of question genuinely require an individual counterfactual, and they are worth recognising because each one is usually asked in language that hides it.</p>
+        <ul>
+          <li><strong>"Would this customer have churned anyway?"</strong> The retention team wants to know whether the save was caused by the intervention or would have happened without it. That is her outcome in a world where nothing was sent, and it is the attribution question underneath every save-rate report.</li>
+          <li><strong>"Was this particular sale caused by the campaign?"</strong> A question about one transaction that already happened, sometimes with money attached to the answer. The formal version is the probability that the outcome would have been different had the treatment not occurred.</li>
+          <li><strong>"Is this individual a good person to treat next time?"</strong> Forward looking, and therefore the friendliest of the three, because it can be softened into a question about people like her rather than about her. That softening is what session 7 does.</li>
+        </ul>
+        <p>Notice that the first two are retrospective and about a specific event, which is what makes them expensive. There is no future experiment that settles them.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The honest limit: the form is an assumption and no data checks it<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Two models can fit the observed rows equally well, agree on every prediction you can check, and still give different counterfactuals for the same person. This is not a small-sample problem and it does not shrink with more data. The observed rows constrain the model only where the rows are, and a counterfactual asks about a point where, by definition, there is no row.</p>
+        <ul>
+          <li><strong>The residuals are identical, so the usual diagnostics are silent.</strong> There is no held-out set for a world that did not happen, and cross-validation scores the same predictions both forms already agree on.</li>
+          <li><strong>The disagreement is asymmetric.</strong> Averaged over the population the two forms tend to agree closely, because their extrapolation errors point in different directions for different people and cancel. One individual has nothing to cancel against.</li>
+          <li><strong>A binary variable makes it worse.</strong> Amara's open flag pins her open-equation noise to an interval rather than a point, so even with the true equations her counterfactual is bounded rather than determined. Partial identification is the normal case, not an edge case.</li>
+        </ul>
+        <div class="callout tip">
+          <p><strong>Report the range, not the point.</strong> If two defensible forms give two different answers for the same customer, that pair is the finding. Averaging them into a midpoint and quoting it to two decimals converts an honest disagreement into a false precision that survives into the deck.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Most business questions are rung 2<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Before paying for rung 3, check that the decision actually needs it. The test is whether the action attaches to a person or to a policy. "Should we send this campaign" is a policy and rung 2 answers it with an average. "Which segment should receive it" is still a policy, one per segment, and rung 2 answers that too by conditioning. Only "what happened to this account" is unavoidably rung 3.</p>
+        <ul>
+          <li><strong>Reaching for rung 3 unnecessarily adds a functional form to your assumption list</strong>, which is the one assumption no reviewer can check and no sensitivity analysis in session 9 will price for you.</li>
+          <li><strong>It also invites individual-level reporting</strong>, and a number attached to a named customer is treated as a fact by everybody downstream, regardless of the range it came from.</li>
+          <li><strong>The intermediate position is a conditional average</strong>: the effect for customers like her rather than for her. It needs no structural form beyond what rung 2 already required, and it is what session 7 estimates.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>A save-rate dashboard that credits each retained account to whichever campaign touched it last is making 5,000 rung-3 claims a quarter, each one asserting the account would have churned otherwise. None of the underlying models were built to answer that, and the total is reported as a single revenue figure.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The bridge into session 7<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A conditional average treatment effect is the per-person counterfactual with the individual sanded off. Instead of asking for Amara's difference, it asks for the average difference among customers who share her observed covariates, which is a quantity that averages away the residual you would otherwise have to recover.</p>
+        <ul>
+          <li><strong>It needs no structural equations.</strong> Whatever identified the average effect in session 3 identifies the conditional one within each covariate cell, so the assumption list does not grow.</li>
+          <li><strong>It gives up the individual.</strong> Two persuadables with identical covariates get identical answers, even though the truth here says one of them gets 28.0 and the other 31.0.</li>
+          <li><strong>It is what the business usually wanted.</strong> Targeting acts on segments, and a segment is exactly what a conditional average describes.</li>
+        </ul>
+        <p>So the honest ordering is: use rung 2 where the decision is a policy, use a conditional average where the policy varies by segment, and reserve rung 3 for the retrospective questions that genuinely name an individual. Session 7 builds the middle one, and gets remarkably far: the recency segment on its own reaches an R^2 of 0.986 against the individual effect. What is left over is exactly the 3.0 coin flip, and no feature in the table predicts it. That is the honest statement of what rung 3 gives you here. A fully specified model buys you the segment. It never buys you the person.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>Compute one counterfactual</h2>
+      <span class="tag demo">★ 18 min · everyone builds</span>
+    </div>
+    <p class="lede">One treated customer, the written model, and three steps. The point of doing it on Kestrelmark rather than on your own data is that here the equations are available, so the answer can be checked. Then the same computation is repeated under a second functional form to see what moves.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Pick one treated customer and write her row out in full.</strong> Season, tenure, email, opened, spend. Say her name out loud. Everything that follows is about her and not about a group that resembles her.</p>
+      </div>
+      <div class="step">
+        <p><strong>Write the structural equations down beside her row.</strong> The open equation with its sigmoid, the spend equation with the direct effect her segment carries and its mediated 3.0. If you cannot write them, stop: the question you are about to answer is not answerable, and knowing that now is the cheap outcome.</p>
+      </div>
+      <div class="step">
+        <p><strong>Recover her noise.</strong> Subtract the spend equation's prediction at her own values from her observed spend. That residual is exact because the equation is additive. Note separately that her open flag pins its noise only to an interval.</p>
+      </div>
+      <div class="step">
+        <p><strong>Flip the email to zero and recompute, twice.</strong> Once holding her open flag as observed, once letting it flip shut. The two answers are 28.0 and 31.0, and her row does not say which is hers.</p>
+      </div>
+      <div class="step">
+        <p><strong>Compare against the population average.</strong> 6.23 is the mean of a distribution with exactly eight values, and 6.23 is not one of them. Sit with the fact that the headline number is held by nobody, and that 393 of the 5,000 are harmed by a campaign whose average is positive.</p>
+      </div>
+      <div class="step">
+        <p><strong>Refit under a second functional form and repeat the whole thing.</strong> Add a curve in tenure, confirm the two forms fit the observed rows about as well as each other, then look at what happened to her number and what happened to the average.</p>
+      </div>
+      <div class="step">
+        <p><strong>Write both individual answers into the record, as a range with the assumption named.</strong> One line, in the same file as the DAG and the roles list. A counterfactual quoted without its functional form is a number with no owner.</p>
+      </div>
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - recover, flip, recompute, for one customer</span>
+import numpy as np, pandas as pd
+
+df    = pd.read_csv("kestrelmark.csv")   # 5,000 rows, one per customer
+TRUTH = 6.23                             # population average, known by construction
+
+# the structural model the data came from. rung 3 needs every line of this;
+# the graph alone gives you the inputs but not the shapes.
+SIG          = lambda z: 1.0 / (1.0 + np.exp(-z))
+A0, A_EMAIL  = -0.2, 1.6                 # open equation: sigmoid(-0.2 + 1.6 * email)
+DIRECT       = {0: 1.0, 1: 28.0, 2: 0.0, 3: -10.0}    # spend: the direct effect, BY SEGMENT
+B_OPENED     = 3.0                       # spend: the jump carried by opening
+BASE, B_SEASON, B_TENURE, B_REC = generator_coefficients()   # the rest, as written
+
+def spend_eq(row, email, opened, u):
+    """Her spend under any (email, opened), holding her own background fixed."""
+    return (BASE + B_SEASON * row.season + B_TENURE * row.tenure + B_REC[row.recency]
+            + DIRECT[row.recency] * email + B_OPENED * opened + u)
+
+# recency 1 is the lapsed "persuadable" segment. Amara is one of them.
+her = df[(df.email == 1) &amp; (df.opened == 1) &amp; (df.recency == 1)].iloc[0]
+
+# STEP 1 - recover. the spend equation is additive, so her noise comes out exactly.
+u_her = her.spend - spend_eq(her, her.email, her.opened, 0.0)
+
+# the open equation is NOT invertible. opened = 1 tells us only that her draw
+# fell below sigmoid(1.4); it does not say where. an interval, not a point.
+p1, p0 = SIG(A0 + A_EMAIL), SIG(A0)      # her open chance with the email, and without
+print("she opens with the email at", round(p1, 3), "and without it at", round(p0, 3))
+
+# STEP 2 and 3 - flip the treatment, recompute, changing nothing else.
+would_open_anyway = spend_eq(her, 0, her.opened, u_her)
+would_stay_shut   = spend_eq(her, 0, 0,          u_her)
+
+print(her.spend - would_open_anyway)     # 28.0  her segment's direct effect only
+print(her.spend - would_stay_shut)       # 31.0  direct 28.0 plus mediated 3.0
+
+# which one is hers depends on where her open draw fell, and her row is silent.
+print("chance it is the 31.0:", round((p1 - p0) / p1, 3))
+    </div>
+
+    <div class="callout tip">
+      <p><strong>The two prints are the whole session.</strong> Her individual effect is 28.0 or 31.0. Not a distribution around 6.23, not 6.23 with error bars: two values, one of which is true for her, chosen by a coin flip nobody observed. Run the same three steps on a sleeping dog and the two prints come back -10.0 and -7.0. Everything else tonight is about how much worse this gets when the equations are guessed instead of known.</p>
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - the average is a mixture nobody holds</span>
+# every customer's true effect is her segment's direct effect, plus the mediated 3.0
+# when the email is what tipped her into opening. four segments, two branches, eight values.
+eff = df.recency.map(DIRECT) + B_OPENED * tipped_into_opening(df)
+
+print(sorted(eff.unique()))              # [-10.0, -7.0, 0.0, 1.0, 3.0, 4.0, 28.0, 31.0]
+print(eff.value_counts().sort_index())   # 245, 148, 1614, 709, 851, 411, 650, 372
+
+MEAN_DIRECT = 5.16                       # the direct effect averaged over the four segments
+MEDIATED    = 1.056                      # 3.0 times the change in open rate the email causes
+
+print(round(MEAN_DIRECT + MEDIATED, 2))  # 6.22, the analytic value
+print(TRUTH)                             # 6.23, brute-forced over the 5,000 rows
+
+# the two agree, which is the engine checking itself against theory rather than
+# against its own output. and the average is nobody's effect: it does not appear
+# in the list of eight, and it sits in the empty gap between +4.0 and +28.0.
+print(int((eff &lt; 0).sum()))              # 393 customers the campaign actively harms
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - a second form that fits just as well and answers differently</span>
+def fit(cols):
+    """Plain least squares. No inference and no standard errors: arithmetic only."""
+    X = np.column_stack([np.ones(len(df))] + [df[c].to_numpy(float) for c in cols])
+    y = df["spend"].to_numpy(float)
+    beta, *_ = np.linalg.lstsq(X, y, rcond=None)
+    resid    = y - X @ beta
+    return beta, float(resid @ resid)
+
+df["tenure2"] = df.tenure ** 2           # the only difference between the two forms
+
+FORM_A = ["email", "opened", "season", "tenure"]
+FORM_B = FORM_A + ["tenure2"]
+
+beta_a, rss_a = fit(FORM_A)
+beta_b, rss_b = fit(FORM_B)
+print(rss_a, rss_b)                      # near enough identical: no diagnostic separates them
+
+def cf_gap(beta, cols, row):
+    """Her spend with the email minus her spend without it, under this form.
+       Her own values enter everywhere except the treatment."""
+    def yhat(email, opened):
+        vals = {**{c: float(row[c]) for c in cols}, "email": email, "opened": opened}
+        return beta[0] + sum(b * vals[c] for b, c in zip(beta[1:], cols))
+    return yhat(1, 1) - yhat(0, 0)
+
+print(cf_gap(beta_a, FORM_A, her))       # the model's answer for her under form A
+print(cf_gap(beta_b, FORM_B, her))       # the model's answer for her under form B: it moves
+
+# and notice what neither form can do. with no interaction term, cf_gap never reads
+# her row, so a persuadable and a sleeping dog are handed the same difference. letting
+# the fitted effect vary by segment is session 7's job, not tonight's.
+
+# now the same two forms averaged over everybody
+gap_a = np.mean([cf_gap(beta_a, FORM_A, r) for r in df.itertuples()])
+gap_b = np.mean([cf_gap(beta_b, FORM_B, r) for r in df.itertuples()])
+print(round(gap_a, 2), round(gap_b, 2))  # the population numbers barely budge
+
+# the individual answer is sensitive to a choice the data cannot arbitrate.
+# the average is not. that asymmetry is the reason to prefer rung 2 when it will do.
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Estimating the average from the data alone, without the written model, is a different job.</strong> The fitting recipes for that live in <code class="mono">learn-experimentation-with-phoebe</code>, which owns potential outcomes, propensity scores, inverse probability weighting, doubly robust estimation, difference-in-differences and synthetic control. Tonight's arithmetic assumes the model is known, which is what makes the individual answer computable and what makes it fragile.</p>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before session 7</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li>Find one claim your team has made in the last quarter that is secretly rung 3: a named account, a specific sale, a save credited to a campaign. Write it out and underline the individual.</li>
+      <li>For that claim, try to write the structural equations you would need to defend it. Note where you stop, because that is the honest boundary of the claim.</li>
+      <li>Take one customer from a model you own, recover the residual under the current specification, then refit with one extra term and recover it again. Report how much the individual prediction moved and how much the population mean moved.</li>
+      <li>Rewrite one rung-3 sentence as the rung-2 sentence that would support the same decision. If the decision survives the rewrite, the counterfactual was never needed.</li>
+      <li>List the covariates you would condition on to describe customers like Amara rather than Amara. Bring that list to session 7, where it becomes the input to a conditional effect model.</li>
+    </ol>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">A team has the Kestrelmark DAG, a validated adjustment set and all 5,000 rows. They want Amara's spend in the world where the email was never sent to her. What is still missing?</p>
+      <button class="qopt" type="button">A · Nothing: with a valid adjustment set the counterfactual is a conditional mean over her covariate cell</button>
+      <button class="qopt" type="button">B · The equations themselves, because recovering her own noise terms means inverting the functional forms, and a graph names the inputs without fixing the shapes</button>
+      <button class="qopt" type="button">C · More rows, so that customers matching her covariates exactly can be found in the untreated arm</button>
+      <p class="qwhy">A graph plus data answers rung 2. Rung 3 holds one individual fixed, and what makes her an individual is her residual, which is only recoverable by solving the structural equations she came from.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">The population effect at Kestrelmark is 6.23. What is the effect for a single customer?</p>
+      <button class="qopt" type="button">A · 6.23, since the average applies to every customer by definition</button>
+      <button class="qopt" type="button">B · 6.23 plus noise, distributed around the average</button>
+      <button class="qopt" type="button">C · One of exactly eight values between -10.0 and +31.0, because her recency segment fixes the direct effect and the mediated 3.0 either lands or does not, and 6.23 is not one of the eight</button>
+      <p class="qwhy">The spend equation gives opening 3.0 for everybody and gives the email a direct effect set by the recency segment: 1.0, 28.0, 0.0 or -10.0. That is eight possible individual effects, their mean is 6.23, and no customer holds it.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">Two specifications fit the observed rows with identical residuals and give Amara counterfactuals several units apart. Which diagnostic settles it?</p>
+      <button class="qopt" type="button">A · None, because the disagreement is at a point where no row exists, so the choice of form is an assumption rather than a finding</button>
+      <button class="qopt" type="button">B · Cross-validation, since the better generalising model gives the trustworthy counterfactual</button>
+      <button class="qopt" type="button">C · A larger sample, which shrinks the gap between the two forms</button>
+      <p class="qwhy">Held-out scoring measures predictions on worlds that happened. The counterfactual is a point with no data by construction, so the extrapolation is unconstrained and the honest output is the range plus the named assumption.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ COVERAGE ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What tonight maps to</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Rung 3 of the ladder</span>
+        <span class="note">Reasoning about an alternative world that did not happen, which means modelling two worlds at once and therefore requires a fully specified causal model.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">The three-step recipe</span>
+        <span class="note">Recover the individual's background factors, change the treatment by hand, recompute the outcome. The same procedure the bench engine runs to produce 6.23.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">What a fully specified model buys</span>
+        <span class="note">Would this customer have churned anyway, was this sale caused by the campaign, is this individual worth treating. All three need the equations, not just the arrows, and even with every equation written down the answer arrives as the segment and never as the person.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">The functional-form limit</span>
+        <span class="note">Two forms fitting equally well give different individual answers and identical averages, and no data separates them. Partial identification when a variable is binary.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">Heterogeneous effects and CATE</span>
+        <span class="note">Session 7. A conditional average is the per-person counterfactual approximated without a structural model, it reaches an R^2 of 0.986 here, and it is what most targeting questions actually need.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">Sensitivity to what cannot be measured</span>
+        <span class="note">Session 9. Tonight names the functional form as the unpriced assumption; the sensitivity machinery there prices the unmeasured confounder instead.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill inkpill">·</span>
+        <span class="name">Potential outcomes, propensity scores, IPW, doubly robust, difference-in-differences, synthetic control, DoWhy</span>
+        <span class="note">Not covered by design, in any session. Estimating an effect from observational data belongs to learn-experimentation-with-phoebe; tonight assumes the model is written down and asks what follows.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Session 6 cheat sheet</h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Rung 2 against rung 3</b><span>Rung 2 asks about a population under a policy. Rung 3 asks about one person in a world that never happened.</span></div>
+      <div class="cheat-item"><b>Recover, flip, recompute</b><span>Solve for her noise, overwrite the treatment, push it back through the equations.</span></div>
+      <div class="cheat-item"><b>A graph is not enough</b><span>It names each equation's inputs. Recovering a residual needs the shape as well.</span></div>
+      <div class="cheat-item"><b>Change nothing else</b><span>Replacing her residual with the group average answers about a customer like her, not about her.</span></div>
+      <div class="cheat-item"><b>Eight values, never 6.23</b><span>Her segment's direct effect, or that plus the mediated 3.0. The average is held by nobody.</span></div>
+      <div class="cheat-item"><b>Two forms, two answers</b><span>Identical residuals, different counterfactuals, no diagnostic between them. Report the range.</span></div>
+      <div class="cheat-item"><b>The segment, never the person</b><span>Her open flag pins its noise to an interval, so the 3.0 either landed or did not and no feature says which.</span></div>
+      <div class="cheat-item"><b>Prefer rung 2 when it fits</b><span>Policies need averages. Only a retrospective claim about a named account truly needs rung 3.</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pagefoot">
+  <div class="wrap">
+    <p>Practitioner session 6 of 10 · learn-causal-inference-with-phoebe · by Phoebe Fu</p>
+    <nav class="pagenav">
+      <a href="p5-simpsons-paradox.html">← Practitioner session 5 · Simpson's paradox</a>
+      <a href="p7-cate-and-uplift.html">Practitioner session 7 · CATE and uplift →</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

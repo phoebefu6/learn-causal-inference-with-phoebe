@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Practitioner session 4 of 10. When an unmeasured common cause shuts the back door for good, a mediator sitting on the whole path can still identify the effect. Three conditions decide it, the first one usually fails, and Kestrelmark fails it.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="The front door - learn causal inference with phoebe">
+<meta property="og:description" content="Practitioner session 4 of 10. A beautiful result for a narrow class of graphs. Check the three conditions before reaching for it.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/courses/p4-the-front-door.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The front door - learn causal inference with phoebe">
+<meta name="twitter:description" content="Measure how treatment moves the mediator, how the mediator moves the outcome, and multiply.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Practitioner session 4 · The front door - learn causal inference with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-causal-inference-with-phoebe</a> / Practitioner session 4 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Causal Inference with Phoebe · Practitioner session 4 of 10</div>
+    <h1>The front <span class="accent">door</span></h1>
+    <p class="sub">Session 3 ended on the unhappy case: a common cause of treatment and outcome that nobody measured, no adjustment set that satisfies the back-door criterion, and the honest conclusion that the effect is not identified from this data. There is one escape from that, and it is genuinely surprising. If the treatment reaches the outcome only through a mediator you CAN measure, the effect is identified after all, without ever adjusting for the thing you could not see. Tonight is the escape, the three conditions that license it, and the reason Kestrelmark does not qualify.</p>
+    <div class="chip-row">
+      <span class="chip level">🔴 Hardest</span>
+      <span class="chip audience">Data scientists and analysts</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:5">3-22 · When the back door is shut for good</span>
+      <span class="a3" style="flex:4">22-40 · Build-along: the two-stage calculation</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>The situation this result is for</h2>
+    </div>
+    <p class="lede">One specific dead end: the back-door paths are real, at least one of them runs through a variable nobody recorded, and no set of measured variables blocks it. Adjustment has nothing to offer. Most of the time that is the end of the analysis and the right move is to say so out loud. Occasionally the graph has a second route, and the second route is worth knowing about because it is easy to miss and easy to misapply.</p>
+
+    <div class="legend">
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">🔍 Every diagram zooms</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> The three conditions of the front-door criterion, written down in a form you can check against an edge list rather than by squinting at a picture. A working two-stage calculation on a graph where it is valid, scored against a truth known by construction. And the professional habit that matters more than the formula: checking condition (i) first, watching it fail on your own graph, and saying so instead of shipping a number.</p>
+    </div>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>A confounder you cannot measure does not always end the analysis<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The back-door criterion asks for a set of measured variables that blocks every path from treatment to outcome starting with an arrow into the treatment. When the only such path runs through an unmeasured common cause, no set does the job, and the standard conclusion follows: the effect is not identified from this data, and more rows will not change that.</p>
+        <p>The front door takes a different route to the same quantity. Instead of trying to make the treated and untreated groups comparable, it stops comparing them. It measures how much the treatment moves an intermediate variable, then how much that intermediate variable moves the outcome, and multiplies. Neither of those two measurements requires knowing anything about the unmeasured confounder, and the product is the effect you wanted.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>The textbook case is smoking and lung cancer with an unmeasured genetic predisposition arguing for both. Tar deposits in the lung sit on the path from smoking to cancer, and nothing about the genotype reaches the cancer except through the tar. Under that graph, and only under that graph, the effect is recoverable without ever measuring the gene.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The vocabulary for tonight<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Front-door criterion</strong> - a set of graph conditions under which the effect of X on Y is computable from measured variables even though every back-door path is blocked by something unmeasured.</li>
+          <li><strong>Mediator on the whole path</strong> - a variable M through which every directed path from X to Y must pass. Not "a mediator", but the only route.</li>
+          <li><strong>Stage 1</strong> - the effect of X on M. Identified because nothing unmeasured confounds that pair.</li>
+          <li><strong>Stage 2</strong> - the effect of M on Y, with X held fixed. Identified because X blocks the back-door paths from M to Y.</li>
+          <li><strong>do-calculus</strong> - three rewriting rules that decide, for any graph and any query, whether the query can be turned into an expression in observed quantities. The front-door result is one of its consequences.</li>
+          <li><strong>Identifiable</strong> - the estimand can be written as a function of the observed distribution given the graph. Still says nothing about how well it can be estimated from a finite sample.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers the escape and its three conditions</span>
+      <h2>A confounder you cannot measure does not always end the analysis</h2>
+      <span class="tag concept">10 min live</span>
+    </div>
+    <p class="lede">The shape below is the whole result. An unmeasured U feeding both the treatment and the outcome, and a mediator M that the treatment must pass through to reach the outcome at all. The back door is shut for good; the front door is open.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 336" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The front-door graph. An unobserved variable U points into the treatment X and into the outcome Y, forming a back-door path that cannot be closed. X points to the mediator M and M points to Y, and there is no other route from X to Y. Stage one is the effect of X on M and stage two is the effect of M on Y with X held fixed. The front-door estimate is the product of the two stages.">
+        <style>
+          .p4aT { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .p4aH { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .p4aM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .p4aN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p4aR { font: 700 11px Inter, sans-serif; fill: #9A3412; }
+        </style>
+        <defs>
+          <marker id="p4aAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5A6B68"></path></marker>
+          <marker id="p4aRd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9A3412"></path></marker>
+          <marker id="p4aGr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0F6F66"></path></marker>
+        </defs>
+
+        <text class="p4aH" x="14" y="26">The one graph shape the front door is for</text>
+
+        <ellipse cx="440" cy="62" rx="62" ry="26" fill="none" stroke="#9A3412" stroke-width="1.5" stroke-dasharray="4 3"></ellipse>
+        <text class="p4aR" x="440" y="66" text-anchor="middle">U unobserved</text>
+
+        <line x1="386" y1="78" x2="146" y2="166" stroke="#9A3412" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#p4aRd)"></line>
+        <line x1="494" y1="78" x2="736" y2="166" stroke="#9A3412" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#p4aRd)"></line>
+        <text class="p4aR" x="440" y="116" text-anchor="middle">back door: cannot be closed</text>
+
+        <rect x="60" y="172" width="140" height="40" rx="9" fill="#134E4A"></rect>
+        <text class="p4aT" x="130" y="197" text-anchor="middle">Treatment X</text>
+        <rect x="370" y="172" width="140" height="40" rx="9" fill="#0F6F66"></rect>
+        <text class="p4aT" x="440" y="197" text-anchor="middle">Mediator M</text>
+        <rect x="680" y="172" width="140" height="40" rx="9" fill="#134E4A"></rect>
+        <text class="p4aT" x="750" y="197" text-anchor="middle">Outcome Y</text>
+
+        <line x1="204" y1="192" x2="364" y2="192" stroke="#0F6F66" stroke-width="3" marker-end="url(#p4aGr)"></line>
+        <line x1="514" y1="192" x2="674" y2="192" stroke="#0F6F66" stroke-width="3" marker-end="url(#p4aGr)"></line>
+        <text class="p4aH" x="284" y="164" text-anchor="middle">stage 1: X moves M</text>
+        <text class="p4aH" x="594" y="164" text-anchor="middle">stage 2: M moves Y</text>
+        <text class="p4aM" x="284" y="234" text-anchor="middle">nothing confounds this pair</text>
+        <text class="p4aM" x="594" y="234" text-anchor="middle">hold X fixed and it is clean</text>
+
+        <rect x="270" y="256" width="340" height="40" rx="9" fill="#99F6E4"></rect>
+        <text class="p4aH" x="440" y="281" text-anchor="middle">front-door estimate = stage 1 x stage 2</text>
+
+        <rect x="14" y="310" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="p4aN" x="38" y="322">U is never measured and never adjusted for. Both stages are measurable without it.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the back door is shut, and the effect is still recoverable through the mediator.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The three conditions, stated so you can check them<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A mediator M qualifies for the front door, relative to the ordered pair X and Y, when all three of these hold at once. They are conditions on the graph, not on the data, and each one is a separate opportunity to be wrong.</p>
+        <ul>
+          <li><strong>(i) M intercepts every directed path from X to Y.</strong> Every route by which the treatment reaches the outcome passes through M. Delete M from the graph and no directed path from X to Y survives.</li>
+          <li><strong>(ii) There is no unblocked back-door path from X to M.</strong> Nothing unmeasured confounds the treatment and the mediator, so stage 1 is honest as it stands.</li>
+          <li><strong>(iii) Every back-door path from M to Y is blocked by X.</strong> Conditioning on the treatment is enough to clean up stage 2, which is why stage 2 is measured with X held fixed rather than raw.</li>
+        </ul>
+        <p>Notice what is not in the list: any requirement about U. U can be arbitrarily strong, arbitrarily strange, and completely unrecorded. The criterion never touches it. That is the whole surprise.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Why multiplying two honest pieces gives an honest whole<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Take the two stages one at a time. Stage 1 asks how much the treatment shifts the mediator. Under condition (ii) there is nothing confounding that pair, so the plain comparison of M across levels of X is already the causal quantity. Stage 2 asks how much the mediator shifts the outcome, and under condition (iii) holding X fixed blocks every contaminating path into that comparison, so it too is causal.</p>
+        <p>Condition (i) is what lets you glue them together. If M is the only route, then every unit of effect that leaves X arrives at Y by way of M, and the total is the amount of movement in M multiplied by the amount of outcome each unit of movement buys. Break condition (i) and some of the effect travels by a road you never measured, so the product is not the total: it is only the portion that happens to go through M.</p>
+        <div class="callout tip">
+          <p><strong>Read the formula as a sentence before you read it as algebra.</strong> "How far does the treatment push the mediator, and what is each unit of push worth at the outcome." Anyone in the room can check that sentence against the business. Nobody can check a summation.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>What the criterion buys and what it does not<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>It buys identification, not precision.</strong> The effect can be written as a function of observed quantities. Whether 5,000 rows pin that function down tightly is a separate question and a separate discipline.</li>
+          <li><strong>It buys nothing if M is measured badly.</strong> A noisy or partial measurement of the mediator attenuates stage 1 and stage 2 at once, and the two errors multiply rather than partly cancelling.</li>
+          <li><strong>It buys nothing if there is a second unmeasured confounder between M and Y.</strong> That is condition (iii) failing, and it is the second most common failure after condition (i).</li>
+          <li><strong>It does not need randomisation anywhere.</strong> Which is exactly why it is attractive, and exactly why it deserves a hostile review before it is used.</li>
+          <li><strong>Fitting it well on real data</strong> - variance, standard errors, and the estimator choices for each stage - is the experimentation course's territory. <code class="mono">learn-experimentation-with-phoebe</code> owns every observational estimator. The question here stops at whether the quantity exists.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2 ============ -->
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers the failure mode and the general machinery</span>
+      <h2>Why it is rarer than it looks, and the three rules behind it</h2>
+      <span class="tag concept">8 min live</span>
+    </div>
+    <p class="lede">Condition (i) is the one that fails, and it fails almost every time somebody reaches for this in an applied setting. A treatment usually has more than one way of reaching its outcome, and a single extra arrow is enough to disqualify the whole calculation. Kestrelmark is a textbook example of the disqualification.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 348" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The same front-door graph with a direct arrow added from the treatment X straight to the outcome Y, bypassing the mediator M. Condition one fails because a directed path from X to Y skips M. The Kestrelmark email graph is this shape, because the email has a direct arrow to spend as well as the route through opened.">
+        <style>
+          .p4bT { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .p4bH { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .p4bM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .p4bN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+          .p4bF { font: 800 12px Inter, sans-serif; fill: #991B1B; }
+          .p4bS { font: 700 11px Inter, sans-serif; fill: #991B1B; }
+        </style>
+        <defs>
+          <marker id="p4bAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5A6B68"></path></marker>
+          <marker id="p4bRd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9A3412"></path></marker>
+          <marker id="p4bFl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#991B1B"></path></marker>
+          <marker id="p4bGr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0F6F66"></path></marker>
+        </defs>
+
+        <text class="p4bH" x="14" y="26">One extra arrow, and the criterion no longer applies</text>
+
+        <ellipse cx="440" cy="58" rx="62" ry="24" fill="none" stroke="#9A3412" stroke-width="1.5" stroke-dasharray="4 3"></ellipse>
+        <text class="p4bM" x="440" y="62" text-anchor="middle">U unobserved</text>
+
+        <line x1="386" y1="72" x2="146" y2="146" stroke="#9A3412" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#p4bRd)"></line>
+        <line x1="494" y1="72" x2="736" y2="146" stroke="#9A3412" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#p4bRd)"></line>
+
+        <rect x="60" y="152" width="140" height="40" rx="9" fill="#134E4A"></rect>
+        <text class="p4bT" x="130" y="177" text-anchor="middle">Email X</text>
+        <rect x="370" y="152" width="140" height="40" rx="9" fill="#0F6F66"></rect>
+        <text class="p4bT" x="440" y="177" text-anchor="middle">Opened M</text>
+        <rect x="680" y="152" width="140" height="40" rx="9" fill="#134E4A"></rect>
+        <text class="p4bT" x="750" y="177" text-anchor="middle">Spend Y</text>
+
+        <line x1="204" y1="172" x2="364" y2="172" stroke="#0F6F66" stroke-width="3" marker-end="url(#p4bGr)"></line>
+        <line x1="514" y1="172" x2="674" y2="172" stroke="#0F6F66" stroke-width="3" marker-end="url(#p4bGr)"></line>
+        <text class="p4bM" x="284" y="144" text-anchor="middle">stage 1 still fine</text>
+        <text class="p4bM" x="594" y="144" text-anchor="middle">stage 2 still fine</text>
+
+        <path d="M 130 196 Q 440 274 750 196" fill="none" stroke="#991B1B" stroke-width="2.5" marker-end="url(#p4bFl)"></path>
+        <text class="p4bF" x="440" y="266" text-anchor="middle">direct arrow: X reaches Y without M</text>
+
+        <rect x="14" y="286" width="852" height="52" rx="9" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="p4bS" x="30" y="308">Condition (i) FAILS: a directed path from X to Y skips the mediator entirely.</text>
+        <text class="p4bN" x="30" y="328">Kestrelmark is this graph. The two-stage product would miss the direct arrow and understate.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - Kestrelmark's email reaches spend two ways, so the front door does not apply.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Kestrelmark does not qualify, and saying so is the work<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The Kestrelmark graph from session 1 has the email pointing at <code class="mono">opened</code>, <code class="mono">opened</code> pointing at <code class="mono">spend</code>, and the email also pointing straight at <code class="mono">spend</code>. That third arrow was defended out loud in session 1: even unopened, the sender name in an inbox is a reminder, and a reminder moves purchases. It is a modest claim and a hard one to argue away.</p>
+        <p>That single arrow is fatal to the front door here. Condition (i) demands that <code class="mono">opened</code> intercept every directed path, and the direct arrow is a directed path it does not intercept. The two-stage product would recover only the part of the effect that flows through opening, and would report it as the whole thing.</p>
+        <p>Which is fine, because Kestrelmark does not need the front door. Its back-door paths run through <code class="mono">season</code> and <code class="mono">tenure</code>, both of them measured, and adjusting for that pair lands at 6.56 against a truth of 6.23. The front door is for the case where the back door is unavailable, and reaching for it when the back door is open is a way to be clever instead of correct.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>The failure that reaches production looks like this: somebody finds a mediator with a strong first stage, runs the product, gets a plausible number, and never writes down the sentence "the treatment cannot reach the outcome any other way". A reviewer who asks for that one sentence in writing catches most of these in under a minute.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The three rules of do-calculus, named<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The back door and the front door are not two unrelated tricks. Both fall out of a single piece of machinery: three rewriting rules, due to Pearl, that say when a query containing an intervention can be transformed into an expression containing only observed quantities. Their names are worth carrying even without their derivations.</p>
+        <ul>
+          <li><strong>Rule 1, insertion and deletion of observations.</strong> When a variable is irrelevant to the query given what is already conditioned on, it can be dropped from the expression.</li>
+          <li><strong>Rule 2, exchanging an action for an observation.</strong> When the right paths are blocked, forcing a variable and merely observing it are the same thing. This is the rule the back-door criterion is a special case of.</li>
+          <li><strong>Rule 3, insertion and deletion of actions.</strong> When an intervention has no route to the query, it can be removed from the expression entirely.</li>
+        </ul>
+        <p>Applied repeatedly, these three rules are complete: if a query is identifiable from a given graph, some sequence of them will produce the expression, and if no sequence does, the query is not identifiable. The front-door formula is one such sequence, worked out once and then reused. Tonight uses the result and leaves the derivation alone, which is the right trade for a working practitioner.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>An honest summary of where the front door sits<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>It is a real and beautiful result. It says something that felt impossible before Pearl wrote it down: that an unmeasured confounder of arbitrary strength need not be fatal, provided the mechanism is fully observed. Nothing in this track is more counterintuitive on first reading.</p>
+        <p>It also applies to a narrow class of graphs, and the narrowness is structural rather than accidental. Condition (i) requires that the mechanism be complete, and real treatments are rarely tidy enough for that. Marketing touches work through several channels. Drugs have side effects. Policies change behaviour in ways nobody enumerated. Each extra route is another directed path that M fails to intercept.</p>
+        <ul>
+          <li><strong>The professional move is to check, not to reach.</strong> Three conditions, checked against the edge list, in the order (i), (iii), (ii). Condition (i) fails most often, so test it first and stop early.</li>
+          <li><strong>A failed check is a finding.</strong> "The front door does not apply because the treatment also reaches the outcome directly" is a defensible sentence in a review, and it is worth more than a number nobody can justify.</li>
+          <li><strong>A passed check is the start of a different conversation.</strong> How well is M measured, how complete is it, and who signs off that the mechanism has no second route.</li>
+          <li><strong>The alternative when it fails is not a cleverer formula.</strong> It is a design change: find an instrument, run an experiment, or state that the effect is not identified. Session 9 covers the fourth option, which is to bound how wrong you might be.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>The two-stage calculation, and then breaking it</h2>
+      <span class="tag demo">★ 18 min · everyone builds</span>
+    </div>
+    <p class="lede">Four steps. Encode a graph where the front door genuinely applies, check the three conditions in code rather than by eye, compute the product against a truth you wrote yourself, then add one arrow and watch the same code report a number that is wrong by exactly the size of the arrow.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Step 1. Encode the graph as an edge list.</strong> Not a picture. A list of pairs that a function can walk. Everything tonight is a query against this list, which is the difference between checking a criterion and feeling that it probably holds.</p>
+      </div>
+      <div class="step">
+        <p><strong>Step 2. Write the three conditions as three functions.</strong> Each returns True or False against the edge list. Condition (i) is a search over directed paths; conditions (ii) and (iii) need back-door paths and a blocking rule, which is the same machinery session 3 built.</p>
+      </div>
+      <div class="step">
+        <p><strong>Step 3. Generate data from a model whose true effect you set by hand,</strong> with an unmeasured confounder strong enough that the naive comparison is visibly wrong. Compute stage 1, compute stage 2 with the treatment held fixed, multiply, and compare with the truth.</p>
+      </div>
+      <div class="step">
+        <p><strong>Step 4. Add the direct arrow and run everything again.</strong> The condition check flips to False and the product no longer matches the truth. The size of the miss is the size of the arrow you added, which is the cleanest possible demonstration of what condition (i) is protecting.</p>
+      </div>
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - the graph, and the three conditions as code</span>
+# frontdoor.py - step 1 and step 2. The graph is the input, not the picture.
+
+EDGES = [
+    ("u", "x"),   # unmeasured common cause of treatment and outcome
+    ("u", "y"),
+    ("x", "m"),   # treatment moves the mediator
+    ("m", "y"),   # the mediator moves the outcome
+]
+
+def children(g, node):
+    return [b for (a, b) in g if a == node]
+
+def parents(g, node):
+    return [a for (a, b) in g if b == node]
+
+def descendants(g, node, acc=None):
+    acc = set() if acc is None else acc
+    for c in children(g, node):
+        if c not in acc:
+            acc.add(c)
+            descendants(g, c, acc)
+    return acc
+
+def directed_paths(g, src, dst, seen=()):
+    if src == dst:
+        yield [src]
+        return
+    for nxt in children(g, src):
+        if nxt not in seen:
+            for tail in directed_paths(g, nxt, dst, seen + (src,)):
+                yield [src] + tail
+
+def any_paths(g, src, dst, seen=()):
+    """every path, ignoring which way the arrows point"""
+    if src == dst:
+        yield [src]
+        return
+    for nxt in sorted(set(children(g, src)) | set(parents(g, src))):
+        if nxt not in seen:
+            for tail in any_paths(g, nxt, dst, seen + (src,)):
+                yield [src] + tail
+
+def blocked(g, path, z):
+    for i in range(1, len(path) - 1):
+        a, b, c = path[i - 1], path[i], path[i + 1]
+        collider = (a, b) in g and (c, b) in g
+        if collider:
+            if b not in z and not (descendants(g, b) &amp; z):
+                return True          # a closed collider blocks the path
+        elif b in z:
+            return True              # a chain or fork closed by conditioning
+    return False
+
+def back_door_paths(g, src, dst):
+    """paths whose first edge points INTO src"""
+    return [p for p in any_paths(g, src, dst) if (p[1], src) in g]
+
+def condition_i(g, x, y, m):
+    return all(m in p for p in directed_paths(g, x, y))
+
+def condition_ii(g, x, m):
+    return all(blocked(g, p, set()) for p in back_door_paths(g, x, m))
+
+def condition_iii(g, m, y, x):
+    return all(blocked(g, p, {x}) for p in back_door_paths(g, m, y))
+
+def front_door_ok(g, x="x", y="y", m="m"):
+    checks = {
+        "(i) M intercepts every directed path X to Y": condition_i(g, x, y, m),
+        "(ii) no unblocked back door from X to M":     condition_ii(g, x, m),
+        "(iii) back doors from M to Y are shut by X":  condition_iii(g, m, y, x),
+    }
+    for name, ok in checks.items():
+        print(f"{'PASS' if ok else 'FAIL'}  {name}")
+    return all(checks.values())
+
+front_door_ok(EDGES)
+# PASS  (i) M intercepts every directed path X to Y
+# PASS  (ii) no unblocked back door from X to M
+# PASS  (iii) back doors from M to Y are shut by X
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Condition (ii) passes for an interesting reason.</strong> The only path from X to M that starts with an arrow into X is <code class="mono">x from u to y to m</code>, and Y on that path is a collider: U points into it and M points into it. An unconditioned collider blocks its own path, so nothing needs doing. Session 2's shape is doing the work here.</p>
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - step 3, the two stages against a truth you set yourself</span>
+# frontdoor.py continued. True effect of x on y is 0.6 * 4.0 = 2.4, by construction.
+
+import numpy as np
+
+rng = np.random.default_rng(7)
+n = 20000
+
+u = rng.normal(size=n)                                   # never used again
+x = (0.9 * u + rng.normal(size=n) &gt; 0).astype(float)     # confounded treatment
+m = 0.6 * x + 0.5 * rng.normal(size=n)                   # stage 1 coefficient 0.6
+y = 4.0 * m + 2.0 * u + rng.normal(size=n)               # stage 2 coefficient 4.0
+
+TRUTH = 0.6 * 4.0
+
+def ols(design, target):
+    beta, *_ = np.linalg.lstsq(design, target, rcond=None)
+    return beta
+
+# stage 1: how far does the treatment push the mediator
+stage1 = m[x == 1].mean() - m[x == 0].mean()
+
+# stage 2: what is one unit of mediator worth at the outcome, with X held fixed
+design = np.column_stack([np.ones(n), m, x])
+stage2 = ols(design, y)[1]
+
+naive = y[x == 1].mean() - y[x == 0].mean()
+
+print(f"truth        {TRUTH:.2f}")
+print(f"naive        {naive:.2f}")     # about 4.5: U is inflating it badly
+print(f"stage 1      {stage1:.2f}")    # about 0.60
+print(f"stage 2      {stage2:.2f}")    # about 4.00
+print(f"front door   {stage1 * stage2:.2f}")   # about 2.40, and U was never touched
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - step 4, add the direct arrow and watch it break</span>
+# frontdoor.py continued. Same U, same X, same M. One new arrow: x straight to y.
+
+BROKEN = EDGES + [("x", "y")]
+
+front_door_ok(BROKEN)
+# FAIL  (i) M intercepts every directed path X to Y
+# PASS  (ii) no unblocked back door from X to M
+# PASS  (iii) back doors from M to Y are shut by X
+
+y2 = 5.0 * x + 4.0 * m + 2.0 * u + rng.normal(size=n)
+TRUTH2 = 5.0 + 0.6 * 4.0                 # direct 5.0 plus mediated 2.4 = 7.4
+
+stage2b = ols(np.column_stack([np.ones(n), m, x]), y2)[1]
+estimate = stage1 * stage2b
+
+print(f"truth        {TRUTH2:.2f}")      # 7.40
+print(f"front door   {estimate:.2f}")    # about 2.40
+print(f"miss         {TRUTH2 - estimate:.2f}")   # about 5.00, exactly the arrow added
+
+# The arithmetic did not break. The graph did. Stage 2 still recovers 4.0 because
+# holding x fixed is still enough for that pair; the product is simply no longer
+# the whole effect, because the whole effect no longer travels through m.
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What just happened.</strong> The estimate did not degrade gracefully or get noisier. It stayed confident, stayed stable, and reported the mediated portion as though it were the total, missing by precisely the coefficient on the arrow the check flagged. There is no diagnostic in the data that would have caught it. The edge list caught it in three lines.</p>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before session 5</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li>Run the three condition checks against your own graph from session 1, with your real treatment and outcome and the best mediator candidate you have. Record which condition fails first.</li>
+      <li>Write the condition (i) sentence out in full for that candidate: "the only way X reaches Y is through M". Take it to one person who knows the mechanism and see whether they can name a second route in under a minute. They usually can.</li>
+      <li>Find one published analysis in your field that uses a mediator to argue causation. Check whether it states condition (i) anywhere, in any words. Note what it says instead.</li>
+      <li>Add the front-door check to the same file as your identification check from session 3, so a future graph edit re-runs both without anybody remembering to.</li>
+    </ol>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">Kestrelmark's email points at <code class="mono">opened</code>, <code class="mono">opened</code> points at <code class="mono">spend</code>, and the email also points straight at <code class="mono">spend</code>. Can the front door be used with <code class="mono">opened</code> as the mediator?</p>
+      <button class="qopt" type="button">A · Yes, because opened is a genuine mediator and both stages are measurable</button>
+      <button class="qopt" type="button">B · No: the direct arrow is a directed path from email to spend that opened does not intercept, so condition (i) fails and the product would report only the mediated portion</button>
+      <button class="qopt" type="button">C · Yes, provided the direct arrow is small enough to ignore</button>
+      <p class="qwhy">Condition (i) is not a matter of degree. One unintercepted directed path disqualifies the calculation, and the miss is exactly the size of that path. Kestrelmark does not need the front door anyway: its back doors run through season and tenure, both measured.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">What does the front-door criterion require you to know about the unmeasured confounder U?</p>
+      <button class="qopt" type="button">A · Its approximate strength, so the two stages can be corrected for it</button>
+      <button class="qopt" type="button">B · At least one proxy variable correlated with it</button>
+      <button class="qopt" type="button">C · Nothing at all: U can be arbitrarily strong and completely unrecorded, and neither stage ever touches it</button>
+      <p class="qwhy">That is the surprise of the result. All three conditions are statements about paths in the graph. None of them mentions U's strength, distribution, or measurability.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">A colleague proposes the front door for a marketing treatment, showing a strong first stage and a clean second stage. Which check should be run first?</p>
+      <button class="qopt" type="button">A · Condition (i): whether the treatment can reach the outcome by any route that skips the mediator, since that is the condition that fails most often and it invalidates everything downstream</button>
+      <button class="qopt" type="button">B · The fit quality of the second stage, since a weak fit means the product is unreliable</button>
+      <button class="qopt" type="button">C · Whether the sample is large enough for both stages to be precise</button>
+      <p class="qwhy">Strong stages are evidence of nothing when the mechanism is incomplete. Marketing treatments almost always reach the outcome through more than one channel, which is exactly the shape condition (i) rules out.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ COVERAGE ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What tonight maps to</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">The front-door criterion and its three conditions</span>
+        <span class="note">Stated formally, checked in code against an edge list, and demonstrated on a graph where all three hold.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">When an unmeasured confounder blocks the back door</span>
+        <span class="note">The dead end from session 3, and the one graph shape that escapes it without measuring the confounder.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Why condition (i) usually fails</span>
+        <span class="note">Kestrelmark's direct email-to-spend arrow disqualifies it, and the measured miss equals the coefficient on that arrow.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">Full do-calculus</span>
+        <span class="note">The three rules are named as the general machinery that decides identifiability. They are not derived here, by design.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">The back-door criterion, stated formally</span>
+        <span class="note">Session 3. Tonight assumes it and starts from the case where no valid set exists.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill inkpill">·</span>
+        <span class="name">Propensity scores, IPW, doubly robust, difference-in-differences, synthetic control, DoWhy</span>
+        <span class="note">Not covered by design, in any session. Fitting an estimator to an identified quantity belongs to <code class="mono">learn-experimentation-with-phoebe</code>; identification is the question here.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Session 4 cheat sheet</h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>What it is for</b><span>An unmeasured common cause shuts every back door and no adjustment set exists.</span></div>
+      <div class="cheat-item"><b>The escape</b><span>Measure how X moves M, how M moves Y with X fixed, and multiply.</span></div>
+      <div class="cheat-item"><b>Condition (i)</b><span>M intercepts every directed path from X to Y. Delete M and no route survives.</span></div>
+      <div class="cheat-item"><b>Condition (ii)</b><span>No unblocked back-door path from X to M, so stage 1 is honest raw.</span></div>
+      <div class="cheat-item"><b>Condition (iii)</b><span>Every back door from M to Y is shut by X, so stage 2 holds X fixed.</span></div>
+      <div class="cheat-item"><b>U is never mentioned</b><span>No condition constrains its strength or asks for a proxy. That is the surprise.</span></div>
+      <div class="cheat-item"><b>Check (i) first</b><span>It fails most often. Kestrelmark's direct email-to-spend arrow fails it.</span></div>
+      <div class="cheat-item"><b>A failed check is a finding</b><span>Say the front door does not apply. That beats a number nobody can defend.</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pagefoot">
+  <div class="wrap">
+    <p>Practitioner session 4 of 10 · learn-causal-inference-with-phoebe · by Phoebe Fu</p>
+    <nav class="pagenav">
+      <a href="p3-identification-before-estimation.html">← Practitioner session 3 · Identification before estimation</a>
+      <a href="p5-simpsons-paradox.html">Practitioner session 5 · Simpson's paradox →</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

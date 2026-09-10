@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Leader session 6 of 6. Five parts belong in a causal brief before any method is chosen: the question with an intervention in it, the estimand and the population it is about, the identification paragraph, the adjustment set with named roles, and the sensitivity statement. Plus three claims to refuse and three to accept.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="Commissioning and reading a causal claim - learn causal inference with phoebe">
+<meta property="og:description" content="Leader session 6 of 6. The brief decides the answer, above the method. Five parts, three refusals, three acceptances.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/courses/a6-commissioning-a-causal-claim.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Commissioning and reading a causal claim - learn causal inference with phoebe">
+<meta name="twitter:description" content="Write the brief in five parts and the method becomes the easy bit.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Leader session 6 · Commissioning and reading a causal claim - learn causal inference with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-causal-inference-with-phoebe</a> / Leader session 6 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Causal Inference with Phoebe · Leader session 6 of 6</div>
+    <h1>Commissioning and reading <span class="accent">a causal claim</span></h1>
+    <p class="sub">Everything in the five sessions before this one is a property of the brief rather than of the analysis. Which question is being asked, whether it can be answered from the data that exists, what must not be conditioned on, and who the answer is about: all four are decided before anybody opens a query editor, and none of them can be repaired afterwards by a better method. Tonight the five parts of a causal brief get written down in the order they have to be written, and the three sentences worth refusing to sign get named alongside the three that people refuse and should not.</p>
+    <div class="chip-row">
+      <span class="chip level">🟠 Advanced</span>
+      <span class="chip audience">Data and product leaders</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:5">3-20 · What goes in the brief</span>
+      <span class="a3" style="flex:4">20-40 · Build-along: write one brief</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where the six sessions land</h2>
+    </div>
+    <p class="lede">Six sessions, 45 minutes each, no code and no query boxes. Session 1 separated the three rungs, session 2 audited a published claim, session 3 read a covariate list, session 4 asked whether the question was answerable at all, and session 5 asked who the answer was about. Tonight they collapse into one artifact: a brief short enough to be written in twenty minutes and specific enough that an analyst cannot accidentally answer a different question. The example throughout is <strong>Kestrelmark</strong>, a subscription retailer whose re-engagement email appears to lift spend by 10.54 units and truly lifts it by 6.23 on average.</p>
+
+    <div class="legend">
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">🔍 Every diagram zooms</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> A five-part brief template that fits on one page and can be filled in before a single row is queried. The three claims to send back, each with the sentence to say. The three things people wrongly refuse, including a verdict of "not identified from this data", which is a real deliverable and usually the cheapest one available. And a reporting habit that turns the next review into a review of assumptions rather than an argument about a number.</p>
+    </div>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Why the brief is the leverage point<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A causal analysis has a fixed order of decisions, and the expensive ones come first. What is being intervened on. What quantity is wanted. Whether the data can deliver it. What must not be held fixed. Who the answer is about. Only after all five is there a choice of technique, and the technique is the part that gets all the attention in a review because it is the part that looks technical.</p>
+        <p>The consequence is uncomfortable and useful. A brilliant method applied to an unstated estimand produces a precise answer to an unknown question, and there is no way to tell from the output. A crude method applied to a well-specified estimand with a written identification argument produces something a reviewer can actually check. The brief is where a leader has full authority and needs no statistics, and it is also where the outcome is mostly decided.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Kestrelmark commissioned "measure the impact of the re-engagement email". Four words in that request are ambiguous. Impact on what, over what window, compared with what alternative, for whom. The analysis that came back was competent and answered one specific reading of the sentence, chosen silently by whoever wrote the query, and the readout did not record which reading it was.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The four words the brief has to be written in<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Estimand</strong> - the quantity you want, stated before any recipe exists. "The total effect of sending the email on 90-day spend, for customers who lapsed in the last quarter." A sentence, in the language of the business, that could be written by somebody who has never fitted a model.</li>
+          <li><strong>Identification</strong> - whether that quantity can be recovered from the data available, given what is believed about how the world works. A yes-or-no question that precedes estimation and is answered on a diagram rather than in a table.</li>
+          <li><strong>Adjustment set</strong> - the specific variables held fixed, and nothing else. Not the standard feature set, not everything that improved the fit, but a named list with a named reason per line.</li>
+          <li><strong>Sensitivity</strong> - how far the conclusion survives being wrong about the assumptions. Concretely: how strong an unmeasured confounder would need to be before the finding reverses.</li>
+        </ul>
+        <p>Those four words are the whole grammar of the brief. Three of them describe decisions made before any data is touched, and the fourth describes the honesty of what comes back.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers the five parts and the order they go in</span>
+      <h2>The brief decides the answer, above the method</h2>
+      <span class="tag concept">9 min live</span>
+    </div>
+    <p class="lede">Five parts, written in this order, before any method is chosen. Each one closes a specific way an analysis goes wrong, and each one is written in business language by the person who wants the answer rather than the person who will produce it.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A causal brief drawn as a page with five stacked parts. One, the question, with an intervention in it and a named rung. Two, the estimand, total or direct and for whom, in one sentence, before any variables. Three, identification, which paths are closed by which measured variables. Four, the adjustment set, with a named role beside every variable. Five, sensitivity, how strong an unmeasured confounder would have to be. At the bottom of the page a much smaller box marked method, chosen last.">
+        <style>
+          .a6aH { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .a6aM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .a6aT { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .a6aW { font: 400 11px Inter, sans-serif; fill: #fff; }
+          .a6aK { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .a6aN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+        <defs>
+          <marker id="a6aAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5A6B68"></path></marker>
+        </defs>
+
+        <text class="a6aH" x="14" y="24">The five parts of a causal brief, in the order they get written.</text>
+
+        <text class="a6aM" x="40" y="90">Written in this order.</text>
+        <text class="a6aM" x="40" y="106">Parts 1 to 5 decide</text>
+        <text class="a6aM" x="40" y="122">the answer before</text>
+        <text class="a6aM" x="40" y="138">any method exists.</text>
+        <line x1="100" y1="162" x2="100" y2="300" stroke="#C6D6D3" stroke-width="2" marker-end="url(#a6aAr)"></line>
+
+        <rect x="190" y="34" width="500" height="322" rx="12" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+
+        <rect x="210" y="58" width="460" height="42" rx="8" fill="#0F6F66"></rect>
+        <text class="a6aT" x="226" y="76">1 · The question</text>
+        <text class="a6aW" x="226" y="92">with an intervention in it, and a named rung</text>
+
+        <rect x="210" y="108" width="460" height="42" rx="8" fill="#0F6F66"></rect>
+        <text class="a6aT" x="226" y="126">2 · The estimand</text>
+        <text class="a6aW" x="226" y="142">total or direct, and for whom, in one sentence</text>
+
+        <rect x="210" y="158" width="460" height="42" rx="8" fill="#0F6F66"></rect>
+        <text class="a6aT" x="226" y="176">3 · Identification</text>
+        <text class="a6aW" x="226" y="192">which paths are closed, by which measured variables</text>
+
+        <rect x="210" y="208" width="460" height="42" rx="8" fill="#0F6F66"></rect>
+        <text class="a6aT" x="226" y="226">4 · The adjustment set</text>
+        <text class="a6aW" x="226" y="242">a named role beside every variable, no exceptions</text>
+
+        <rect x="210" y="258" width="460" height="42" rx="8" fill="#0F6F66"></rect>
+        <text class="a6aT" x="226" y="276">5 · Sensitivity</text>
+        <text class="a6aW" x="226" y="292">how strong an unmeasured confounder would have to be</text>
+
+        <rect x="210" y="312" width="210" height="32" rx="7" fill="#C6D6D3"></rect>
+        <text class="a6aK" x="226" y="332">Method: chosen last</text>
+        <text class="a6aM" x="432" y="326">the easiest part, and it</text>
+        <text class="a6aM" x="432" y="342">cannot rescue parts 1-5</text>
+
+        <text class="a6aM" x="706" y="118">canon: adjusting for a</text>
+        <text class="a6aM" x="706" y="134">mediator gives 5.48</text>
+        <text class="a6aM" x="706" y="150">against a total of 6.23</text>
+
+        <text class="a6aM" x="706" y="176">if a back door runs</text>
+        <text class="a6aM" x="706" y="192">through something</text>
+        <text class="a6aM" x="706" y="208">unmeasured, say so here</text>
+
+        <text class="a6aM" x="706" y="276">handed to practitioner</text>
+        <text class="a6aM" x="706" y="292">session 9</text>
+
+        <rect x="14" y="372" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="a6aN" x="38" y="384">The method box is small and last on purpose. Choosing it first decides nothing.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the page a leader owns, and the small box at the bottom that a leader does not.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>One: the question, with an intervention in it and a named rung<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The first line of the brief is a question containing a verb somebody could act on. "What would 90-day spend have been if we had sent the email to every lapsed customer, compared with sending it to none of them?" That sentence names the intervention, the outcome, the window and the comparison, and it can only be answered on rung 2.</p>
+        <p>Beside it, in brackets, goes the rung. Rung 1 is a question about what is observed together: who spends more, which segments correlate with churn, what the emailed group looks like. Rung 2 is a question about doing something. Rung 3 is a question about an individual world that did not happen: would this customer have churned anyway. Naming the rung takes four seconds and it prevents the single commonest failure, which is a rung-2 question answered with a rung-1 comparison and reported with a causal verb attached.</p>
+        <ul>
+          <li><strong>If the sentence has no intervention, the brief is not a causal brief.</strong> That is fine, and it should be relabelled rather than upgraded quietly later.</li>
+          <li><strong>The comparison matters as much as the intervention.</strong> Against nobody, against the current policy, against a cheaper alternative. Three different numbers, one ambiguous request.</li>
+          <li><strong>The window belongs in the question.</strong> A 7-day and a 90-day effect of the same email are different quantities and both are legitimate.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Two: the estimand in one sentence, total or direct and for whom<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The second line says which effect is wanted, and in practice the choice that matters is between the total effect and the direct effect. The total effect is everything the intervention does, by every route including the ones you would rather it did not use. The direct effect is what survives when the main mechanism is held fixed.</p>
+        <p>This is not a philosophical distinction; it is a number. On Kestrelmark's data the total effect averages <strong>6.23</strong>. Hold the open event fixed, which is the mechanism through which much of the email works, and the estimate becomes <strong>5.48</strong>, close to the mean direct effect of <strong>5.16</strong> written into the model that generated the data. Nothing in the output announces which of the two you received. Both are a clean coefficient with a sensible sign, and adding one variable to a covariate list is enough to switch between them silently.</p>
+        <ul>
+          <li><strong>The total effect answers "should we do this".</strong> Nearly always the commercial question, and the default for a rollout decision.</li>
+          <li><strong>The direct effect answers "how much survives without the mechanism".</strong> A real question for a subject-line project or a channel redesign, and a different one.</li>
+          <li><strong>An unwritten estimand is chosen by whoever writes the query.</strong> Not carelessly, but privately, and the choice never appears in the readout.</li>
+          <li><strong>An estimand also has to say who it is about.</strong> Kestrelmark's average of 6.23 is made of four very different numbers: <strong>+29.09</strong> for the 20.4 percent who lapsed recently, <strong>+2.10</strong> for the 22.4 percent still active, <strong>+1.04</strong> for the 49.3 percent long dormant, and <strong>-8.87</strong> for the 7.9 percent the email drives away. At a fully loaded 7.00 per send the blanket campaign is worth <strong>-3,848</strong> and sending only to the lapsed segment is worth <strong>+22,578</strong>. Session 5 is where that is worked through; the brief's job is to require it, by naming the population and asking for the answer by segment as well as overall.</li>
+        </ul>
+        <div class="callout tip">
+          <p><strong>The sentence to put in every brief.</strong> "We want the TOTAL effect. Do not adjust for anything on the causal route." Twelve words, written before any variable is proposed, and it removes an entire class of correct analyses that answer the wrong question. Then one more line: "and report it by segment as well as overall", because an average is a number and a policy needs to know who it is about.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Three: the identification paragraph<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The third part is a short paragraph in plain English saying which contaminating routes exist between the intervention and the outcome, and which measured variables close each one. For Kestrelmark it reads roughly: season causes both the send and the spend, tenure causes both the send and the spend, and holding those two fixed closes both routes, which is why the estimate moves from 10.54 to 6.56 against a true average of 6.23.</p>
+        <p>The paragraph has a second half, and the second half is where the value is: what to do if one route runs through something nobody measures. That case is not rare, it is the normal case outside a controlled setting, and there are only four honest responses. Measure the thing. Find a different route to the answer. Report the effect with an explicit statement of what would have to be true. Or conclude the effect is not identified from this data and say so early.</p>
+        <ul>
+          <li><strong>It is written before the data is pulled.</strong> Written afterwards, it becomes a justification for whatever was done, which is a different document with the same words in it.</li>
+          <li><strong>It is legible to an operator.</strong> Somebody who runs the process should be able to read it and say "that route does not exist" or "you have missed one". That review is worth more than any technical check.</li>
+          <li><strong>It names the variables by their warehouse names.</strong> "We control for seasonality" is not an identification paragraph. Which column, from which table, at which grain.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Four: the adjustment set, with a role beside every variable<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The fourth part is a list of variables with a named role and one sentence each. Confounder, mediator, collider, bystander. Anything that cannot be labelled is labelled unknown, and an unknown blocks sign-off until somebody resolves it. This is the shortest part of the brief and it carries the most weight, because the costs are large and invisible: on Kestrelmark's bench the correct two-variable set leaves +0.33, and holding every available variable fixed lands at -5.25, further from the truth than holding nothing fixed at all, which leaves +4.31. The harmful controls all push the same way and stack.</p>
+        <ul>
+          <li><strong>"It improved the fit" is not a role.</strong> Fit improves fastest for variables caused by the treatment or by the outcome, which is to say for the harmful ones.</li>
+          <li><strong>"It was in the standard feature set" is not a role.</strong> Standard sets are assembled for prediction, where anything correlated with the outcome is welcome. Different job, opposite rules.</li>
+          <li><strong>"It was measured before the treatment" is not a role.</strong> Timing rules out one specific problem and is silent about the others.</li>
+          <li><strong>An empty adjustment set is a role list too.</strong> If nothing needs holding fixed, write down why, because that is a strong claim and it should be visible.</li>
+        </ul>
+        <p>The rule is self-teaching. A team asked to write roles for six months stops proposing variables it cannot name, and most of the harm disappears before anything reaches a review.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Five: the sensitivity statement<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The last part asks the analysis to state its own fragility. Every observational causal claim rests on the assumption that no important common cause was missed, and that assumption is never verifiable from the data. What can be done instead is to ask how strong a missing cause would have to be before the finding stops holding.</p>
+        <p>The answer is a threshold, and thresholds are readable by non-specialists. If a conclusion survives any plausible unmeasured factor, that is a strong result and should be said loudly. If it reverses under a factor half as strong as tenure, the finding is fragile and the brief should have said so before the recommendation was written. Either way the number belongs in the readout rather than in a footnote nobody reaches.</p>
+        <ul>
+          <li><strong>Ask for it in the brief, not in the review.</strong> Requested afterwards it reads as scepticism about a specific result; requested upfront it is simply part of the deliverable.</li>
+          <li><strong>Compare the threshold with something known.</strong> "Would need to be twice as strong as tenure" is a sentence a leader can weigh. A bare coefficient is not.</li>
+          <li><strong>Practitioner session 9</strong> works the technique properly, including what to do when the threshold is embarrassingly low.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2 ============ -->
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers what to send back and what to sign</span>
+      <h2>What to refuse to sign, and what to accept</h2>
+      <span class="tag concept">8 min live</span>
+    </div>
+    <p class="lede">Reviewing a causal claim is not a technical skill and does not require reading the code. Three sentence patterns should be sent back every time, and three should be accepted without argument even though they are the ones that get pushed back on hardest.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two columns. On the left, three things to refuse to sign: a causal verb on a rung-1 comparison, a covariate measured after the treatment, and a claim with nothing that could make it wrong. On the right, three things to accept without argument: an honest association with no causal verb, a wide interval, and a verdict that the effect is not identified from this data, which is highlighted. A band across the bottom says that a not-identified verdict is a deliverable that ends the work in week one instead of week twelve.">
+        <style>
+          .a6bH { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .a6bM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .a6bT { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .a6bW { font: 400 11px Inter, sans-serif; fill: #fff; }
+          .a6bK { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .a6bB { font: 400 11px Inter, sans-serif; fill: #0F1C1A; }
+          .a6bN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+
+        <text class="a6bH" x="14" y="24">Three things to refuse to sign, and three that people wrongly refuse.</text>
+
+        <rect x="14" y="40" width="420" height="36" rx="9" fill="#9A3412"></rect>
+        <text class="a6bT" x="30" y="63">✗ Refuse to sign</text>
+        <rect x="446" y="40" width="420" height="36" rx="9" fill="#0F6F66"></rect>
+        <text class="a6bT" x="462" y="63">★ Accept without argument</text>
+
+        <rect x="14" y="88" width="420" height="62" rx="9" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a6bK" x="30" y="112">A causal verb on a rung-1 comparison</text>
+        <text class="a6bM" x="30" y="132">drove, lifted, caused, over a plain difference in means</text>
+
+        <rect x="14" y="158" width="420" height="62" rx="9" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a6bK" x="30" y="182">A covariate measured after the treatment</text>
+        <text class="a6bM" x="30" y="202">mediator or collider; it changes the question or the answer</text>
+
+        <rect x="14" y="228" width="420" height="62" rx="9" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a6bK" x="30" y="252">A claim with nothing that could make it wrong</text>
+        <text class="a6bM" x="30" y="272">no sensitivity, no named assumption, nothing to attack</text>
+
+        <rect x="446" y="88" width="420" height="62" rx="9" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a6bK" x="462" y="112">An honest association with no causal verb</text>
+        <text class="a6bM" x="462" y="132">customers who got it spent 10.54 more is a true sentence</text>
+
+        <rect x="446" y="158" width="420" height="62" rx="9" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a6bK" x="462" y="182">A wide interval</text>
+        <text class="a6bM" x="462" y="202">a wide honest range beats a narrow one from a bad set</text>
+
+        <rect x="446" y="228" width="420" height="62" rx="9" fill="#99F6E4" stroke="#0F6F66" stroke-width="2"></rect>
+        <text class="a6bK" x="462" y="252">★ Not identified from this data</text>
+        <text class="a6bB" x="462" y="272">a finding, not a failure, and usually the cheapest one</text>
+
+        <rect x="14" y="306" width="852" height="40" rx="9" fill="#134E4A"></rect>
+        <text class="a6bT" x="30" y="324">A not-identified verdict is a deliverable.</text>
+        <text class="a6bW" x="30" y="340">It ends the work in week one instead of week twelve, and the budget is never spent.</text>
+
+        <rect x="14" y="356" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="a6bN" x="38" y="368">A refusal is about the sentence, not the analyst. Name the part that is missing.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - three sentences to send back, three to sign, and the verdict that saves a quarter.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The three refusals, and the sentence to say for each<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Each of these is a property of the written claim and can be spotted without opening anything. None of them is an accusation of incompetence, and saying so out loud when you send it back matters, because the failure is nearly always in the brief rather than in the work.</p>
+        <ul>
+          <li><strong>A causal verb attached to a rung-1 comparison.</strong> "The campaign drove 10.54 units of incremental spend" over a plain difference between the emailed and the not-emailed. The word drove, the word incremental and the word impact all promise rung 2. The sentence to say: "which contaminating routes were closed, and by which variables?"</li>
+          <li><strong>A covariate list containing anything measured after the treatment.</strong> One sweep, one question per variable: could the intervention have changed this? Anything with a yes is a mediator or a collider, and both move the answer. The sentence to say: "which of these were recorded after the send, and what role does each one play?"</li>
+          <li><strong>A claim with no statement of what would make it wrong.</strong> If nothing could falsify it, nothing was tested. The sentence to say: "how strong would an unmeasured common cause have to be to overturn this?"</li>
+        </ul>
+        <p>Three sentences. None requires knowing a method, and all three are answerable in a day by whoever did the work, which is the test of whether they were fair to ask.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The three acceptances, including the one that saves a quarter<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The reverse failure is real and less discussed. Three deliverables get pushed back on regularly and should be signed off without argument, because refusing them teaches a team to overclaim.</p>
+        <ul>
+          <li><strong>An honest association with no causal verb.</strong> "Customers who received the email spent 10.54 more" is a true, useful, correctly hedged sentence. Sending it back for being "not actionable enough" is a request for the causal verb without the causal work, and the team will supply it.</li>
+          <li><strong>A wide interval.</strong> Width is information about how much the data supports. A wide honest range from a correct adjustment set is worth more than a narrow one from a set that includes three harmful controls, and the narrow one will look better in every meeting.</li>
+          <li><strong>"Not identified from this data."</strong> A conclusion that the question cannot be answered with what exists, arrived at in week one, is a genuine deliverable. It stops a quarter of work that would have produced a confident number of unknown sign, and it converts into a concrete data-collection request or an experiment.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>The organisational tell is what happens to the analyst who reports the third one. If the response is a request to "have another go with what we have", the team has learned that the honest answer is unwelcome and will not offer it again. The next unanswerable question comes back with a number attached.</p>
+        </div>
+
+        <table class="clean">
+          <thead>
+            <tr><th>What gets said</th><th>What to say back</th><th>Why</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>The campaign drove 10.54 units.</td><td>Which routes were closed, and with which variables?</td><td>A causal verb over a plain difference. The naive number here carries 4.31 of contamination.</td></tr>
+            <tr><td>We controlled for everything we had.</td><td>What role does each variable play, in one sentence?</td><td>Harmful controls compound rather than cancel: everything at once lands at -5.25 against the correct set's +0.33.</td></tr>
+            <tr><td>The interval is too wide to report.</td><td>Wide and honest beats narrow from a bad adjustment set.</td><td>Precision is not identification, and narrowing by adding controls usually makes it worse.</td></tr>
+            <tr><td>We could not identify it, so there is nothing to show.</td><td>That is the finding. Write it up and name what would fix it.</td><td>It ends the work early and turns into a collection request or an experiment.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The standing habit: the graph lives beside the query<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>One habit makes all of the above durable rather than a good quarter. <strong>The diagram, the estimand and the adjustment set live in version control, in the same directory as the query, in plain text.</strong> Not in a slide, not in a document nobody can find, not in the analyst's head.</p>
+        <p>The reason is what it does to the next review. When the assumptions are text files beside the code, a change to the covariate list appears as a diff, the person making the change has to write the role to get it merged, and a reviewer six months later can see who added which arrow and when. The review stops being an argument about whether a number looks right and becomes an inspection of assumptions, which is the only review that can actually catch anything.</p>
+        <ul>
+          <li><strong>Plain text, one line per arrow.</strong> A picture in a deck cannot be diffed and will describe last quarter's beliefs within a month.</li>
+          <li><strong>The estimand as a comment at the top of the query.</strong> One sentence. It survives staff changes, which slides do not.</li>
+          <li><strong>The role list as a file the pull request touches.</strong> That is the entire enforcement mechanism, and it costs one line per variable.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>What the brief deliberately does not contain<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The brief stops before the method, and the omission is intentional. A leader who specifies the technique has spent their authority on the one decision the analyst is better qualified to make, and has usually done it by naming the technique they heard about most recently.</p>
+        <ul>
+          <li><strong>The estimation machinery belongs to a different course.</strong> Propensity scores, inverse probability weighting, doubly robust estimation, difference-in-differences, synthetic control and the DoWhy workflow are all taught properly in <strong>learn-experimentation-with-phoebe</strong>. Naming one in a brief signals confidence rather than rigour, and it can quietly override the estimand written in part 2.</li>
+          <li><strong>Running an experiment is also there.</strong> When the identification paragraph concludes that a back door cannot be closed, the honest next step is often a randomised comparison, and the design of that comparison is that course's territory.</li>
+          <li><strong>Statistical inference is elsewhere again.</strong> Standard errors, p-values and power belong to <strong>learn-statistics-with-phoebe</strong>. The brief asks for an interval and does not specify how it is constructed.</li>
+        </ul>
+        <p>What the brief keeps is everything that cannot be delegated: the question, the quantity, the identification argument, the roles, and the demand to state what would make the answer wrong.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ BUILD-ALONG ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>Write one brief</h2>
+      <span class="tag demo">★ 20 min · everyone builds</span>
+    </div>
+    <p class="lede">No code and no model. Take one analysis that is about to start, or one that started this week and can still be redirected. If you have nothing to hand, write the brief Kestrelmark should have written for the re-engagement email.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Write the five parts, in order, without skipping ahead.</strong> Question with the rung, estimand in one sentence with the population named, identification paragraph, adjustment set with roles, sensitivity ask. Twenty minutes is enough for a first version, and a first version is what unblocks the conversation.</p>
+      </div>
+      <div class="step">
+        <p><strong>Read the identification paragraph out loud to the analyst and ask one question: do these variables exist?</strong> Not "can we get them" and not "is there a proxy". Do the columns exist, at the grain the argument needs, for the period in question. This is the fastest route to discovering that the analysis is not feasible, and discovering it now is the whole point.</p>
+      </div>
+      <div class="step">
+        <p><strong>Read it out loud to somebody who runs the process, and write down what they dispute.</strong> An operator will contradict a route or add one in about ten minutes. That list of disputes is worth more than any technical review, and it is only obtainable because the paragraph is in plain English.</p>
+      </div>
+      <div class="step">
+        <p><strong>Write the sentence you will say when somebody attaches "drove" to an observational comparison.</strong> Write it now, in advance, in your own words, and keep it short enough to say in a meeting without preamble. Something in the shape of: "that is a comparison rather than an effect. Which routes were closed, and with which variables?" Rehearsed, it lands as a question. Improvised, it lands as an attack.</p>
+      </div>
+      <div class="step">
+        <p><strong>Agree where the graph will live, and say it out loud with a path.</strong> Not "in the repo somewhere". A named directory, a named file, plain text, beside the query, updated in the pull request that changes the covariate list. Agreeing this at the start costs one minute; retrofitting it costs an archaeology project.</p>
+      </div>
+    </div>
+
+    <div class="prompt-box bad">
+      <span class="label">✗ The brief as it usually arrives</span>
+Ask: measure the impact of the re-engagement email.
+Owner: growth analytics
+Deadline: end of the month
+Notes: use the standard customer feature set &amp; control for the usual things.
+       Nice to have: a per-customer propensity model if there is time.
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ The same request written as a brief, which is the whole artifact for tonight</span>
+1. QUESTION  (rung 2)
+   What would 90-day spend have been if the re-engagement email had been
+   sent to every lapsed customer, compared with sending it to none of them?
+
+2. ESTIMAND
+   The TOTAL effect of the send on 90-day spend. Not the direct effect.
+   Do not adjust for anything on the causal route, the open event included.
+   For whom: all lapsed subscribers, reported by recency segment as well
+   as overall. One average is a number, not a policy.
+
+3. IDENTIFICATION
+   Two contaminating routes. Season causes both the send and the spend;
+   tenure causes both the send and the spend. Holding season and tenure
+   fixed closes both. If a route runs through something unmeasured, say so
+   in week one and stop; that verdict is a deliverable, not a failure.
+
+4. ADJUSTMENT SET
+   season   confounder  winter sends more email and sells more
+   tenure   confounder  long accounts get more email and buy more
+   Nothing else. Unknowns: 0. An unknown blocks sign-off until it is named.
+
+5. SENSITIVITY
+   How strong would an unmeasured common cause have to be to overturn
+   the finding? Express it against tenure, which we can measure.
+
+WHERE IT LIVES
+   analysis/reengagement/graph.dag and brief.md, beside the query.
+   Any change to the adjustment set changes brief.md in the same commit.
+    </div>
+
+    <div class="callout tip">
+      <p><strong>The brief is the deliverable, before the analysis is.</strong> Circulate it for comment the way a design document is circulated. Every objection raised at that point costs a paragraph; the same objection raised at the readout costs the readout, and sometimes the quarter that followed it.</p>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>After session 6</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li>Finish the five-part brief for one analysis that has not started, and circulate it for comment before any data is pulled. Note which of the five parts generated the most argument; that part is where your team's real disagreement lives.</li>
+      <li>Take the most recent causal claim your organisation published internally and check it against the three refusals. If it fails one, write the sentence you would have said, and send it to yourself rather than to the author. The rehearsal is the point.</li>
+      <li>Agree the location where diagrams, estimands and role lists will live, write it into the team's analysis template, and put one existing analysis there as the first example. A convention with one example in it survives; a convention with none does not.</li>
+      <li>Find one question your organisation asks every quarter that is probably not identifiable from the data that exists. Write the not-identified verdict for it, with the collection request or the experiment that would fix it, and see how it is received. That reception is the most useful measurement in these six sessions.</li>
+    </ol>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">A brief says "measure the impact of the email" and lists no estimand. The analysis comes back at 5.48 with a tidy interval. What has most likely happened?</p>
+      <button class="qopt" type="button">A · The effect was measured correctly and 5.48 is simply the answer, since the interval is tidy</button>
+      <button class="qopt" type="button">B · A variable on the causal route was held fixed, so the direct effect was measured instead of the total effect of 6.23, and nothing in the output distinguishes the two</button>
+      <button class="qopt" type="button">C · The sample was too small, which biased the estimate downward</button>
+      <p class="qwhy">Adjusting for the open event switches the estimand from total to direct, and on this data that lands at 5.48 against a total of 6.23. The switch is silent: both are a clean coefficient with a sensible sign. An unwritten estimand is chosen by whoever writes the query.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">In week one an analyst reports that the effect is not identified from the data that exists, because a contaminating route runs through something nobody measures. What is the correct response?</p>
+      <button class="qopt" type="button">A · Ask them to try again with the data available, since some estimate is better than none</button>
+      <button class="qopt" type="button">B · Accept it, but record it as a failed piece of work so the pattern can be tracked</button>
+      <button class="qopt" type="button">C · Accept it as a genuine deliverable, sign it off, and convert it into a data-collection request or an experiment</button>
+      <p class="qwhy">A verdict arrived at in week one prevents a quarter of work producing a confident number of unknown sign. Treating it as a failure teaches the team that the honest answer is unwelcome, and the next unanswerable question comes back with a number attached.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">Why does the method box sit at the bottom of the brief rather than the top?</p>
+      <button class="qopt" type="button">A · Because the question, the estimand, identification, the roles and the sensitivity ask all decide what the answer means, and no method can repair any of them afterwards</button>
+      <button class="qopt" type="button">B · Because the method matters least to the accuracy of the final number</button>
+      <button class="qopt" type="button">C · Because leaders are not qualified to discuss methods and should stay out of that part</button>
+      <p class="qwhy">The method matters, and it is the analyst's decision to make well. The ordering is about repairability: a precise estimate of an unstated quantity, or one whose contaminating routes were never closed, cannot be fixed by a better technique, and the output looks identical either way.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ COVERAGE ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What tonight maps to</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">The five questions to ask, as a written brief</span>
+        <span class="note">Question with a named rung, estimand, identification paragraph, adjustment set with roles, sensitivity statement. Written in that order, before any method is chosen.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">The estimand written down before any variable is proposed</span>
+        <span class="note">Total against direct, and the population it is about. Holding the mediator fixed gives 5.48 against a total of 6.23, and nothing in the output announces the switch.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">What to require in writing, and what to refuse</span>
+        <span class="note">Three refusals: a causal verb on a rung-1 comparison, a covariate measured after the treatment, and a claim with nothing that could make it wrong. Three acceptances: an honest association, a wide interval, and a not-identified verdict.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">The reporting habit that makes it durable</span>
+        <span class="note">Graph, estimand and role list in version control beside the query, so the next review inspects assumptions in a diff rather than arguing about a number.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">Heterogeneous effects and who the answer is about</span>
+        <span class="note">Leader session 5. Tonight requires the population in the estimand and the answer by segment as well as overall, because Kestrelmark's average of 6.23 covers +29.09 for the lapsed and -8.87 for the 7.9 percent the email drives away; session 5 works through what to do about it.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">Sensitivity analysis in detail</span>
+        <span class="note">Practitioner session 9. Tonight requires the threshold in the brief and states how to read it; session 9 computes it.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">The back-door criterion stated formally</span>
+        <span class="note">Practitioner session 3. Tonight asks for the identification paragraph in plain English and for the variables it names to exist.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill inkpill">·</span>
+        <span class="name">Propensity scores, IPW, doubly robust, difference-in-differences, synthetic control, DoWhy</span>
+        <span class="note">Not covered by design, in any session, and deliberately absent from the brief. Estimating an effect from observational data belongs to <strong>learn-experimentation-with-phoebe</strong>, which teaches every one of these, and designing the experiment when identification fails belongs there too.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Session 6 cheat sheet</h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Five parts, in order</b><span>Question, estimand, identification, adjustment set, sensitivity. Method last and small.</span></div>
+      <div class="cheat-item"><b>The question has an intervention in it</b><span>And the rung in brackets. No intervention means it is not a causal brief.</span></div>
+      <div class="cheat-item"><b>Estimand in one sentence</b><span>Total or direct, and for whom. The mediator switches 6.23 to 5.48 with no sign in the output.</span></div>
+      <div class="cheat-item"><b>Identification in plain English</b><span>Which routes, closed by which measured columns, and what to do if one is unmeasured.</span></div>
+      <div class="cheat-item"><b>A role beside every variable</b><span>Confounder, mediator, collider, bystander. Unknown blocks sign-off.</span></div>
+      <div class="cheat-item"><b>Three refusals</b><span>A causal verb on a rung-1 comparison, a post-treatment covariate, a claim nothing could falsify.</span></div>
+      <div class="cheat-item"><b>Three acceptances</b><span>An honest association, a wide interval, and "not identified from this data".</span></div>
+      <div class="cheat-item"><b>The graph lives beside the query</b><span>Plain text in version control, so the next review is a review of assumptions.</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pagefoot">
+  <div class="wrap">
+    <p>Leader session 6 of 6 · learn-causal-inference-with-phoebe · by Phoebe Fu</p>
+    <nav class="pagenav">
+      <a href="a5-not-everyone-responds.html">← Leader session 5 · Not everyone responds</a>
+      <a href="../index.html">All sessions →</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

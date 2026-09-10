@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Leader session 4 of 6. Identification asks whether the effect can be computed from this data at all, and no sample size fixes a failure of it. At Kestrelmark the answer is yes and what is left over is sampling noise; when a back door runs through something unmeasured there are exactly four honest options.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="Identifiable or not - learn causal inference with phoebe">
+<meta property="og:description" content="Leader session 4 of 6. Identification is a design question, and it comes before the method.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/courses/a4-identifiable-or-not.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Identifiable or not - learn causal inference with phoebe">
+<meta name="twitter:description" content="No sample size fixes a question the data cannot answer. Ask in week one.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Leader session 4 · Identifiable or not - learn causal inference with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-causal-inference-with-phoebe</a> / Leader session 4 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Causal Inference with Phoebe · Leader session 4 of 6</div>
+    <h1>Identifiable <span class="accent">or not</span></h1>
+    <p class="sub">There is a question that comes before every method question, and most analyses never ask it out loud: can this effect be computed from the data we have, at all, by anybody? Not how precisely, not with which technique. At all. At Kestrelmark the answer happens to be yes, because season and tenure were both measured, and what the correct adjustment leaves behind is sampling noise rather than bias: +0.33 on this draw, and across five draws it changes sign. Change one thing - make the confounder something nobody records - and the same analysis, the same team and ten times the data return an answer that is confidently wrong. Tonight is how to ask in week one instead of at the review.</p>
+    <div class="chip-row">
+      <span class="chip level">🔴 Hardest</span>
+      <span class="chip audience">Data and product leaders</span>
+      <span class="chip audience">Whoever commissions the analysis</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:5">3-22 · A question the data cannot answer</span>
+      <span class="a3" style="flex:4">22-40 · Build-along: the identification check</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where this sits in the leader track</h2>
+    </div>
+    <p class="lede">Session 1 separated the three kinds of question. Session 2 audited a published claim. Session 3 was the covariate list and the three ways a control makes an estimate worse. Tonight is the hinge: the question that decides whether any covariate list can work, and what to commission when the answer is no. Session 5 is why an average effect can be positive while the policy is wrong, and session 6 assembles all of it into what to require in writing. <strong>Kestrelmark</strong>, the subscription retailer whose re-engagement email appears to lift spend by 10.54 and truly lifts it by 6.23 on average, remains the example.</p>
+
+    <div class="legend">
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">🔍 Every diagram zooms</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> The distinction between identification and estimation, in language you can use with a board. A three-question check you can run on a commissioned analysis in twenty minutes, before anybody writes a query. The four honest options when the check fails, with what each costs and what each delivers. And a sentence for the top of every analysis brief that would have saved several teams a quarter each.</p>
+    </div>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The failure mode this prevents<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The expensive pattern is not a wrong answer. It is three months of competent work that ends with a number nobody can defend, discovered at the review, by which point the roadmap has been built on it. The team was skilled, the code was clean, the sample was large, the pipeline was tested. The question was simply not answerable from the data, and nothing in the workflow asked.</p>
+        <p>What makes it expensive is that the failure is silent. An analysis that cannot identify its effect still produces a coefficient, a confidence interval and a chart. It does not warn. Every diagnostic a team routinely runs - fit, stability, out-of-sample performance, cross-validation - is a diagnostic on the estimate, and none of them can see the problem, because the problem is not in the data.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>A retention team spent a quarter measuring the effect of a loyalty programme on churn, using every customer attribute in the warehouse. At review, someone asked how customers ended up in the programme. Through a save-offer conversation with an agent, triggered by a cancellation intent nobody logged. The whole selection mechanism was unrecorded. The question had been unanswerable in week one, and the check that would have found it takes twenty minutes.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Three words that get used interchangeably and should not be<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Estimand</strong> - the quantity you want. "The total effect of sending the re-engagement email on 90-day spend, across all subscribers." A sentence, written before anything else, with an intervention in it.</li>
+          <li><strong>Identification</strong> - whether that quantity can be computed from the data available, given how the world works. A yes or a no, decided by structure and by which columns exist, not by sample size and not by technique.</li>
+          <li><strong>Estimation</strong> - the recipe that turns the data into a number, once identification has said yes. This is where sample size, precision and method live, and it is the only one of the three most teams discuss.</li>
+        </ul>
+        <p>The order is fixed and it is not negotiable: estimand, then identification, then estimation. A team that starts at the third is choosing a route before checking there is a destination.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers the distinction, the criterion, and both verdicts</span>
+      <h2>Identification comes before estimation, and it is a design question</h2>
+      <span class="tag concept">10 min live</span>
+    </div>
+    <p class="lede">Two questions look alike and are not. How precisely can we measure this, and can this be measured from here at all. The first is answered by more data. The second is answered by which columns exist and how customers came to be treated, and no amount of data touches it.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two graphs side by side. On the left, both back-door paths from email to spend run through season and tenure, which are measured, so the effect is identified and the correct adjustment leaves a residual of plus 0.33 that behaves like sampling noise. On the right, one back-door path runs through an unmeasured cause U, drawn dashed, so no adjustment set closes it and the effect is not identified from this data.">
+        <style>
+          .a4aH { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .a4aM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .a4aT { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .a4aK { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .a4aG { font: 800 12px Inter, sans-serif; fill: #134E4A; }
+          .a4aR { font: 800 12px Inter, sans-serif; fill: #991B1B; }
+          .a4aN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+        <defs>
+          <marker id="a4aAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5A6B68"></path></marker>
+          <marker id="a4aRd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#991B1B"></path></marker>
+        </defs>
+
+        <text class="a4aH" x="14" y="24">The same question, two data situations, two different verdicts.</text>
+
+        <!-- panel A: identified -->
+        <rect x="14" y="40" width="418" height="210" rx="10" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a4aH" x="34" y="64">Every back door runs through a measured cause</text>
+        <text class="a4aM" x="34" y="82">solid = a column that exists in the warehouse</text>
+        <rect x="110" y="98" width="88" height="26" rx="8" fill="#134E4A"></rect>
+        <text class="a4aT" x="154" y="116" text-anchor="middle">Season</text>
+        <rect x="240" y="98" width="88" height="26" rx="8" fill="#134E4A"></rect>
+        <text class="a4aT" x="284" y="116" text-anchor="middle">Tenure</text>
+        <rect x="40" y="170" width="88" height="28" rx="8" fill="#0F6F66"></rect>
+        <text class="a4aT" x="84" y="189" text-anchor="middle">Email</text>
+        <rect x="310" y="170" width="88" height="28" rx="8" fill="#0F6F66"></rect>
+        <text class="a4aT" x="354" y="189" text-anchor="middle">Spend</text>
+        <line x1="140" y1="126" x2="98" y2="166" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#a4aAr)"></line>
+        <line x1="192" y1="122" x2="320" y2="166" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#a4aAr)"></line>
+        <line x1="242" y1="122" x2="118" y2="167" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#a4aAr)"></line>
+        <line x1="300" y1="126" x2="346" y2="166" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#a4aAr)"></line>
+        <line x1="132" y1="184" x2="306" y2="184" stroke="#0F6F66" stroke-width="2" marker-end="url(#a4aAr)"></line>
+        <text class="a4aG" x="34" y="228">Identified. Both back doors closed: residual +0.33.</text>
+        <text class="a4aM" x="34" y="244">re-run on another draw and it changes sign: noise, not bias</text>
+
+        <!-- panel B: not identified -->
+        <rect x="448" y="40" width="418" height="210" rx="10" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <text class="a4aH" x="468" y="64">One back door runs through an unmeasured cause</text>
+        <text class="a4aM" x="468" y="82">dashed = believed to exist, never recorded</text>
+        <rect x="544" y="98" width="88" height="26" rx="8" fill="#134E4A"></rect>
+        <text class="a4aT" x="588" y="116" text-anchor="middle">Season</text>
+        <ellipse cx="716" cy="111" rx="34" ry="18" fill="none" stroke="#991B1B" stroke-width="1.5" stroke-dasharray="4 3"></ellipse>
+        <text class="a4aR" x="716" y="116" text-anchor="middle">U</text>
+        <rect x="474" y="170" width="88" height="28" rx="8" fill="#0F6F66"></rect>
+        <text class="a4aT" x="518" y="189" text-anchor="middle">Email</text>
+        <rect x="744" y="170" width="88" height="28" rx="8" fill="#0F6F66"></rect>
+        <text class="a4aT" x="788" y="189" text-anchor="middle">Spend</text>
+        <line x1="574" y1="126" x2="532" y2="166" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#a4aAr)"></line>
+        <line x1="626" y1="122" x2="754" y2="166" stroke="#5A6B68" stroke-width="1.5" marker-end="url(#a4aAr)"></line>
+        <line x1="688" y1="120" x2="564" y2="167" stroke="#991B1B" stroke-width="1.5" marker-end="url(#a4aRd)"></line>
+        <line x1="734" y1="127" x2="774" y2="166" stroke="#991B1B" stroke-width="1.5" marker-end="url(#a4aRd)"></line>
+        <line x1="566" y1="184" x2="740" y2="184" stroke="#0F6F66" stroke-width="2" marker-end="url(#a4aAr)"></line>
+        <text class="a4aR" x="468" y="228">Not identified from this data. The U path stays open.</text>
+        <text class="a4aM" x="468" y="244">re-run on another draw and the same error is still there</text>
+
+        <rect x="14" y="270" width="14" height="14" rx="3" fill="#991B1B"></rect>
+        <text class="a4aN" x="38" y="282">No sample size, method or model closes a path through a column nobody has.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - one unmeasured arrow is the difference between an answer and a guess.</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Two questions that sound the same<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>Estimation asks how precisely.</strong> Given that the quantity can be recovered, how tight is the answer, and would more data help? This is the familiar territory: sample size, variance, error bars. More data always helps here, which is why more data feels like the universal remedy.</p>
+        <p><strong>Identification asks whether at all.</strong> Given how customers came to be treated, is the quantity recoverable from these columns by any procedure? This is a yes or a no. When it is no, more data makes the wrong answer more precise, and precision on a wrong answer is worse than noise, because noise looks like uncertainty and precision looks like knowledge.</p>
+        <ul>
+          <li><strong>A failure of estimation looks like a wide interval.</strong> Visible, honest, and fixable by collecting more rows.</li>
+          <li><strong>A failure of identification looks like a clean result.</strong> Invisible, and not fixable by any amount of anything you are currently collecting.</li>
+          <li><strong>Every routine diagnostic tests the first.</strong> Fit, stability, holdout performance. None of them can see the second, because the second is a claim about the world rather than about the table.</li>
+        </ul>
+        <div class="callout tip">
+          <p><strong>The board-safe phrasing.</strong> "Before we ask how confident we are, we need to know whether this data can answer the question at all. Those are different questions and the second one is free to ask."</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The back-door criterion, in leader terms<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>There is a precise test for whether a set of variables is the right thing to hold fixed. A set Z satisfies the <strong>back-door criterion</strong> relative to the treatment X and the outcome Y if <strong>(i) no member of Z is a descendant of X</strong>, and <strong>(ii) Z blocks every path between X and Y that contains an arrow INTO X</strong>.</p>
+        <p>In plain English, two rules. <strong>Nothing you hold fixed may be a consequence of the treatment</strong> - that is condition (i), and it is what ruled out the mediator and the post-treatment collider in session 3. <strong>Every route from treatment to outcome that runs backwards, through a shared cause, must be shut by something in your set</strong> - that is condition (ii), and it is what makes Z the right list of confounders rather than a plausible one.</p>
+        <p>The identification question is then simply this: <strong>does a set satisfying both conditions exist, and are all of its members columns you actually have?</strong> A set can satisfy the criterion perfectly and still be useless because one of its members was never recorded, and that distinction is the whole of tonight.</p>
+        <div class="callout tip">
+          <p><strong>Two conditions, two questions to ask.</strong> "Is anything on that list caused by the treatment?" closes condition (i). "Which path does each of these close, and is there a path nothing on the list closes?" closes condition (ii). A leader who asks both has run the criterion without writing any notation.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Kestrelmark: the answer is yes, and what is left is noise<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Two things make a Kestrelmark customer more likely to get the re-engagement email and also more likely to spend. Winter, because the campaign calendar sends more in winter and people buy more in winter. And tenure, because long-standing accounts are on more lists and buy more anyway. Two back-door routes, and both of them run through a variable the warehouse already holds.</p>
+        <p>So the set {season, tenure} satisfies both conditions: neither is caused by the email, and between them they shut both backwards routes. The effect is <strong>identified</strong>. Holding those two fixed produces <strong>6.56</strong> against a true average effect of <strong>6.23</strong>, a residual of <strong>+0.33</strong>. The naive comparison, with both routes left open, gives <strong>10.54</strong>.</p>
+        <ul>
+          <li><strong>The gap between 10.54 and 6.56 is 4.31,</strong> two thirds of the true average again, and it came from two columns nobody thought to use.</li>
+          <li><strong>The 0.33 left over is noise, not accuracy.</strong> Run the same correct adjustment on five different draws of the same 5,000 customers and the residual reads +0.33, +0.17, -0.38, +0.19, -0.01, a mean of +0.06. It changes sign, which is what a quantity wobbling around zero does. Every contaminated adjustment set keeps the same sign in all five. <strong>That is the difference identification buys:</strong> an identified question leaves noise, which more data shrinks; an unidentified one leaves bias, which more data will not touch.</li>
+          <li><strong>Nothing was collected to fix it.</strong> The right answer had been available all along; the missing piece was knowing which two columns mattered, which came from the diagram.</li>
+          <li><strong>The verdict was available in week one,</strong> before a single query, from a whiteboard conversation with somebody who knew the campaign calendar.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The same question with one column missing: the answer is no<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Now change one detail. Suppose Kestrelmark's targeting had not been calendar-driven but had run on an account manager's judgement about which customers seemed at risk, and suppose that judgement was never written down. There is now a back-door route from the email to spend running through something nobody records: the manager saw a signal, that signal drove the send, and the same signal drove spend independently.</p>
+        <p>Every condition (i) rule still passes. The team can still assemble a sensible-looking adjustment set. But condition (ii) fails permanently, because the only variable that would close that route does not exist as a column. The effect is <strong>not identified from this data</strong>, and that verdict is unchanged by sample size, by choice of method, by anything at all.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>The signature of this in the wild is a treatment that people opted into, were nominated for, or were selected for by somebody exercising judgement. Sales-assisted upgrades, manual save offers, beta programmes with a waitlist, anything where a human decided. The deciding human was reading something, and if that something is not a column, it is an open back door.</p>
+        </div>
+        <div class="callout tip">
+          <p><strong>The one question that finds it.</strong> "How did customers end up in the treated group?" Ask it before anything else. If the answer involves a person's judgement, an unlogged trigger, or "it varied", you have found the unmeasured confounder in the first minute of the project.</p>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2 ============ -->
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers the four options and why week one is the moment</span>
+      <h2>What to do when the answer is no</h2>
+      <span class="tag concept">9 min live</span>
+    </div>
+    <p class="lede">A no is not a dead end and it is not a failure of the team. It is information arriving early enough to be useful, and it opens exactly four routes. All four are legitimate deliverables. The one thing not on the list is proceeding anyway and describing the result with causal verbs.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 356" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The four honest options when an effect is not identified, shown as four routes with their cost and what each delivers. Measure the missing variable, find a different identification strategy, run an experiment, or state the claim as association. Plus a fifth partial option, sensitivity analysis, which prices how strong the unmeasured cause would have to be.">
+        <style>
+          .a4bH { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .a4bS { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .a4bT { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .a4bK { font: 700 10px Inter, sans-serif; fill: #0F6F66; }
+          .a4bB { font: 400 11px Inter, sans-serif; fill: #0F1C1A; }
+          .a4bW { font: 800 12px Inter, sans-serif; fill: #fff; }
+          .a4bN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+
+        <text class="a4bH" x="14" y="24">Four honest options when the effect is not identified.</text>
+        <text class="a4bS" x="14" y="42">Each one is a deliverable. Proceeding anyway is not on the list.</text>
+
+        <!-- option 1 -->
+        <rect x="14" y="48" width="204" height="200" rx="10" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <circle cx="42" cy="74" r="14" fill="#0F6F66"></circle>
+        <text class="a4bW" x="42" y="79" text-anchor="middle">1</text>
+        <text class="a4bT" x="28" y="112">Measure the variable</text>
+        <text class="a4bK" x="28" y="136">COST</text>
+        <text class="a4bB" x="28" y="152">a collection project,</text>
+        <text class="a4bB" x="28" y="167">weeks to a quarter</text>
+        <text class="a4bK" x="28" y="191">DELIVERS</text>
+        <text class="a4bB" x="28" y="207">the same question,</text>
+        <text class="a4bB" x="28" y="222">now answerable</text>
+
+        <!-- option 2 -->
+        <rect x="230" y="48" width="204" height="200" rx="10" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <circle cx="258" cy="74" r="14" fill="#0F6F66"></circle>
+        <text class="a4bW" x="258" y="79" text-anchor="middle">2</text>
+        <text class="a4bT" x="244" y="112">Another strategy</text>
+        <text class="a4bK" x="244" y="136">COST</text>
+        <text class="a4bB" x="244" y="152">a new assumption to</text>
+        <text class="a4bB" x="244" y="167">defend, not fewer</text>
+        <text class="a4bK" x="244" y="191">DELIVERS</text>
+        <text class="a4bB" x="244" y="207">an answer if a front</text>
+        <text class="a4bB" x="244" y="222">door exists</text>
+
+        <!-- option 3 -->
+        <rect x="446" y="48" width="204" height="200" rx="10" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <circle cx="474" cy="74" r="14" fill="#0F6F66"></circle>
+        <text class="a4bW" x="474" y="79" text-anchor="middle">3</text>
+        <text class="a4bT" x="460" y="112">Run an experiment</text>
+        <text class="a4bK" x="460" y="136">COST</text>
+        <text class="a4bB" x="460" y="152">traffic, time, and a</text>
+        <text class="a4bB" x="460" y="167">held-back group</text>
+        <text class="a4bK" x="460" y="191">DELIVERS</text>
+        <text class="a4bB" x="460" y="207">identification by</text>
+        <text class="a4bB" x="460" y="222">design, not by graph</text>
+
+        <!-- option 4 -->
+        <rect x="662" y="48" width="204" height="200" rx="10" fill="#F0FDFA" stroke="#C6D6D3"></rect>
+        <circle cx="690" cy="74" r="14" fill="#0F6F66"></circle>
+        <text class="a4bW" x="690" y="79" text-anchor="middle">4</text>
+        <text class="a4bT" x="676" y="112">Say association</text>
+        <text class="a4bK" x="676" y="136">COST</text>
+        <text class="a4bB" x="676" y="152">no causal verb is</text>
+        <text class="a4bB" x="676" y="167">allowed in the deck</text>
+        <text class="a4bK" x="676" y="191">DELIVERS</text>
+        <text class="a4bB" x="676" y="207">an honest finding,</text>
+        <text class="a4bB" x="676" y="222">delivered this week</text>
+
+        <rect x="14" y="260" width="852" height="54" rx="10" fill="#99F6E4"></rect>
+        <text class="a4bT" x="34" y="284">Partial fifth option: sensitivity analysis. It does not make the effect identified.</text>
+        <text class="a4bB" x="34" y="302">It prices how strong the unmeasured cause would have to be to overturn the finding.</text>
+
+        <rect x="14" y="326" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="a4bN" x="38" y="338">Choosing one of these in writing, this week, is what turns a no into a plan.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - four routes, four costs, and none of them is "carry on and hope".</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Option 1: measure the missing variable<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Often the cheapest real fix, and almost always the one nobody proposes, because it is a data collection project rather than an analysis. If the account manager's risk judgement is the open back door, then logging that judgement - a dropdown, a required field, a reason code on the save offer - turns an unanswerable question into an ordinary one.</p>
+        <ul>
+          <li><strong>The cost is calendar time, not analyst time.</strong> Weeks to a quarter before there is enough history to analyse, which is precisely why finding out in week one rather than month three matters so much.</li>
+          <li><strong>It is permanent.</strong> Every future question that runs through that same confounder becomes answerable, so the value is not confined to the analysis that triggered it.</li>
+          <li><strong>Proxies are a partial fix at best.</strong> A variable correlated with the missing one closes the path partially, which reduces the bias by an unknown amount. Better than nothing, and not the same as identified.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Option 2: a different identification strategy<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Closing the back doors is not the only route to a causal answer. When a confounder is unmeasured but the mechanism through which the treatment works is fully observed and has no back door of its own, the <strong>front-door</strong> argument can recover the effect without ever measuring the confounder. Practitioner session 4 works through when that applies and what it demands.</p>
+        <p>The thing a leader needs to know is the trade being offered. This route does not remove assumptions; it swaps one set for another. Instead of assuming you measured every confounder, you assume the mechanism is complete and unconfounded. That may be easier to defend or much harder, depending on the business, and the honest way to present it is as a different bet rather than a clever escape.</p>
+        <div class="callout tip">
+          <p><strong>The question to ask when somebody proposes it.</strong> "What are we now assuming instead, and who can dispute that assumption?" If the answer is nobody, the assumption is not being tested; it is being hidden behind a technique.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Option 3: run an experiment instead<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Randomising who gets the treatment severs every arrow into it, which closes every back-door path at once, including the ones through variables nobody has ever recorded. That is the whole reason experiments occupy the position they do: identification is bought by design rather than argued from a diagram.</p>
+        <p>The cost is real and worth naming: eligible traffic, calendar time, a group deliberately held back, and the organisational willingness to not treat people you believe would benefit. Where the treatment cannot be withheld or the population is too small, this route closes. How to design, size, run and read one is the territory of <strong>learn-experimentation-with-phoebe</strong>, which covers it in full.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>The strongest version of this conversation is not "we should experiment instead". It is "the observational answer is not identified, an experiment would cost four weeks and two percent of traffic, and here is what each option buys". Put like that, the decision belongs to whoever owns the roadmap, which is where it should sit.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Option 4: state it as association and stop using causal verbs<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>This is a legitimate deliverable and it is treated as a failure far too often. "Customers who received the email spent 10.54 more" is true, reproducible, useful for forecasting and for segmentation, and it makes no claim the data cannot support. What is forbidden is the second sentence, where the same number becomes "the email drove 10.54 units of incremental spend".</p>
+        <ul>
+          <li><strong>The discipline is verbs.</strong> Drove, caused, generated, lifted, incremental, uplift, impact. Ban them from the deliverable and the honesty enforces itself, because the sentences that remain are the ones the data supports.</li>
+          <li><strong>Say what would change the verdict.</strong> "This becomes a causal claim if we log the targeting reason" turns a limitation into a roadmap item somebody can fund.</li>
+          <li><strong>It ships this week.</strong> Alone among the four, this option has no calendar cost, which is what makes it the right answer when the decision cannot wait.</li>
+        </ul>
+        <div class="callout tip">
+          <p><strong>Make it safe to deliver.</strong> A team that gets a cool reception for an honest association will produce a causal claim next time. The reception the finding gets is a leadership decision, and it sets what the next analysis is willing to admit.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The fifth, partial option: sensitivity analysis<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>There is one more move, and it is honest as long as it is not oversold. Rather than closing the open path, you ask how strong the unmeasured cause would have to be to overturn your conclusion. If the answer is "stronger than any variable we do measure, by a factor of three", the finding is fragile in principle and robust in practice. If the answer is "about as strong as tenure", it is not a finding.</p>
+        <p>What it does not do is make the effect identified. It converts an unqualified claim into a conditional one with a stated breaking point, which is a genuine improvement in a brief and not a substitute for any of the four options above. Practitioner session 9 works through how the number is produced and how to read it.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Why this is worth a quarter, learned in week one<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The identification check costs about twenty minutes and needs no data. The failure it prevents costs a quarter: a team models for three months, a reviewer asks how people ended up in the treated group, and the honest answer retroactively invalidates everything built on the result, including whatever the roadmap already committed to.</p>
+        <p>The asymmetry is what makes this a leadership habit rather than an analyst's technique. The check is free and the analyst cannot always run it alone, because the crucial fact - how customers actually came to be treated - lives with operations, sales or the campaign team. Whoever commissions the work is the only person who can reliably get those people into the same twenty minutes.</p>
+        <ul>
+          <li><strong>Twenty minutes against a quarter.</strong> The worst case of running the check is that it confirms a yes and the team proceeds with more confidence.</li>
+          <li><strong>The verdict belongs in the brief, above the method.</strong> If it is written down at the start, nobody can be surprised at the review.</li>
+          <li><strong>A no found in week one is a good week.</strong> It is the cheapest useful thing an analysis can produce, and it should be received that way.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ BUILD-ALONG ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>The identification check</h2>
+      <span class="tag demo">★ 18 min · everyone builds</span>
+    </div>
+    <p class="lede">No code, no data, no model. One commissioned analysis that is currently in flight or about to start, and four questions. If you have nothing in flight, run it on Kestrelmark's email and then on the version where targeting ran on an account manager's judgement.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Write the estimand as one sentence with an intervention in it.</strong> "The total effect of doing X on Y, for this population." If the sentence cannot be written, stop here: the analysis has no target and the rest of the check has nothing to check. This is the most common place the exercise ends, and ending here in week one is a win.</p>
+      </div>
+      <div class="step">
+        <p><strong>Ask how people ended up in the treated group.</strong> Ask the person who runs the process, not the analyst. A calendar, a rule, a threshold and a random draw are all fine. A human's judgement, an unlogged trigger, or "it varied by team" is an open back door and you have found it in the first minute.</p>
+      </div>
+      <div class="step">
+        <p><strong>Ask the analyst which paths are being closed, and by which variables.</strong> Expect one variable per route, named, with a sentence saying which route it shuts. "We control for the usual customer attributes" is not an answer to this question; it is a description of a habit.</p>
+      </div>
+      <div class="step">
+        <p><strong>Check that every one of those variables exists in the data.</strong> Not "we could probably derive it", not "it is in the CRM somewhere". A column, populated, for the period being analysed. This is where most no verdicts are actually discovered, and it takes minutes.</p>
+      </div>
+      <div class="step">
+        <p><strong>Ask whether any route is closed by nothing.</strong> Go through the list of backwards routes and mark the ones with no variable against them. One unmarked route is enough: the effect is not identified, whatever the rest of the list looks like.</p>
+      </div>
+      <div class="step">
+        <p><strong>If the answer is no, choose one of the four options in writing today.</strong> Measure it, change strategy, experiment, or report association. Today, while the choice is cheap and before three months of work has created a preference for the answer that lets the work continue.</p>
+      </div>
+      <div class="step">
+        <p><strong>Put the identification answer in the brief, above the method.</strong> One short paragraph at the top, before any mention of technique. Everything below it is conditional on it, and putting it first is what makes that visible to everybody who reads the document later.</p>
+      </div>
+    </div>
+
+    <div class="prompt-box bad">
+      <span class="label">✗ A brief that starts at the method, which is where most of them start</span>
+Project: Measure the impact of the loyalty programme on churn.
+Approach: Build a model of churn on programme membership, controlling for
+          tenure, plan, region, support contacts &amp; monthly usage.
+Timeline: 10 weeks. Success: a defensible incremental churn number.
+
+Nowhere in this brief: how customers ended up in the programme.
+</div>
+
+    <div class="prompt-box good">
+      <span class="label">★ The same brief with the identification answer on top, where it belongs</span>
+ESTIMAND
+The total effect of joining the loyalty programme on 90-day churn, for
+subscribers eligible in Q3. Total effect, not direct.
+
+IDENTIFICATION: NO, not from current data.
+Members join after a save-offer conversation triggered by cancellation
+intent judged by an agent. That judgement is not logged, and it drives
+both joining and churn. One back-door route, closed by nothing.
+
+DECISION, taken this week: options 1 and 4 together.
+  Option 4 now:  report the association, no causal verbs, ships in 2 weeks.
+  Option 1 next: add a required reason code to the save-offer flow.
+                 Re-run as a causal analysis once one quarter has accrued.
+
+METHOD
+Everything below this line is conditional on the paragraph above.
+</div>
+
+    <div class="callout tip">
+      <p><strong>The paragraph is the artifact.</strong> Not the model, not the deck. A brief with a written identification verdict at the top cannot quietly become a causal claim three months later, because the person who would have to change that paragraph has to do it on purpose, in writing, with their name on it.</p>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before session 5</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li>Run the four-question check on one analysis currently in flight, with the person who runs the treated process in the room. Write the verdict as one paragraph and put it at the top of the brief.</li>
+      <li>If the verdict is no, choose one of the four options and write the choice down with a date beside it. If the verdict is yes, write which variable closes which route, so that the next reviewer does not have to rediscover it.</li>
+      <li>Find one shipped claim in your organisation that uses a causal verb - drove, lifted, generated, incremental. Ask how people ended up in the treated group. Do not escalate the answer; just note it.</li>
+      <li>Bring one analysis where the average effect was positive and you suspect it was negative for some segment. Session 5 is about why the average can be right and the policy still wrong.</li>
+    </ol>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">A team reports that their causal estimate has a wide confidence interval and asks for budget to triple the sample. What should you ask before approving it?</p>
+      <button class="qopt" type="button">A · Which model family they used, since a better estimator would narrow the interval more cheaply</button>
+      <button class="qopt" type="button">B · Nothing: a wide interval is exactly the problem more data solves, so the request is well founded</button>
+      <button class="qopt" type="button">C · Whether the effect is identified at all, because if a back-door path runs through something unmeasured, tripling the sample buys a more precise wrong answer</button>
+      <p class="qwhy">A wide interval is an estimation problem and more data does fix it. A failure of identification looks like a clean result, not a wide one, and no sample size touches it. Ask the second question before funding the first.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">At Kestrelmark the effect is identified: season and tenure are both measured, they close both back-door routes, and the correct adjustment gives 6.56 against a true average of 6.23. What made the verdict a yes?</p>
+      <button class="qopt" type="button">A · The sample of 5,000 customers, which is large enough for the confounding to average out</button>
+      <button class="qopt" type="button">B · That a set exists satisfying both conditions of the back-door criterion, and every member of it is a column the warehouse actually holds</button>
+      <button class="qopt" type="button">C · That the naive estimate of 10.54 and the adjusted 6.56 are close enough to each other to be reassuring</button>
+      <p class="qwhy">Both halves are needed: the set must satisfy the criterion, and it must exist in the data. A perfect set with one unrecorded member is a no. Note that 10.54 against 6.56 is a gap of 4.31, which is anything but reassuring.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">The identification check on a commissioned analysis returns a no in week one. Which response is the honest one?</p>
+      <button class="qopt" type="button">A · Choose one of four options in writing this week: measure the missing variable, use a different identification strategy, run an experiment, or report the finding as association with no causal verbs</button>
+      <button class="qopt" type="button">B · Proceed, adjust for every available variable to compensate, and note the limitation in an appendix</button>
+      <button class="qopt" type="button">C · Cancel the work, since an unidentified effect cannot produce anything of value</button>
+      <p class="qwhy">All four options are real deliverables and the fourth ships immediately. Adjusting for everything does not compensate for an open path and adds harms of its own, and cancelling throws away an association that is often useful in its own right.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ COVERAGE ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What tonight maps to</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Identification as a design question that precedes data collection</span>
+        <span class="note">Estimand, then identification, then estimation. Why a failure of the second is invisible to every routine diagnostic and untouched by sample size.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">The back-door criterion, in leader terms</span>
+        <span class="note">A set Z works if no member is a descendant of the treatment, and Z blocks every path between treatment and outcome containing an arrow into the treatment. Plus the second half: every member has to be a column you hold.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Both verdicts on the same question</span>
+        <span class="note">Kestrelmark yes, with season and tenure giving 6.56 against a true average of 6.23, a residual of +0.33 that changes sign from draw to draw, where the naive comparison gives 10.54. And no, when targeting runs on an unlogged human judgement.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">What to commission when the answer is no</span>
+        <span class="note">Four options with their cost and what each delivers, the four-question check that produces the verdict, and the identification paragraph that goes at the top of the brief above the method.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">The front-door criterion</span>
+        <span class="note">Named tonight as option 2, the strategy that recovers an effect through an observed mechanism when the back door is blocked. Practitioner session 4 works through when it applies and what it demands instead.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">Sensitivity analysis</span>
+        <span class="note">Named as the partial fifth option, which prices the strength an unmeasured cause would need to overturn a finding without making the effect identified. Practitioner session 9.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill inkpill">·</span>
+        <span class="name">Designing and running the experiment; propensity scores, IPW, doubly robust, difference-in-differences, synthetic control, DoWhy</span>
+        <span class="note">Not covered by design, in any session. Option 3 points at <strong>learn-experimentation-with-phoebe</strong>, which owns experiment design and every observational estimator. The verdict on whether an effect is identified is the work here.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Session 4 cheat sheet</h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Identification is not estimation</b><span>How precisely, against whether at all. Identified leaves noise that more data shrinks; unidentified leaves bias it never touches.</span></div>
+      <div class="cheat-item"><b>Failure looks like a clean result</b><span>An unidentified effect still returns a coefficient and an interval. Nothing warns you.</span></div>
+      <div class="cheat-item"><b>The back-door criterion</b><span>Nothing in the set is a consequence of the treatment, and the set shuts every backwards route.</span></div>
+      <div class="cheat-item"><b>And the columns must exist</b><span>A perfect set with one unrecorded member is a no.</span></div>
+      <div class="cheat-item"><b>Kestrelmark: yes</b><span>Season and tenure give 6.56 against 6.23. Naive comparison: 10.54.</span></div>
+      <div class="cheat-item"><b>The question that finds a no</b><span>"How did people end up in the treated group?" A human's judgement is an open back door.</span></div>
+      <div class="cheat-item"><b>Four options, all honest</b><span>Measure it, change strategy, experiment, or say association and drop the causal verbs.</span></div>
+      <div class="cheat-item"><b>Twenty minutes against a quarter</b><span>The check is free. The verdict goes in the brief, above the method.</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pagefoot">
+  <div class="wrap">
+    <p>Leader session 4 of 6 · learn-causal-inference-with-phoebe · by Phoebe Fu</p>
+    <nav class="pagenav">
+      <a href="a3-what-not-to-adjust-for.html">← Leader session 3 · What not to adjust for</a>
+      <a href="a5-not-everyone-responds.html">Leader session 5 · Not everyone responds →</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

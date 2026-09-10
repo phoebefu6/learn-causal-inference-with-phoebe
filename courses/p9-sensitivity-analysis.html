@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Practitioner session 9 of 10. There could be something you did not measure is always true and useless as stated. The professional version asks how strong it would have to be, and benchmarks the answer against the variables you did measure.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="Sensitivity analysis - learn causal inference with phoebe">
+<meta property="og:description" content="Practitioner session 9 of 10. Not could there be a confounder, but how strong would it have to be, and is anything that strong plausible here.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/courses/p9-sensitivity-analysis.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Sensitivity analysis - learn causal inference with phoebe">
+<meta name="twitter:description" content="1.55 times tenure to reach zero. And no sweep will ever tell you a collider was in the model.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Practitioner session 9 · Sensitivity analysis - learn causal inference with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-causal-inference-with-phoebe</a> / Practitioner session 9 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Causal Inference with Phoebe · Practitioner session 9 of 10</div>
+    <h1>Sensitivity <span class="accent">analysis</span></h1>
+    <p class="sub">Present any observational estimate and one objection arrives every time: there could be something you did not measure. It is always true, it is never falsifiable, and as stated it ends the conversation without informing it. The professional move is to replace it with a question that has a number for an answer. At Kestrelmark, the correct adjustment set gives 6.56, and an unmeasured cause would have to be about 1.55 times as strongly associated with both the email and spend as customer tenure is, per standard deviation, to account for that estimate entirely. Tenure is the strongest thing anybody measured. Tonight you compute that number, and then you watch it lie.</p>
+    <div class="chip-row">
+      <span class="chip level">🔴 Hardest</span>
+      <span class="chip audience">Data scientists and analysts</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:5">3-22 · The objection you cannot rule out</span>
+      <span class="a3" style="flex:4">22-40 · Build-along: how strong would it have to be</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>What is left after identification</h2>
+    </div>
+    <p class="lede">Sessions 2 and 3 settled which variables belong in the adjustment set and whether the effect is identified at all, given the graph. Both of those answers are conditional on a graph somebody drew, and the arrow most likely to be missing is the one from a cause nobody measured. Sensitivity analysis is what remains: not a way to remove that doubt, but a way to price it.</p>
+
+    <div class="legend">
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">🔍 Every diagram zooms</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> One sentence you can put under every observational estimate you ever publish, stating the tipping point in units a reader can judge without rerunning anything. The habit of benchmarking that tipping point against the covariates you actually measured, which is what turns an argument about possibility into a comparison. And the trap, measured on the bench: the same sweep run from an adjustment set contaminated by a collider reports a comfortable-looking 1.34 for an estimate that was already 1.30 below the truth before the sweep began.</p>
+    </div>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Why the objection is unanswerable as stated<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>"There could be an unmeasured confounder" is a statement about the space of possible worlds, and that space is infinite. No dataset refutes it, because the variable is by definition absent from the dataset. No sample size touches it, because it is a bias rather than noise. Nobody can prove it wrong, which means nobody can be argued out of it, which means the sentence has no work to do beyond stopping the meeting.</p>
+        <p>It is also useless to whoever says it. The objector cannot say how much it would matter, so they cannot distinguish a finding that would collapse under a faint breeze from one that would need a hurricane. Both get the same objection and the same shrug. A room that cannot tell those two apart will end up either believing everything or believing nothing, and both outcomes are expensive.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Kestrelmark's finance review killed the email programme's budget increase with exactly that sentence, and approved it eleven weeks later on the same analysis plus one line: an unmeasured cause would have to be more than one and a half times as strong as customer tenure, and tenure was the strongest association in the model. Nothing in the estimate changed. What changed was that the objection had been given a size.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Where this sits relative to the rest of the track<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>After identification, not instead of it.</strong> Session 3 asks whether a valid adjustment set exists in the data. Sensitivity analysis assumes you already believe one does and asks what an unnamed extra cause would have to look like to overturn the result.</li>
+          <li><strong>Not a repair.</strong> Nothing here removes bias. It reports how much bias would be needed, which is a different and more honest thing to hand a reader.</li>
+          <li><strong>Not an estimator.</strong> Correcting an observational comparison, by reweighting or otherwise, belongs to <code class="mono">learn-experimentation-with-phoebe</code>. What is built tonight sits on top of whatever estimate you already have.</li>
+          <li><strong>The published families have names.</strong> You will meet them as Rosenbaum bounds, E-values, and covariate-benchmarked partial-association bounds among others. Each assumes a different shape for the unmeasured cause, and that assumption is the first thing to read in any of them.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers the reframe from possibility to strength</span>
+      <h2>Every observational claim has the same objection</h2>
+      <span class="tag concept">9 min live</span>
+    </div>
+    <p class="lede">The objection cannot be defeated, so it has to be converted. Swap the yes-or-no question for a how-much question, and an unfalsifiable claim becomes a quantity that can be computed, benchmarked, and disagreed with productively.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The shape of the objection, from both sides<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Both sides of the argument are wrong in the same way, which is worth saying out loud because it defuses the room. The analyst who says "we controlled for everything relevant" is claiming to have enumerated the causes of human behaviour. The sceptic who says "there could be something else" is claiming that possibility alone is a reason to disbelieve. Neither statement can be checked, and the two of them can be repeated at each other indefinitely.</p>
+        <ul>
+          <li><strong>Always true.</strong> There is always something unmeasured. Spend at Kestrelmark is caused by things nobody has a column for, and always will be.</li>
+          <li><strong>Always unfalsifiable.</strong> A variable you did not measure produces no evidence about itself, in either direction.</li>
+          <li><strong>Therefore useless as stated.</strong> A sentence that applies identically to every observational finding ever produced cannot help anyone rank two of them.</li>
+        </ul>
+        <p>Notice what the objection is not. It is not a general complaint about causal claims from data: a randomised assignment answers it by design, which is the reason randomisation is worth its cost. It is specifically about what happens when the assignment was made by the world instead.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The reframe that turns it into a real question<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Do not ask whether an unmeasured confounder could exist. Ask this instead:</p>
+        <div class="prompt-box good">
+          <span class="label">★ The question to ask instead</span>
+How strongly would an unmeasured cause have to be associated with BOTH
+the treatment and the outcome to move this estimate to zero,
+and is anything that strong plausible in this domain?
+        </div>
+        <p>Three things change at once. The question now has a numerical answer, so it can be computed rather than asserted. It requires the confounder to do two jobs at once, associating with the treatment <em>and</em> with the outcome, which is a much harder bar than doing either alone and is where most speculative confounders fail. And the last clause, is anything that strong plausible, hands the judgement to whoever knows the domain, which is usually not the analyst and is exactly the person whose objection started this.</p>
+        <div class="callout tip">
+          <p><strong>Both associations, not one.</strong> A candidate confounder that predicts spend brilliantly but has nothing to do with who received the email cannot bias the estimate at all, and neither can the reverse. In practice the bias scales with the product of the two associations, which is why doubling a confounder's overall strength does roughly four times the damage, and why a long list of one-sided candidates is not a threat.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Why the reframe is the professional standard<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Because it converts an argument about possibility into a comparison against variables you HAVE measured. Possibility has no scale and therefore no stopping rule. Measured covariates have both: they are real numbers, computed from the same data, on the same footing, and everyone in the room already accepts them.</p>
+        <p>That comparison is what a domain expert can actually rule on. Nobody has a well-formed opinion about whether an association of 0.31 is large. Plenty of people have a strong opinion about whether there is a driver of subscription spend more than one and a half times as important as how long somebody has been a customer, and if they say no, the finding has survived something. If they say yes and can name it, the finding has failed usefully, because now you know what to go and measure.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>The version that goes wrong is a tipping point reported with no benchmark: "the estimate reaches zero at a confounding strength of 1.55". Nobody knows whether 1.55 is a lot. Attach it to a covariate everyone recognises and the same number becomes a sentence anyone in the business can argue with, which is the entire objective.</p>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2 ============ -->
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers benchmarking, reporting, and the limits</span>
+      <h2>The benchmark that makes the number meaningful</h2>
+      <span class="tag concept">8 min live</span>
+    </div>
+    <p class="lede">A tipping point on its own is a number without a scale. Expressed as a multiple of the strongest thing you actually measured, it becomes a claim a domain expert can accept or refute, and it is the form the sentence should always take.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Benchmarking against observed covariates<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Take the covariates already in the adjustment set and measure, for each, how strongly it is associated with the treatment and with the outcome. Those pairs are the ruler. Then express the tipping point as a multiple of the largest of them. If an unmeasured cause would need to be three times as strongly associated with spend as season is, and season is the strongest thing measured, the finding is robust: something bigger than the biggest known driver, hiding in plain sight, is a specific and unlikely object. If it only needs to be half as strong as tenure, it is not robust, because things that size are common and one of them is probably missing.</p>
+        <ul>
+          <li><strong>Compare per standard deviation, not per raw unit.</strong> At Kestrelmark, season enters spend with a coefficient of 6.0 and tenure with 5.0, so season looks stronger. Season is binary and half the customers are in winter, so one standard deviation of it moves spend by 3.0 against tenure's 5.0. Per standard deviation, tenure is the stronger benchmark, and picking the wrong one here inflates the robustness claim by more than half.</li>
+          <li><strong>Benchmark on both associations at once.</strong> Tenure's pair at Kestrelmark is 0.7 into the email and 5.0 into spend. A candidate that matches tenure on one and is trivial on the other is not a tenure-strength confounder.</li>
+          <li><strong>Benchmark against what is IN the model.</strong> The point of the ruler is that the reader already believes it. A covariate you excluded proves nothing about a covariate you never had.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The reporting habit: one sentence, next to the estimate<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>State the tipping point alongside the estimate, in the same paragraph, in one sentence, so a reader can judge the claim without rerunning anything or opening an appendix. It costs a line and it removes the single most common reason an observational finding gets waved away.</p>
+        <div class="prompt-box good">
+          <span class="label">★ The sentence, filled in for Kestrelmark</span>
+Adjusting for season and tenure, receiving the re-engagement email is
+associated with 6.56 units of additional spend. For that estimate to
+reach zero, an unmeasured cause would have to be about 1.55 times as
+strongly associated with BOTH the email and spend as customer tenure
+is, per standard deviation, or 2.49 times as strongly as season.
+Tenure is the strongest association in the model.
+        </div>
+        <p>Read what the sentence does not claim. It does not say no such cause exists. It does not say the estimate is correct. It says precisely how large the missing thing would have to be, in a unit the reader already has intuition for, and then it stops and lets them decide. That restraint is why it survives review.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The honest limits, and the one that matters most<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>It assumes a shape.</strong> Every sensitivity method fixes a form for the unmeasured cause: one variable rather than several, additive rather than interacting, the same strength for everybody. The tipping point is correct for that shape and silent about others. Two methods disagreeing on the same data usually means they assumed different shapes, not that one is broken.</li>
+          <li><strong>It cannot rule anything out.</strong> A tipping point of 1.55 tenures does not mean no such confounder exists. It means one would have to be that big, and somebody who knows the domain still has to say whether that is plausible.</li>
+          <li><strong>It says nothing about the arrows you drew wrong.</strong> This is the one that costs people their conclusions. Sensitivity analysis answers a question about missing confounding. It has no opinion about a variable that should never have been in the model at all.</li>
+          <li><strong>A collider you conditioned on is not a confounding problem.</strong> Conditioning on a common effect creates association rather than failing to remove it, and no sensitivity analysis will find it. Kestrelmark's loyalty score costs 1.30 units of bias while every sweep run on top of it reports a comfortable number. That is why sessions 2 and 3 come first: sensitivity analysis is the last check, never the first, and it cannot rescue a graph that was wrong.</li>
+        </ul>
+        <div class="callout tip">
+          <p><strong>The order is not negotiable.</strong> Draw the graph, choose the adjustment set from the graph, check identification, estimate, then run the sensitivity. Run it earlier and you get a robustness statement about a number that was measuring something else, which reads exactly like a robustness statement about the right one.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>When "not identified" plus a tipping point is the deliverable<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Leader session 4 makes the case that "this effect is not identified from the data we have" is a legitimate finding rather than a failure to deliver, and a tipping point is what makes that finding actionable instead of merely discouraging. The pairing is the deliverable: here is the best estimate available, here is the honest statement that a back-door path runs through something unmeasured, and here is how strong that unmeasured thing would have to be for the decision to flip.</p>
+        <ul>
+          <li><strong>Sometimes the tipping point is enormous</strong> and the decision can be made anyway. A finding that would need a confounder five times the size of anything known is good enough for a reversible, low-cost decision, and saying so is more useful than another month of modelling.</li>
+          <li><strong>Sometimes it is tiny</strong> and the honest output is a measurement request. Name the variable you would need, say what it would cost to collect, and hand back a design rather than an estimate.</li>
+          <li><strong>Either way the decision-maker gets a size.</strong> That is the difference between a caveat and information, and it is the reason this sentence belongs in the summary rather than the appendix.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>How strong would it have to be</h2>
+      <span class="tag demo">★ 18 min · everyone builds</span>
+    </div>
+    <p class="lede">Start from the correct adjustment set, {season, tenure}, and the canon estimate of 6.56 against a true effect of 6.23. Inject an unmeasured cause with a tunable strength, sweep it, and find where the estimate crosses zero. Then do the whole thing again from the wrong starting point.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Fix the benchmark before you sweep.</strong> Measure each observed covariate's association with the email and with spend, per standard deviation. Tenure's pair is 0.7 and 5.0; season's, once scaled to one standard deviation, is 0.45 and 3.0. Tenure is the ruler.</p>
+      </div>
+      <div class="step">
+        <p><strong>Define one strength knob, in tenure units.</strong> A simulated cause at strength s enters the email with 0.7 times s and spend with 5.0 times s, so s equal to 1 reproduces a second tenure exactly. One knob, one axis, one sentence at the end.</p>
+      </div>
+      <div class="step">
+        <p><strong>Regenerate the treatment and the outcome at each strength.</strong> The unmeasured cause has to feed both, or it is not a confounder and the sweep will show a flat line, which is a useful thing to see once by mistake.</p>
+      </div>
+      <div class="step">
+        <p><strong>Refit the correct adjustment set at every step.</strong> Season and tenure stay in the model; the simulated cause never does. That gap between what is in the model and what is in the world is the entire mechanism being measured.</p>
+      </div>
+      <div class="step">
+        <p><strong>Sweep and find the crossing.</strong> Mind the direction first: a cause positive on both arms <em>inflates</em> what you observe, so the question is how much of the 6.56 it could be supplying. Take that contribution back out and what remains falls from 6.56 and crosses zero at s equal to 1.55. The fall is quadratic rather than linear, because the contribution grows with the product of two associations that are both scaling.</p>
+      </div>
+      <div class="step">
+        <p><strong>Convert the crossing into season units and write the sentence.</strong> 1.55 tenures is 2.49 seasons, and both go in the sentence so nobody has to trust a single ruler.</p>
+      </div>
+      <div class="step">
+        <p><strong>Now rerun the sweep from the wrong adjustment set,</strong> the one that adds the loyalty score. Loyalty is a pre-treatment collider, the estimate starts at 5.26 rather than 6.56, and the crossing moves to 1.34.</p>
+      </div>
+      <div class="step">
+        <p><strong>Put the two sensitivity statements side by side and try to tell them apart.</strong> 1.55 against 1.34 is a 14 percent difference in a robustness claim. The estimates they describe differ by 1.30 units, which is 21 percent of the true effect. That is the trap.</p>
+      </div>
+    </div>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - the sweep, in tenure units</span>
+import numpy as np, statsmodels.api as sm
+from kestrelmark import generate   # the written model from session 10, one fixed seed
+
+TENURE = {"email": 0.7,  "spend": 5.0}   # the ruler: strongest observed pair, per SD
+SEASON = {"email": 0.45, "spend": 3.0}   # binary, so scaled to one standard deviation
+
+def observed(adjust, s):
+    """Regenerate with an unmeasured cause u of strength s wired into BOTH arms,
+       then fit WITHOUT it, which is what you would actually see."""
+    d = generate(confounder=s, u_email=TENURE["email"], u_spend=TENURE["spend"])
+    X = sm.add_constant(d[["email"] + adjust])
+    return sm.OLS(d.spend, X).fit().params["email"]
+
+def remaining(adjust, s, base):
+    """A cause positive on both arms INFLATES what you see. Take its contribution
+       back out and this is the effect that would be left if it were real."""
+    return base - (observed(adjust, s) - base)
+
+def tipping_point(sw):
+    a = [r for r in sw if r[1] &gt;  0][-1]
+    b = [r for r in sw if r[1] &lt;= 0][0]
+    return a[0] + (b[0] - a[0]) * a[1] / (a[1] - b[1])
+
+grid    = np.arange(0.0, 2.01, 0.02)
+base    = observed(["season", "tenure"], 0.0)
+correct = [(s, remaining(["season", "tenure"], s, base)) for s in grid]
+
+print(round(base, 2))                         # 6.56, the canon estimate
+print(round(tipping_point(correct), 2))       # 1.55 tenure-strengths
+
+ratio = np.sqrt((TENURE["email"] * TENURE["spend"]) / (SEASON["email"] * SEASON["spend"]))
+print(round(1.55 * ratio, 2))                 # 2.49 season-strengths
+    </div>
+
+    <p class="lede">The correct set, swept. Estimate against unmeasured-confounder strength, in tenure units:</p>
+
+    <table class="clean">
+      <thead><tr><th>Strength, in tenures</th><th>Estimate</th><th>Bias against 6.23</th><th>Reading</th></tr></thead>
+      <tbody>
+        <tr><td>0.00</td><td><strong>6.56</strong></td><td>+0.33</td><td>The canon estimate, no unmeasured cause</td></tr>
+        <tr><td>0.50</td><td>5.82</td><td>-0.41</td><td>Half a tenure barely dents it</td></tr>
+        <tr><td>0.75</td><td>4.69</td><td>-1.54</td><td>The fall is quadratic, and it has started</td></tr>
+        <tr><td>1.00</td><td>3.60</td><td>-2.63</td><td>A cause as strong as tenure costs nearly half</td></tr>
+        <tr><td>1.25</td><td>2.09</td><td>-4.14</td><td>Still positive, and the direction is unchanged</td></tr>
+        <tr><td><strong>1.55</strong></td><td><strong>0.00</strong></td><td>-6.23</td><td><strong>The tipping point</strong></td></tr>
+        <tr><td>2.00</td><td>-3.40</td><td>-9.63</td><td>Two tenures would reverse the sign</td></tr>
+      </tbody>
+    </table>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 384" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The effect remaining once a simulated unmeasured confounder of a given strength is taken out, plotted against that strength in tenure units. The curve starts at 6.56 with no confounding and falls in a quadratic curve, crossing zero at a strength of 1.55 and reaching minus 3.40 at a strength of 2. Two dashed vertical reference lines mark the observed strengths actually measured in the data: season at 0.62 and tenure at 1.00, both well to the left of the crossing.">
+        <style>
+          .p9aH { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .p9aB { font: 400 10px Inter, sans-serif; fill: #5A6B68; }
+          .p9aM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .p9aW { font: 700 11px Inter, sans-serif; fill: #fff; }
+          .p9aN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+
+        <text class="p9aH" x="14" y="24">Effect remaining against unmeasured-confounder strength. Start 6.56, zero at 1.55.</text>
+        <text class="p9aM" x="14" y="44">estimate</text>
+
+        <line x1="100" y1="50" x2="100" y2="300" stroke="#C6D6D3" stroke-width="1.5"></line>
+        <line x1="100" y1="300" x2="790" y2="300" stroke="#C6D6D3" stroke-width="1.5"></line>
+        <line x1="100" y1="209" x2="790" y2="209" stroke="#134E4A" stroke-width="2"></line>
+
+        <text class="p9aB" x="92" y="77" text-anchor="end">6</text>
+        <text class="p9aB" x="92" y="122" text-anchor="end">4</text>
+        <text class="p9aB" x="92" y="168" text-anchor="end">2</text>
+        <text class="p9aB" x="92" y="213" text-anchor="end">0</text>
+        <text class="p9aB" x="92" y="259" text-anchor="end">-2</text>
+        <text class="p9aB" x="92" y="304" text-anchor="end">-4</text>
+
+        <text class="p9aB" x="100" y="316" text-anchor="middle">0</text>
+        <text class="p9aB" x="265" y="316" text-anchor="middle">0.5</text>
+        <text class="p9aB" x="430" y="316" text-anchor="middle">1.0</text>
+        <text class="p9aB" x="595" y="316" text-anchor="middle">1.5</text>
+        <text class="p9aB" x="760" y="316" text-anchor="middle">2.0</text>
+
+        <line x1="305" y1="50" x2="305" y2="300" stroke="#C6D6D3" stroke-width="1.5" stroke-dasharray="4 3"></line>
+        <text class="p9aM" x="309" y="294">season</text>
+        <line x1="430" y1="50" x2="430" y2="300" stroke="#C6D6D3" stroke-width="1.5" stroke-dasharray="4 3"></line>
+        <text class="p9aM" x="434" y="294">tenure</text>
+
+        <polyline points="100,69 182,74 265,85 348,109 430,132 512,164 595,200 612,210 678,243 760,282"
+                  fill="none" stroke="#0F6F66" stroke-width="2.5"></polyline>
+
+        <circle cx="612" cy="209" r="5" fill="#9A3412"></circle>
+        <line x1="612" y1="209" x2="651" y2="178" stroke="#9A3412" stroke-width="1.5" stroke-dasharray="3 3"></line>
+
+        <rect x="628" y="140" width="238" height="38" rx="8" fill="#9A3412"></rect>
+        <text class="p9aW" x="640" y="157">tipping point: 1.55 tenures</text>
+        <text class="p9aW" x="640" y="171">or 2.49 seasons, per SD</text>
+
+        <text class="p9aM" x="430" y="336" text-anchor="middle">unmeasured confounder strength, in tenure units</text>
+
+        <rect x="14" y="352" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="p9aN" x="38" y="364">Sensitivity says how strong it would have to be. It cannot say whether one exists.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the crossing sits well to the right of both observed benchmarks.</figcaption>
+    </figure>
+
+    <div class="prompt-box good">
+      <span class="label">★ Try it now - the same sweep from the wrong adjustment set</span>
+base_w = observed(["season", "tenure", "loyalty"], 0.0)   # loyalty is a COLLIDER
+wrong  = [(s, remaining(["season", "tenure", "loyalty"], s, base_w)) for s in grid]
+
+print(round(base_w, 2))                 # 5.26, biased by -1.30 before anything is injected
+print(round(tipping_point(wrong), 2))   # 1.34 tenures. Still over one. Still reassuring.
+
+# Side by side, the two robustness statements are nearly identical:
+#   correct set   estimate 6.56   tipping point 1.55
+#   with collider estimate 5.26   tipping point 1.34      a 14 percent difference
+#
+# The estimates differ by 1.30 units, 21 percent of the true effect of 6.23.
+# Nothing anywhere in the sweep reports the collider, because the sweep
+# only ever asks about MISSING confounding. Run session 3 first.
+    </div>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 384" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The same sweep run twice. The upper curve starts from the correct adjustment set at 6.56 and crosses zero at a strength of 1.55. The lower curve starts from an adjustment set contaminated by the loyalty collider at 5.26 and crosses zero at 1.34. A dashed horizontal line marks the true effect of 6.23. The two curves have the same reassuring shape, and the contaminated one is already 1.30 units below the truth before any confounding is injected.">
+        <style>
+          .p9bH { font: 800 12px Inter, sans-serif; fill: #0F1C1A; }
+          .p9bB { font: 400 10px Inter, sans-serif; fill: #5A6B68; }
+          .p9bM { font: 400 11px Inter, sans-serif; fill: #5A6B68; }
+          .p9bW { font: 700 11px Inter, sans-serif; fill: #fff; }
+          .p9bG { font: 800 11px Inter, sans-serif; fill: #134E4A; }
+          .p9bN { font: 700 11px Inter, sans-serif; fill: #0F1C1A; }
+        </style>
+
+        <text class="p9bH" x="14" y="24">The same sweep from a contaminated starting point</text>
+
+        <line x1="14" y1="40" x2="44" y2="40" stroke="#0F6F66" stroke-width="2.5"></line>
+        <text class="p9bM" x="50" y="44">correct set {season, tenure}, starts 6.56</text>
+        <line x1="330" y1="40" x2="360" y2="40" stroke="#9A3412" stroke-width="2.5" stroke-dasharray="6 4"></line>
+        <text class="p9bM" x="366" y="44">with the loyalty collider, starts 5.26</text>
+
+        <line x1="100" y1="50" x2="100" y2="300" stroke="#C6D6D3" stroke-width="1.5"></line>
+        <line x1="100" y1="300" x2="790" y2="300" stroke="#C6D6D3" stroke-width="1.5"></line>
+        <line x1="100" y1="209" x2="790" y2="209" stroke="#134E4A" stroke-width="2"></line>
+        <line x1="100" y1="76" x2="780" y2="76" stroke="#134E4A" stroke-width="1.5" stroke-dasharray="5 4"></line>
+        <text class="p9bG" x="786" y="80">truth 6.23</text>
+
+        <text class="p9bB" x="92" y="77" text-anchor="end">6</text>
+        <text class="p9bB" x="92" y="122" text-anchor="end">4</text>
+        <text class="p9bB" x="92" y="168" text-anchor="end">2</text>
+        <text class="p9bB" x="92" y="213" text-anchor="end">0</text>
+        <text class="p9bB" x="92" y="259" text-anchor="end">-2</text>
+        <text class="p9bB" x="92" y="304" text-anchor="end">-4</text>
+
+        <text class="p9bB" x="100" y="316" text-anchor="middle">0</text>
+        <text class="p9bB" x="265" y="316" text-anchor="middle">0.5</text>
+        <text class="p9bB" x="430" y="316" text-anchor="middle">1.0</text>
+        <text class="p9bB" x="595" y="316" text-anchor="middle">1.5</text>
+        <text class="p9bB" x="760" y="316" text-anchor="middle">2.0</text>
+
+        <polyline points="100,69 182,74 265,85 348,109 430,132 512,164 595,200 612,210 678,243 760,282"
+                  fill="none" stroke="#0F6F66" stroke-width="2.5"></polyline>
+        <polyline points="100,97 182,101 265,113 348,139 430,162 512,196 542,209 595,233 678,278"
+                  fill="none" stroke="#9A3412" stroke-width="2.5" stroke-dasharray="6 4"></polyline>
+
+        <circle cx="612" cy="209" r="5" fill="#0F6F66"></circle>
+        <text class="p9bM" x="620" y="203">1.55</text>
+        <circle cx="542" cy="209" r="5" fill="#9A3412"></circle>
+        <text class="p9bM" x="536" y="226" text-anchor="end">1.34</text>
+
+        <rect x="596" y="84" width="270" height="64" rx="8" fill="#9A3412"></rect>
+        <text class="p9bW" x="608" y="100">Both sweeps look reassuring.</text>
+        <text class="p9bW" x="608" y="113">1.34 against 1.55 is a 14 percent</text>
+        <text class="p9bW" x="608" y="126">difference. The estimate underneath</text>
+        <text class="p9bW" x="608" y="139">it is already 21 percent low.</text>
+
+        <text class="p9bM" x="430" y="336" text-anchor="middle">unmeasured confounder strength, in tenure units</text>
+
+        <rect x="14" y="352" width="14" height="14" rx="3" fill="#9A3412"></rect>
+        <text class="p9bN" x="38" y="364">No value anywhere on this sweep reports the collider. Check the graph first.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - two robustness statements 14 percent apart, on estimates 1.30 units apart.</figcaption>
+    </figure>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p>This is how a wrong model survives review. Every gate a careful team has built asks about the thing that is missing: a sensitivity statement, an unmeasured-confounder discussion, a robustness appendix. None of them asks whether a variable in the model belongs there. The loyalty score was measured before the email went out, it improved the fit, it made the covariate list look thorough, and it cost 1.30 units. The sweep on top of it was, in its own terms, entirely correct.</p>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before session 10</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li>Take one observational estimate your team has published and compute its tipping point, benchmarked per standard deviation against the strongest covariate already in the model. Write the sentence.</li>
+      <li>Show the sentence to somebody who knows the domain and not the method. Ask one question: is there anything out there that big? Write down what they say, including "I do not know", which is itself a finding.</li>
+      <li>Before you trust your own tipping point, go back through the adjustment set and name the graph role of every variable in it. A sweep on a contaminated set is the failure mode tonight was built around.</li>
+      <li>Bring that covariate list and its roles to session 10, where every one of them gets scored against a truth that is known by construction.</li>
+    </ol>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">An analyst runs a sensitivity sweep on an adjustment set that includes the loyalty score, a pre-treatment collider, and reports a tipping point of 1.34 tenures. What has the sweep told them about the collider?</p>
+      <button class="qopt" type="button">A · That it is harmless, since a tipping point above 1.0 indicates a robust estimate</button>
+      <button class="qopt" type="button">B · That the collider bias is smaller than the confounding bias, since 1.34 is close to 1.55</button>
+      <button class="qopt" type="button">C · Nothing at all: sensitivity analysis asks how much MISSING confounding would be needed, and conditioning on a common effect creates association rather than failing to remove it, so no value of the sweep will ever report it</button>
+      <p class="qwhy">The estimate was already 1.30 below the truth before the sweep started, and the sweep reports a comfortable-looking number anyway. Collider bias is found by drawing the graph, which is why sessions 2 and 3 come before this one.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">A reviewer says "there could be something you did not measure". What is the professional reply?</p>
+      <button class="qopt" type="button">A · Convert it: state how strongly an unmeasured cause would have to be associated with both the treatment and the outcome to move the estimate to zero, and benchmark that against the strongest covariate already in the model</button>
+      <button class="qopt" type="button">B · Point out that the sample is large enough that any remaining bias averages out</button>
+      <button class="qopt" type="button">C · Agree that the effect is unidentifiable and withdraw the estimate</button>
+      <p class="qwhy">As stated the objection is always true and unfalsifiable, so it cannot separate a fragile finding from a robust one. Giving it a size, in units of a covariate the reader already accepts, hands the judgement to whoever knows the domain.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">At Kestrelmark, season enters spend with a coefficient of 6.0 and tenure with 5.0. Season is binary and split evenly. Which is the right benchmark for a tipping point, and why does it matter?</p>
+      <button class="qopt" type="button">A · Season, because its raw coefficient on spend is the larger of the two</button>
+      <button class="qopt" type="button">B · Tenure, because benchmarks are compared per standard deviation: one standard deviation of season moves spend by 3.0 against tenure's 5.0, and using season instead reports the same crossing as 2.49 rather than 1.55</button>
+      <button class="qopt" type="button">C · Either, since the tipping point is a property of the estimate and does not depend on the benchmark chosen</button>
+      <p class="qwhy">The tipping point is one quantity expressed in whichever ruler you pick, so picking a weaker ruler makes the same finding sound more robust. Report both, and say the unit out loud.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ COVERAGE ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What tonight maps to</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">How strong an unmeasured confounder would have to be to overturn the finding</span>
+        <span class="note">The reframe from possibility to strength, the sweep, and the crossing computed at 1.55 tenure-strengths from the correct set's 6.56.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">Benchmarking against observed covariates</span>
+        <span class="note">Per standard deviation, on both associations at once, against variables already in the model: 1.55 tenures or 2.49 seasons.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">The tipping-point sentence as a reporting habit</span>
+        <span class="note">One sentence beside the estimate, judgeable without rerunning anything, and explicit about what it does not claim.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill solid">✓</span>
+        <span class="name">What sensitivity analysis cannot detect</span>
+        <span class="note">A collider in the adjustment set. The contaminated sweep starts at 5.26, a bias of -1.30, and reports 1.34, which is 14 percent from the honest answer.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">Colliders, mediators and M-bias</span>
+        <span class="note">Sessions 2 and 3 own the shapes and the criterion; session 10 prices every one of them on the bench.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill light">◐</span>
+        <span class="name">"Not identified" plus a tipping point as a deliverable</span>
+        <span class="note">Leader session 4 owns the commissioning argument and what to require in writing.</span>
+      </div>
+      <div class="covered-row">
+        <span class="status pill inkpill">·</span>
+        <span class="name">Propensity scores, IPW, doubly robust, difference-in-differences, synthetic control, DoWhy</span>
+        <span class="note">Not covered by design, in any session. Correcting an observational comparison belongs to the experimentation course; pricing the doubt that remains after the graph is settled belongs here.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Session 9 cheat sheet</h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>The objection is useless as stated</b><span>Always true, never falsifiable, applies identically to every observational finding.</span></div>
+      <div class="cheat-item"><b>Ask how strong, not whether</b><span>How strongly associated with BOTH the treatment and the outcome, to reach zero.</span></div>
+      <div class="cheat-item"><b>Both associations, or none</b><span>Bias scales with the product, so a one-sided candidate is not a threat.</span></div>
+      <div class="cheat-item"><b>Benchmark per standard deviation</b><span>Season's raw 6.0 beats tenure's 5.0; per SD it is 3.0 against 5.0. Tenure is the ruler.</span></div>
+      <div class="cheat-item"><b>Kestrelmark's tipping point</b><span>6.56 reaches zero at 1.55 tenures, or 2.49 seasons. Both go in the sentence.</span></div>
+      <div class="cheat-item"><b>One sentence, next to the estimate</b><span>Not the appendix. A reader has to be able to judge it without rerunning anything.</span></div>
+      <div class="cheat-item"><b>It assumes a shape</b><span>One additive cause, constant strength. Correct for that shape, silent about others.</span></div>
+      <div class="cheat-item"><b>It cannot see a collider</b><span>The contaminated sweep starts at 5.26 and still reports 1.34. Draw the graph first.</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pagefoot">
+  <div class="wrap">
+    <p>Practitioner session 9 of 10 · learn-causal-inference-with-phoebe · by Phoebe Fu</p>
+    <nav class="pagenav">
+      <a href="p8-qini-and-who-to-treat.html">← Practitioner session 8 · Qini curves and who to treat</a>
+      <a href="p10-the-adjustment-bench.html">Practitioner session 10 · The adjustment bench →</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>
